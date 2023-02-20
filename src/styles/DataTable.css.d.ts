@@ -1,0 +1,7 @@
+/* .data-table{
+    border: 2px solid black;
+}
+
+table{
+    border: 2px solid black;
+} */
