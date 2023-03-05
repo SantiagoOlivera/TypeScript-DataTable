@@ -4,11 +4,22 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link type="text/css" rel="stylesheet" href="./index.css">
-
+    <!-- <link type="text/css" rel="stylesheet" href="./index.css"> -->
+    <style>
+        #resizable { width: 150px; height: 150px; padding: 0.5em; }
+        #resizable h3 { text-align: center; margin: 0; }
+        </style>
     <h1>Tests</h1>
+    
     <input id="test1" class="form-control w-25 m-2" type="text" value="" />
+    
+    <div id="resizable" class="ui-widget-content">
+        <h3 class="ui-widget-header">Resizable</h3>
+    </div>
+
+
     <script>
+
         var test1 = document.getElementById('test1');
         //^
         var str = '/^-?\d*(\.\d+)?$/s'
@@ -38,9 +49,6 @@
     <script>
 
         var body = document.querySelector('body');
-        console.log(window.DataTable);
-
-
         var config1 = new window.DataTable.ConfigDataTableReadOnly({
             rowNum: true,
             rows:[

@@ -1,25 +1,43 @@
 import { DataTableCell } from "./DataTableCell";
 
+
 export class DataTableCellColumn extends DataTableCell{
 
-   
-    
     private columnName: String
     private sTitle: string
+    private isResizable: boolean
 
-    constructor(columnName: string, title: string){
+    private readonly classes = {
+        RESIZABLE: 'resizable'
+    }
+
+    constructor(columnName: string, title: string, isResizable?: boolean){
         super(columnName);
         this.SetColumnName(columnName);
         this.SetTitle(title);
+        this.SetIsResizable(isResizable);
         this.Draw();
     }
 
     public Draw(): void {
+        var isResizable: boolean = this.GetIsResizable();
+        if(isResizable){
+            this.classList.add(this.classes.RESIZABLE);
+        }
         this.innerHTML = this.GetTitle();
+        
     }
 
     public GetTitle(): string{
         return this.sTitle;
+    }
+
+    private SetIsResizable(isResizable: boolean){
+        this.isResizable = isResizable;
+    }
+
+    public GetIsResizable():boolean{
+        return this.isResizable;
     }
 
     private SetColumnName(columnName: string):void {

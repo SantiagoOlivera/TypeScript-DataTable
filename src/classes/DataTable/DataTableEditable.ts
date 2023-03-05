@@ -20,6 +20,7 @@ import { InputSelect } from "../Input/InputSelect";
 import { OptionSelect } from "../Input/OptionSelect";
 import { LiveSearchInput } from "../Input/LiveSearchInput";
 
+
 export class DataTableEditable extends DataTable {
 
     public static DEFAULT_DECIMALS_SEPARATOR: string = ',';
@@ -35,6 +36,11 @@ export class DataTableEditable extends DataTable {
         super(config);
         this.Draw();
         this.SetMoveDtEvent();
+        this.AddDataTableClassName();
+    }
+
+    private AddDataTableClassName():void{
+        this.className += ` DataTableEditable`;
     }
 
     private SetHead(config: ConfigDataTableEditable):void{
@@ -136,7 +142,7 @@ export class DataTableEditable extends DataTable {
                             opts.push(new OptionSelect(o.id, o.text))
                         }
 
-                        console.log(value, opts);
+                        //console.log(value, opts);
                         input = new InputSelect(value, opts);
 
                     } else if(type === 'livesearch'){
@@ -191,7 +197,7 @@ export class DataTableEditable extends DataTable {
             var x: number = null;
             var y: number = null;
 
-            console.log(
+            /* console.log(
                 "Test event", 
                 "Evento:", event, 
                 "KeyCode:", keyCode, 
@@ -200,7 +206,7 @@ export class DataTableEditable extends DataTable {
                 "IDX ROW:" , parent.GetRow(), 
                 "IDX COL:" , parent.GetCol(),
                 "INPUT ELEMENT:" , parent.GetInput()
-            );
+            ); */
 
             
             y = parent.GetRow();
@@ -257,7 +263,7 @@ export class DataTableEditable extends DataTable {
         if(row){
             cell = <DataTableCellEditable>row.GetCell(x);
             if(cell){
-                console.log(cell, y, x);
+                //console.log(cell, y, x);
                 input = <IInput>cell.GetInput();
                 input.Supr();
             }

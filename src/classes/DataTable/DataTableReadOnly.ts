@@ -4,6 +4,8 @@ import { DataTableCellColumn } from '../Cell/DataTableCellColumn';
 import { DataTableRowHeader } from '../Row/DataTableRowHeader';
 import { DataTableRowReadOnly } from '../Row/DataTableRowReadOnly';
 import { DataTableCellReadOnly } from '../Cell/DataTableCellReadOnly';
+import * as $ from 'jquery';
+import "jquery-ui/dist/jquery-ui";
 
 export class DataTableReadOnly extends DataTable{
     
@@ -12,29 +14,30 @@ export class DataTableReadOnly extends DataTable{
         this.Draw();
     }
 
-    public Draw(): void {
-
-        this.Destroy();
-        
-        var rowNum: boolean = this.GetConfigRowNum();
-        var rows = this.GetConfigRows();
-        var columns = this.GetConfigColumns();
-        
-        console.log("Cols",columns);
+    private SetHead():void{
+        var config: ConfigDataTableReadOnly = this.GetConfig();
+        var rowNum: boolean = config.GetRowNum();
+        var columns = config.GetColumns();
+        var resizableColumns: boolean = config.GetResizableColumns();
+        //console.log("Cols",columns);
         var cols: Array<DataTableCellColumn> = [];
-
         if(rowNum){
             columns.unshift(DataTableReadOnly.ROW_NUM_COLUMN);
         }
 
         for(var c of columns){
-            cols.push(new DataTableCellColumn(c.data, c.title));
+            cols.push(new DataTableCellColumn(c.data, c.title, resizableColumns));
         }
 
         var tr:DataTableRowHeader = new DataTableRowHeader(cols);
 
         this.AppendChildHead(tr);
+    }
 
+    private SetBody():void{
+        var rowNum: boolean = this.GetConfigRowNum();
+        var columns = this.GetConfigColumns();
+        var rows = this.GetConfigRows();
         for(var i=0; i<rows.length; i++){
             
             var r = rows[i];
@@ -59,7 +62,25 @@ export class DataTableReadOnly extends DataTable{
             this.AppendChildBody(row);
 
         }
+    }
 
+    private SetFoot():void{
+
+    }
+
+    private InitResizableColumns(): void{
+        $(this).find('th').resizable({
+            //alsoResize: '',
+            handles: 'e, w',
+        });
+    }
+
+    public Draw(): void {
+        this.Destroy();
+        this.SetHead();
+        this.SetBody();
+        this.SetFoot();
+        //this.InitResizableColumns();
     }    
 }
 

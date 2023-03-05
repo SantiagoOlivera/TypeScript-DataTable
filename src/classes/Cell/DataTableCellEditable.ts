@@ -50,7 +50,7 @@ export class DataTableCellEditable extends DataTableCell{
     }
 
     public Focus():void{
-        console.log(this.input);
+        //console.log(this.input);
         var input: HTMLElement = <HTMLElement><unknown>this.GetInput();
         input.focus();
     }

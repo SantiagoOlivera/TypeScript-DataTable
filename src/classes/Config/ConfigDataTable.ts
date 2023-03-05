@@ -10,6 +10,7 @@ export abstract class ConfigDataTable {
     private rows: any
     private columns: any
     private rowNum: boolean
+    private resizableColumns: boolean
     
     readonly props = {
         ROWS: 'rows',
@@ -17,6 +18,7 @@ export abstract class ConfigDataTable {
         ROW_NUM: 'rowNum',
         BUTTONS: 'buttons',
         ROW_STATUS: 'rowStatus',
+        RESIZABLE_COLUMNS: 'resizableColumns',
     }
 
     constructor(config: any){
@@ -37,8 +39,18 @@ export abstract class ConfigDataTable {
             }
             
             this.SetRowNum(rowNum);
+            var resizableColums: boolean = config[this.props.RESIZABLE_COLUMNS]
+            this.SetResizableColumns(resizableColums);
         }
 
+    }
+
+    private SetResizableColumns(resizableColumns: boolean):void{
+        this.resizableColumns = resizableColumns;
+    }
+
+    public GetResizableColumns(): boolean{
+        return this.resizableColumns;
     }
 
     private SetRows(rows: Array<any>){
