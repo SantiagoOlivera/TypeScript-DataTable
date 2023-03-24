@@ -3,4 +3,6 @@ export interface IInput{
     SetValue(value: any): void
     GetValue(): any
     Supr():void;
+    IsFocusable(): boolean
+    Focus(): void
 }

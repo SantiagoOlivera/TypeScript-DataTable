@@ -10,7 +10,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     private optionsList: Array<OptionSelect>;
     private opt: string;
     
-    constructor(opt: string, options: Array<OptionSelect>){
+    constructor(opt?: string, options?: Array<OptionSelect>){
         super();
 
         this.SetOptions(options);
@@ -20,8 +20,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
         this.Draw();
 
     }
-
-
+    
     GetHTMLElement(): HTMLElement {
         return this;
     }
@@ -74,14 +73,23 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     }
 
     private SetOptions(options: Array<OptionSelect>):void{
-        this.optionsList = options;
+        this.optionsList = new Array<OptionSelect>();
+        if(options){
+            this.optionsList = options;
+        }
     }
 
     public GetOptions():Array<OptionSelect>{
         return this.optionsList;
     }
 
+    public IsFocusable(): boolean {
+        return true;
+    }
 
+    public Focus(): void {
+        this.focus();
+    }
 }
 
 window.customElements.define('input-select', InputSelect, { extends: 'select'});

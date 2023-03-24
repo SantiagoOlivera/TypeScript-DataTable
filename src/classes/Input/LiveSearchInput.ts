@@ -214,7 +214,7 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement{
 window.customElements.define('live-search-option-input-item', LiveSearchOptionInputItem, { extends: 'button'});
 
 export class LiveSearchInput extends Input{
-
+    
     private container: HTMLDivElement;
     private optionsContainer: HTMLDivElement;
     private options: Array<LiveSearchOption>;
@@ -232,7 +232,7 @@ export class LiveSearchInput extends Input{
         INPUT: 'input',
         KEYDOWN: 'keydown',
         FOCUS: 'focus',
-        FOCUSOUT: 'focusout'
+        FOCUSOUT: 'focusout',
     }
 
     private readonly classes = {
@@ -356,18 +356,7 @@ export class LiveSearchInput extends Input{
         this.DrawOptions(this.options, false);
     }
 
-    /* private AddOption(opt: LiveSearchOptionInputItem){
-        this.options.push(opt);
-    }
-
-    private SetOptions(options:Array<LiveSearchOptionInputItem>): void {
-        this.options = options;
-    }
-
-    private GetOptions(): Array<LiveSearchOptionInputItem>{
-        return this.options;
-    } */
-
+    
     private ShowOptionsContainer(show:boolean){
         
         if(show){
@@ -383,6 +372,10 @@ export class LiveSearchInput extends Input{
     
 
     public Draw(): void {
+        this.SetEvents();
+    }
+
+    private SetEvents(): void {
 
         this.addEventListener(this.events.CLICK, (event: Event)=>{
             this.open(true);
@@ -433,6 +426,8 @@ export class LiveSearchInput extends Input{
                 if(!isOpen){
                     this.open(true);
                 }
+            } else if (keyCode === this.keys.SUPR || keyCode === this.keys.DELETE){
+                this.Supr();
             }
         });
     }
@@ -523,6 +518,14 @@ export class LiveSearchInput extends Input{
         this.SetInputValue(null);     
         this.open(true);
         this.filter(val, false);
+    }
+
+    public IsFocusable(): boolean {
+        return true;
+    }
+
+    public Focus(): void {
+        this.focus();
     }
 
 }

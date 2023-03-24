@@ -3,7 +3,6 @@ import { Input } from "./Input";
 
 export class InputNumber extends Input{
     
-    
     public static MSG_ERROR_NUMERIC_VALUE_INVALID: string = "Error: invalid numeric value";
     public static DEFAULT_DECIMALS: number = 0;
     public static DEFAULT_DECIMALS_SEPARATOR: string = ".";
@@ -21,7 +20,7 @@ export class InputNumber extends Input{
     private decimalsSeparator: string;
     private milesSeparator: string;
     
-    constructor(value: string, decimals?: number, decimalsSeparator?: string, milesSeparator?: string){
+    constructor(value?: string, decimals?: number, decimalsSeparator?: string, milesSeparator?: string){
         super();
 
         if(!decimals){
@@ -37,14 +36,15 @@ export class InputNumber extends Input{
         this.SetDecimalsSeparator(decimalsSeparator);
         
         var val: any = Number(Number(value).toFixed(decimals));
-        
-        if(!isNaN(val)) {
-            this.SetValue(value.toString());
-            this.SetNumValue(val);
-        }else{    
-            throw new Error(InputNumber.MSG_ERROR_NUMERIC_VALUE_INVALID);
+        if(value){
+            if(!isNaN(val)) {
+                this.SetValue(value.toString());
+                this.SetNumValue(val);
+            }else{    
+                throw new Error(InputNumber.MSG_ERROR_NUMERIC_VALUE_INVALID);
+            }
         }
-
+        
         this.SetValidateEvents();
 
         this.Draw();
@@ -124,7 +124,11 @@ export class InputNumber extends Input{
     }
 
     public Draw(): void {
-        this.value = this.convertString(this.GetValue());
+        this.value = '';
+        var value = this.GetValue();
+        if(value) {
+            this.value = this.convertString(value);
+        }
     }
 
     public Supr(): void {
@@ -141,6 +145,15 @@ export class InputNumber extends Input{
     public GetHTMLElement(): HTMLElement {
         throw new Error("Method not implemented.");
     }
+
+    public IsFocusable(): boolean {
+        return true;
+    }
+
+    public Focus(): void {
+        this.focus();
+    }
+    
 
 }
 

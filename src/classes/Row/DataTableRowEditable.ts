@@ -62,18 +62,15 @@ export class DataTableRowEditable extends DataTableRow implements ISelectable {
         var cell: DataTableCellEditable = <DataTableCellEditable>this.GetRowNumCell();
         if(cell){
             var input: HTMLElement = cell.GetInput().GetHTMLElement();    
-            input.addEventListener('click', () => { this.Select() });
+            input.addEventListener('click', (event) => { 
+                event.stopPropagation();
+                this.Select();
+            });
+            input.addEventListener('dblclick', (event) => { 
+                event.stopPropagation();
+            });
         }
-        //console.log(cell.GetInput());
-        //var input: HTMLElement = cell.GetInput().GetHTMLElement();
-        //input.addEventListener('click', ()=>{this.Select()});
-        /* this.addEventListener('dblclick', () => { this.Select() } );
-        var cells: Array<DataTableCellEditable> = <Array<DataTableCellEditable>>this.GetCells();
-        var ele: HTMLElement = <HTMLElement>GetInput();
-        ele.addEventListener('click', () => { this.Select() } ); */
     }
-
-    
 
     public Draw(): void {
         var cells: Array<DataTableCell> = this.GetCells();

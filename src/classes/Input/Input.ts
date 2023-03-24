@@ -15,6 +15,8 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
         this.classList.add(this.bootrapClasses.FORM_CONTROL);
     }
 
+    public abstract Focus(): void 
+    public abstract IsFocusable(): boolean 
     public abstract GetHTMLElement(): HTMLElement 
     public abstract SetValue(value: any): void 
     public abstract GetValue(): any    

@@ -18,6 +18,7 @@ export class IconCellRowStatus extends IconCell implements IInput{
         this.setRowStatus(rowStatus);
         this.Render();
     }
+    
     GetHTMLElement(): HTMLElement {
         throw new Error("Method not implemented.");
     }
@@ -58,6 +59,14 @@ export class IconCellRowStatus extends IconCell implements IInput{
                 this.className = this.iconsClasses.ERROR;
                 break;
         }
+    }
+
+    Focus(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    IsFocusable(): boolean {
+        return false;
     }
 
 }

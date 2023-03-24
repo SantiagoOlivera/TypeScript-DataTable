@@ -19,7 +19,8 @@ import { IInput } from "../Interfaces/IInput";
 import { InputSelect } from "../Input/InputSelect";
 import { OptionSelect } from "../Input/OptionSelect";
 import { LiveSearchInput } from "../Input/LiveSearchInput";
-
+import { CellMoveDirection } from "../Enum/CellMoveDirection";
+import { DataTableOperationBar } from "../DataTableOperationBar/DataTableOperationBar";
 
 export class DataTableEditable extends DataTable {
 
@@ -37,7 +38,10 @@ export class DataTableEditable extends DataTable {
         this.Draw();
         this.SetMoveDtEvent();
         this.AddDataTableClassName();
+        
     }
+
+    
 
     private AddDataTableClassName():void{
         this.className += ` DataTableEditable`;
@@ -70,6 +74,17 @@ export class DataTableEditable extends DataTable {
         }
 
         var tr:DataTableRowHeader = new DataTableRowHeader(cols);
+        
+        var newTr = <DataTableRow>document.createElement('tr');
+        var newTd = <DataTableCellEditable>document.createElement('td');
+        newTr.appendChild(newTd);
+        newTd.colSpan = tr.children.length;
+
+        //this.GetConfig()
+        var opBar: DataTableOperationBar = new DataTableOperationBar( this.GetConfig() );
+        newTd.appendChild(opBar); 
+
+        this.AppendChildHead(newTr);
 
         this.AppendChildHead(tr);
 
@@ -196,18 +211,7 @@ export class DataTableEditable extends DataTable {
             var parent = <DataTableCellEditable>ele.parentElement;
             var x: number = null;
             var y: number = null;
-
-            /* console.log(
-                "Test event", 
-                "Evento:", event, 
-                "KeyCode:", keyCode, 
-                "Element:",ele,
-                "TD:" , parent, 
-                "IDX ROW:" , parent.GetRow(), 
-                "IDX COL:" , parent.GetCol(),
-                "INPUT ELEMENT:" , parent.GetInput()
-            ); */
-
+            var direction: CellMoveDirection = null;
             
             y = parent.GetRow();
             x =  parent.GetCol();
@@ -226,29 +230,33 @@ export class DataTableEditable extends DataTable {
                 switch(keyCode){
                     case this.keys.ARROW_LEFT:
                         x-=1;
+                        direction = CellMoveDirection.LEFT;
                         break;
                     case this.keys.ARROW_RIGHT:
                         x+=1;
+                        direction = CellMoveDirection.RIGHT;
                         break;
                     case this.keys.ARROW_UP:
                         y-=1;
+                        direction = CellMoveDirection.UP;
                         break;
                     case this.keys.ARROW_DOWN:
                         y+=1;
+                        direction = CellMoveDirection.DOWN;
                         break;
                 }
 
-                this.moveCell(x,y);
+                this.moveCell(x,y, direction);
                 event.preventDefault();
             }else{
                 switch(keyCode){
                     case this.keys.ENTER:
                         break;
-                    case this.keys.SUPR:
+                    /* case this.keys.SUPR:
                         this.Supr(x, y);
                     case this.keys.DELETE:
                         this.Supr(x, y);
-                        break;
+                        break; */
                 }
             }
         });
@@ -263,20 +271,48 @@ export class DataTableEditable extends DataTable {
         if(row){
             cell = <DataTableCellEditable>row.GetCell(x);
             if(cell){
-                //console.log(cell, y, x);
                 input = <IInput>cell.GetInput();
                 input.Supr();
             }
         }  
     }
 
-    private moveCell(x: number, y: number):void{
+    private moveCell(
+        x: number, 
+        y: number, 
+        dir: CellMoveDirection
+    ):void {
+
         var row: DataTableRow = this.GetRow(y);
         var cell: DataTableCellEditable = null;
+
         if(row){
+            console.log("Move cell:", cell, y, x);
             cell = <DataTableCellEditable>row.GetCell(x);
             if(cell){
-                cell.Focus();
+                var input: IInput = cell.GetInput();
+                if(input.IsFocusable()){
+                    input.Focus();
+                }else{
+                    console.log("Jump cell:", cell, y, x, input);
+                    switch(dir){
+                        case CellMoveDirection.UP:
+                            y++; 
+                            break;
+                        case CellMoveDirection.DOWN:
+                            y--;
+                            break;
+                        case CellMoveDirection.LEFT:
+                            x--;
+                            break;
+                        case CellMoveDirection.RIGHT:
+                            x++;
+                            break;
+                    }
+
+                    this.moveCell(x, y, dir);
+                }
+
             }
         }     
     }

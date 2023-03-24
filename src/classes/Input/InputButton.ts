@@ -20,6 +20,7 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput{
 
         this.Draw();
     }
+    
     GetHTMLElement(): HTMLElement {
         return this;
     }
@@ -64,6 +65,14 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput{
 
     private GetStr(): string{
         return this.str;
+    }
+
+    Focus(): void {
+        this.focus();
+    }
+
+    IsFocusable(): boolean {
+       return true;
     }
 
 }
