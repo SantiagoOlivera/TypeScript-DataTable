@@ -26,6 +26,14 @@ export class DataTableEditable extends DataTable {
 
     public static DEFAULT_DECIMALS_SEPARATOR: string = ',';
 
+    public readonly colType = {
+        NUMBER: 'number',
+        ICON: 'icon',
+        ROW_NUM: 'rowNum',
+        SELECT: 'select',
+        LIVE_SEARCH: 'livesearch',
+    }
+
     public static readonly ROW_STATUS_COLUMN = {
         data: 'rowStatus',
         title: 'row status',
@@ -37,8 +45,9 @@ export class DataTableEditable extends DataTable {
         super(config);
         this.Draw();
         this.SetMoveDtEvent();
+        this.SetChangeDtEvent();
         this.AddDataTableClassName();
-        
+        console.log(this.GetData());
     }
 
     
@@ -81,7 +90,7 @@ export class DataTableEditable extends DataTable {
         newTd.colSpan = tr.children.length;
 
         //this.GetConfig()
-        var opBar: DataTableOperationBar = new DataTableOperationBar( this.GetConfig() );
+        var opBar: DataTableOperationBar = new DataTableOperationBar( this );
         newTd.appendChild(opBar); 
 
         this.AppendChildHead(newTr);
@@ -141,17 +150,17 @@ export class DataTableEditable extends DataTable {
                     options = column.options;
                     
 
-                    if(type === 'number'){
+                    if(type === this.colType.NUMBER){
                         input = new InputNumber(
                             value, 
                             decimals, 
                             DataTableEditable.DEFAULT_DECIMALS_SEPARATOR
                         );
-                    }else if(type === 'icon'){
+                    }else if(type === this.colType.ICON){
                         input =  new IconCellRowStatus(RowStatus.UPDATED);
-                    } else if(type === 'rowNum'){
+                    } else if(type === this.colType.ROW_NUM){
                         input =  new InputButton(undefined, value);
-                    } else if(type === 'select'){
+                    } else if(type === this.colType.SELECT){
 
                         for(var o of options){
                             opts.push(new OptionSelect(o.id, o.text))
@@ -160,7 +169,7 @@ export class DataTableEditable extends DataTable {
                         //console.log(value, opts);
                         input = new InputSelect(value, opts);
 
-                    } else if(type === 'livesearch'){
+                    } else if(type === this.colType.LIVE_SEARCH){
                         
                         input = new LiveSearchInput(value)
 
@@ -194,6 +203,29 @@ export class DataTableEditable extends DataTable {
         this.Destroy();
         this.SetHead(config);
         this.SetBody(config);
+    }
+
+
+    public GetData(): Array<object>{
+        var data: Array<any> = new Array<any>();
+        var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
+        var rows: Array<DataTableRowEditable> = <Array<DataTableRowEditable>>this.GetRows();
+        for(var r of rows) {
+            var d: any = r.GetData();
+            data.push(d);
+        }
+
+        return data;
+    }
+
+    private SetChangeDtEvent():void {
+
+        this.addEventListener(this.events.CHANGE, function(e){
+            var input = <IInput><unknown>e.target;
+            var value = input.GetValue();
+            console.log(value);
+        });
+
     }
 
     private SetMoveDtEvent():void {

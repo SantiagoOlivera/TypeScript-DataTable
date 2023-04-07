@@ -29,7 +29,7 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput{
         throw new Error("Method not implemented.");
     }
     GetValue() {
-        throw new Error("Method not implemented.");
+        return this.GetStr();
     }
     Supr(): void {
         throw new Error("Method not implemented.");

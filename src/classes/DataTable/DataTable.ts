@@ -18,6 +18,7 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
     readonly events = {
         KEYDOWN: 'keydown',
         CLICK:'click',
+        CHANGE: 'change',
     }
 
     readonly keys = {
@@ -68,6 +69,8 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
     
 
     public abstract Draw(): void 
+
+    public abstract GetData(): void
 
     private SetTags(){
         this.thead = document.createElement(this.tags.THEAD);

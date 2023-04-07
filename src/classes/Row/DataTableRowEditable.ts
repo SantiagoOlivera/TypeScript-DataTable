@@ -80,6 +80,18 @@ export class DataTableRowEditable extends DataTableRow implements ISelectable {
     }
 
     
+    public GetData(): any {
+        var o: any = {};
+        var cells: Array<DataTableCellEditable> = <Array<DataTableCellEditable>>this.GetCells();
+
+        for(var c of cells){
+            var field: string = c.GetCellName();
+            o[field] = c.GetInput().GetValue();
+        }
+
+        return o;
+    }
+
 }
 
 window.customElements.define('data-table-row-editable', DataTableRowEditable, { extends: 'tr' });

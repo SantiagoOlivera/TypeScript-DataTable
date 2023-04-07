@@ -15,7 +15,7 @@ export class IconCellRowStatus extends IconCell implements IInput{
 
     constructor(rowStatus: RowStatus){
         super();
-        this.setRowStatus(rowStatus);
+        this.SetRowStatus(rowStatus);
         this.Render();
     }
     
@@ -26,17 +26,17 @@ export class IconCellRowStatus extends IconCell implements IInput{
         throw new Error("Method not implemented.");
     }
     GetValue() {
-        throw new Error("Method not implemented.");
+        return this.GetRowStatus();
     }
     Supr(): void {
         throw new Error("Method not implemented.");
     }
 
-    private setRowStatus(rowStatus: RowStatus):void{
+    private SetRowStatus(rowStatus: RowStatus):void{
         this.rowStatus = rowStatus;
     }
 
-    private getRowStatus():RowStatus{
+    private GetRowStatus():RowStatus{
         return this.rowStatus;
     }
 

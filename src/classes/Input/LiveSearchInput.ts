@@ -494,6 +494,11 @@ export class LiveSearchInput extends Input{
 
     public SetValue(value: LiveSearchOption): void {
         this.val = value;
+        this.TriggerChangeEvent();
+    }
+
+    private TriggerChangeEvent():void {
+        this.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
     public GetValue(): LiveSearchOption {

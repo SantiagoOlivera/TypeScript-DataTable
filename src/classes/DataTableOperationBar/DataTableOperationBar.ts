@@ -1,5 +1,6 @@
 import { ConfigDataTable, ConfigDataTableEditable } from "src/classes/Config/ConfigDataTable";
 import { DataTableEditableAddRowModal } from "../Modals/DataTableModalAddRow";
+import { DataTable } from "../DataTable/DataTable";
 
 export class DataTableOperationBar extends HTMLDivElement {
 
@@ -22,21 +23,22 @@ export class DataTableOperationBar extends HTMLDivElement {
     private BtnExcel: HTMLButtonElement;
     private ModalAddRow: DataTableEditableAddRowModal;
     private config: ConfigDataTable;
+    private dt: DataTable;
 
     
-    constructor(config: ConfigDataTable) {
+    constructor(dt: DataTable) {
         super();
-        this.SetConfig(config);
+        this.SetDataTable(dt);
         this.SetClasses();
         this.SetButtons();
     }
 
-    private SetConfig(config: ConfigDataTable):void{
-        this.config = config;
+    private SetDataTable(dt: DataTable):void{
+        this.dt = dt;
     }
-    
-    private GetConfig(): ConfigDataTable {
-        return this.config;
+
+    private GetDataTable():DataTable{
+        return this.dt;
     }
 
     private SetClasses(): void {
@@ -58,6 +60,10 @@ export class DataTableOperationBar extends HTMLDivElement {
         this.BtnSave.innerHTML = this.icons.SAVE;
         this.appendChild(this.BtnSave);
         this.appendChild(document.createTextNode( '\u00A0' ));
+
+        this.BtnSave.addEventListener('click', () => { 
+            console.log(this.GetDataTable().GetData());
+        });
     }
 
     
@@ -67,7 +73,7 @@ export class DataTableOperationBar extends HTMLDivElement {
         if(!this.ModalAddRow){
             //reveer esto
             var body = document.querySelector('body');
-            var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
+            var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetDataTable().GetConfig();
             
             this.ModalAddRow = new DataTableEditableAddRowModal(
                 'DataTableModalAddRow', 

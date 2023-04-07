@@ -81,7 +81,11 @@ export class DataTableReadOnly extends DataTable{
         this.SetBody();
         this.SetFoot();
         //this.InitResizableColumns();
-    }    
+    } 
+
+    public GetData(): void {
+        throw new Error('Method not implemented.');
+    }
 }
 
 window.customElements.define('data-table-read-only', DataTableReadOnly, { extends: 'table' });
