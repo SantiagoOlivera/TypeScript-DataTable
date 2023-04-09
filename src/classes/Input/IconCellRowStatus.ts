@@ -22,8 +22,10 @@ export class IconCellRowStatus extends IconCell implements IInput{
     GetHTMLElement(): HTMLElement {
         throw new Error("Method not implemented.");
     }
-    SetValue(value: any): void {
-        throw new Error("Method not implemented.");
+
+    SetValue(value: RowStatus): void {
+        //throw new Error("Method not implemented.");
+        this.SetRowStatus(value);
     }
     GetValue() {
         return this.GetRowStatus();

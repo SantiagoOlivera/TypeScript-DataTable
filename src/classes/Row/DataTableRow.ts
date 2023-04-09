@@ -1,5 +1,6 @@
 import { DataTableCell } from "../Cell/DataTableCell";
 import { DataTable } from "../DataTable/DataTable";
+import { DataTableEditable } from "../DataTable/DataTableEditable";
 
 export abstract class DataTableRow extends HTMLTableRowElement{
     
@@ -37,7 +38,6 @@ export abstract class DataTableRow extends HTMLTableRowElement{
         var cell: DataTableCell = this.cellsList.find( e =>{ return e.GetCellName() === DataTable.ROW_NUM_COLUMN.data});
         return cell;
     }
-
 
     public GetCell(idx: number): DataTableCell{
         var cell: DataTableCell = null;

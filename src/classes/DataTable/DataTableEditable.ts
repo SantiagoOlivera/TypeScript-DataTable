@@ -47,7 +47,6 @@ export class DataTableEditable extends DataTable {
         this.SetMoveDtEvent();
         this.SetChangeDtEvent();
         this.AddDataTableClassName();
-        console.log(this.GetData());
     }
 
     
@@ -157,7 +156,7 @@ export class DataTableEditable extends DataTable {
                             DataTableEditable.DEFAULT_DECIMALS_SEPARATOR
                         );
                     }else if(type === this.colType.ICON){
-                        input =  new IconCellRowStatus(RowStatus.UPDATED);
+                        input =  new IconCellRowStatus(RowStatus.NORMAL);
                     } else if(type === this.colType.ROW_NUM){
                         input =  new InputButton(undefined, value);
                     } else if(type === this.colType.SELECT){
@@ -220,10 +219,32 @@ export class DataTableEditable extends DataTable {
 
     private SetChangeDtEvent():void {
 
-        this.addEventListener(this.events.CHANGE, function(e){
+        this.addEventListener(this.events.CHANGE, function(e: Event){
+
+            var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
+            var rowStatus: boolean = config.GetRowStatus();
+            
+            //Input
             var input = <IInput><unknown>e.target;
+
+            var input2: HTMLElement = <HTMLElement><unknown>input;
+            var td: DataTableCellEditable = <DataTableCellEditable>input2.parentElement;
+            var tr: DataTableRowEditable = <DataTableRowEditable>td.parentElement;
+            //Row Idx
+            var rowIdx: number = tr.GetRowNum();
+            //Value
             var value = input.GetValue();
-            console.log(value);
+            
+            if(rowStatus){
+                var row: DataTableRowEditable = <DataTableRowEditable>this.GetRow(rowIdx);
+                var cell: DataTableCellEditable = row.GetRowStatusCell();
+                var rowStatusIconCell = <IconCellRowStatus>cell.GetInput();
+                console.log(row, cell, rowStatusIconCell);
+                rowStatusIconCell.SetValue(RowStatus.UPDATED);
+                rowStatusIconCell.Render();
+            }
+
+            console.log(value, config, e.target, rowIdx, config.GetRows());
         });
 
     }

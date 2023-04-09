@@ -1,5 +1,6 @@
 import { DataTableCell } from "../Cell/DataTableCell";
 import { DataTableCellEditable } from "../Cell/DataTableCellEditable";
+import { DataTableEditable } from "../DataTable/DataTableEditable";
 import { IInput } from "../Interfaces/IInput";
 import { ISelectable } from "../Interfaces/ISelectable";
 import { DataTableRow } from "./DataTableRow";
@@ -90,6 +91,18 @@ export class DataTableRowEditable extends DataTableRow implements ISelectable {
         }
 
         return o;
+    }
+
+    public GetRowStatusCell(): DataTableCellEditable{
+        
+        var cells: Array<DataTableCell> = this.GetCells();
+        var cell: DataTableCell = cells.find( e =>{ return e.GetCellName() === DataTableEditable.ROW_STATUS_COLUMN.data });
+        var c: DataTableCellEditable = null;
+        if(cell){
+            c = <DataTableCellEditable>cell;
+        }
+
+        return c;
     }
 
 }
