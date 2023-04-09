@@ -220,31 +220,42 @@ export class DataTableEditable extends DataTable {
     private SetChangeDtEvent():void {
 
         this.addEventListener(this.events.CHANGE, function(e: Event){
-
+            
+            //Get config
             var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
+            //Get if use row status
             var rowStatus: boolean = config.GetRowStatus();
             
-            //Input
-            var input = <IInput><unknown>e.target;
-
-            var input2: HTMLElement = <HTMLElement><unknown>input;
-            var td: DataTableCellEditable = <DataTableCellEditable>input2.parentElement;
-            var tr: DataTableRowEditable = <DataTableRowEditable>td.parentElement;
-            //Row Idx
-            var rowIdx: number = tr.GetRowNum();
-            //Value
-            var value = input.GetValue();
-            
             if(rowStatus){
-                var row: DataTableRowEditable = <DataTableRowEditable>this.GetRow(rowIdx);
-                var cell: DataTableCellEditable = row.GetRowStatusCell();
-                var rowStatusIconCell = <IconCellRowStatus>cell.GetInput();
-                console.log(row, cell, rowStatusIconCell);
-                rowStatusIconCell.SetValue(RowStatus.UPDATED);
-                rowStatusIconCell.Render();
-            }
 
-            console.log(value, config, e.target, rowIdx, config.GetRows());
+                //Input
+                var input = <IInput><unknown>e.target;
+                //HTML Element Input
+                var htmlElement: HTMLElement = <HTMLElement><unknown>input;
+                //Cell td
+                var td: DataTableCellEditable = <DataTableCellEditable>htmlElement.parentElement;
+                //Row tr
+                var tr: DataTableRowEditable = <DataTableRowEditable>td.parentElement;
+                //Row Idx
+                var rowIdx: number = tr.GetRowNum();
+                //Value
+                var value = input.GetValue();
+                //Row datatable editable
+                var row: DataTableRowEditable = <DataTableRowEditable>this.GetRow(rowIdx);
+                //Cell datatable editable
+                var cell: DataTableCellEditable = row.GetRowStatusCell();
+                //Row status icon cell
+                var rowStatusIconCell = <IconCellRowStatus>cell.GetInput();
+                
+                //console.log(row, cell, rowStatusIconCell);
+
+                //Set update value
+                rowStatusIconCell.SetValue(RowStatus.UPDATED);
+                //Re Render icon
+                rowStatusIconCell.Render();
+                
+            }
+            //console.log(value, config, e.target, rowIdx, config.GetRows());
         });
 
     }
