@@ -493,12 +493,24 @@ export class LiveSearchInput extends Input{
     }
 
     public SetValue(value: LiveSearchOption): void {
+        this.TriggerChangeEvent(value);
         this.val = value;
-        this.TriggerChangeEvent();
     }
 
-    private TriggerChangeEvent():void {
-        this.dispatchEvent(new Event('change', { bubbles: true }));
+    private TriggerChangeEvent(value: LiveSearchOption): void {
+        var v: LiveSearchOption = this.GetValue();
+        if(v){
+            if(value){
+                if(v.GetId() !== value.GetId()){
+                    //trigger change event
+                    this.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }
+        } else {
+            if(value){
+                this.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
     }
 
     public GetValue(): LiveSearchOption {
