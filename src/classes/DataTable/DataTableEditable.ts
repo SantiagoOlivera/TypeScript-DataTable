@@ -18,7 +18,7 @@ import { IconCellRowStatus } from "../Input/IconCellRowStatus";
 import { IInput } from "../Interfaces/IInput";
 import { InputSelect } from "../Input/InputSelect";
 import { OptionSelect } from "../Input/OptionSelect";
-import { LiveSearchInput } from "../Input/LiveSearchInput";
+import { LiveSearchInput, LiveSearchOption } from "../Input/LiveSearchInput";
 import { CellMoveDirection } from "../Enum/CellMoveDirection";
 import { DataTableOperationBar } from "../DataTableOperationBar/DataTableOperationBar";
 
@@ -160,18 +160,17 @@ export class DataTableEditable extends DataTable {
                     } else if(type === this.colType.ROW_NUM){
                         input =  new InputButton(undefined, value);
                     } else if(type === this.colType.SELECT){
-
                         for(var o of options){
                             opts.push(new OptionSelect(o.id, o.text))
                         }
-
                         //console.log(value, opts);
                         input = new InputSelect(value, opts);
-
                     } else if(type === this.colType.LIVE_SEARCH){
-                        
-                        input = new LiveSearchInput(value)
-
+                        var val: LiveSearchOption = null;
+                        if(value){
+                            val = new LiveSearchOption(value['id'], value['text']);
+                        }
+                        input = new LiveSearchInput(val);
                     } else {
                         input = new InputText(value);
                     }

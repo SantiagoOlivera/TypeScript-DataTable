@@ -272,12 +272,13 @@ export class LiveSearchInput extends Input{
     ];
 
     constructor(
-        value?: string, 
+        value?: LiveSearchOption, 
         url?:'', 
         options?: Array<LiveSearchOption>
     ) {
         super();
         this.SetClassName();
+        this.SetInputValue(value);
         this.Draw();
     }
 
