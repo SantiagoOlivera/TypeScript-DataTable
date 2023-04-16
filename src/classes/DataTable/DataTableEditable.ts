@@ -21,10 +21,12 @@ import { OptionSelect } from "../Input/OptionSelect";
 import { LiveSearchInput, LiveSearchOption } from "../Input/LiveSearchInput";
 import { CellMoveDirection } from "../Enum/CellMoveDirection";
 import { DataTableOperationBar } from "../DataTableOperationBar/DataTableOperationBar";
+import { InputDate } from "../Input/InputDate";
 
 export class DataTableEditable extends DataTable {
 
     public static DEFAULT_DECIMALS_SEPARATOR: string = ',';
+    public static DEFAULT_THOUSAND_SEPARATOR: string = '.';
 
     public readonly colType = {
         NUMBER: 'number',
@@ -32,6 +34,7 @@ export class DataTableEditable extends DataTable {
         ROW_NUM: 'rowNum',
         SELECT: 'select',
         LIVE_SEARCH: 'livesearch',
+        DATE: 'date',
     }
 
     public static readonly ROW_STATUS_COLUMN = {
@@ -150,10 +153,21 @@ export class DataTableEditable extends DataTable {
                     
 
                     if(type === this.colType.NUMBER){
+                        var decimalsSeparator: string = column.decimalsSeparator;
+                        var thousandSeparator: string = column.thousandSeparator;
+
+                        if(!decimalsSeparator){
+                            decimalsSeparator = '';
+                        }
+                        if(!thousandSeparator){
+                            thousandSeparator = '';
+                        }
+
                         input = new InputNumber(
                             value, 
                             decimals, 
-                            DataTableEditable.DEFAULT_DECIMALS_SEPARATOR
+                            decimalsSeparator,
+                            thousandSeparator
                         );
                     }else if(type === this.colType.ICON){
                         input =  new IconCellRowStatus(RowStatus.NORMAL);
@@ -171,6 +185,8 @@ export class DataTableEditable extends DataTable {
                             val = new LiveSearchOption(value['id'], value['text']);
                         }
                         input = new LiveSearchInput(val);
+                    } else if (type === this.colType.DATE){
+                        input =  new InputDate(value);
                     } else {
                         input = new InputText(value);
                     }

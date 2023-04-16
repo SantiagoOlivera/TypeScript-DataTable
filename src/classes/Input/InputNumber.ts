@@ -1,3 +1,4 @@
+import IMask from 'imask';
 import { Input } from "./Input";
 
 
@@ -5,8 +6,8 @@ export class InputNumber extends Input{
     
     public static MSG_ERROR_NUMERIC_VALUE_INVALID: string = "Error: invalid numeric value";
     public static DEFAULT_DECIMALS: number = 0;
-    public static DEFAULT_DECIMALS_SEPARATOR: string = ".";
-    public static DEFAULT_MILES_SEPARATOR: string = ",";
+    public static DEFAULT_DECIMALS_SEPARATOR: string = ",";
+    public static DEFAULT_THOUSAND_SEPARATOR: string = ".";
     //REGEX
     public static REGEX_ONLY_INT_NUMBER = new RegExp(/[^0-9]/g);
     public static REGEX_REMOVE_ZEROS_START = new RegExp(/^0+(?!$)/g);
@@ -18,11 +19,16 @@ export class InputNumber extends Input{
     private numValue: number;
     private decimals: number;
     private decimalsSeparator: string;
-    private milesSeparator: string;
+    private thousandSeparator: string;
     
-    constructor(value?: string, decimals?: number, decimalsSeparator?: string, milesSeparator?: string){
+    constructor(
+        value?: number, 
+        decimals?: number, 
+        decimalsSeparator?: string, 
+        thousandSeparator?: string
+    ){
         super();
-
+        
         if(!decimals){
             decimals = InputNumber.DEFAULT_DECIMALS;
         }        
@@ -31,28 +37,33 @@ export class InputNumber extends Input{
             decimalsSeparator = InputNumber.DEFAULT_DECIMALS_SEPARATOR;
         }
 
+        if(!thousandSeparator){
+            thousandSeparator = InputNumber.DEFAULT_THOUSAND_SEPARATOR
+        }
+
         this.SetDecimals(decimals);
-        this.SetMilesSeparator(milesSeparator);
+        this.SetThousandSeparator(thousandSeparator);
         this.SetDecimalsSeparator(decimalsSeparator);
         
-        var val: any = Number(Number(value).toFixed(decimals));
+        this.SetValue(value);
+        /* var val: any = Number(Number(value).toFixed(decimals));
         if(value){
             if(!isNaN(val)) {
-                this.SetValue(value.toString());
+                this.SetValue(val);
                 this.SetNumValue(val);
             }else{    
                 throw new Error(InputNumber.MSG_ERROR_NUMERIC_VALUE_INVALID);
             }
         }
-        
-        this.SetValidateEvents();
+         */
+        //this.SetValidateEvents();
 
         this.Draw();
 
     }
 
     private SetValidateEvents(){
-
+/* 
         var decimals:number = this.GetDecimals();
 
         if(!decimals){
@@ -77,7 +88,7 @@ export class InputNumber extends Input{
                 var val: number = input.GetValue();
                 input.SetValue(val.toString());
             });
-        }
+        } */
 
 
     }
@@ -90,12 +101,12 @@ export class InputNumber extends Input{
         return this.decimals;
     }
 
-    private SetMilesSeparator(milesSeparator: string){
-        this.milesSeparator = milesSeparator;
+    private SetThousandSeparator(thousandSeparator: string){
+        this.thousandSeparator = thousandSeparator;
     }
 
-    public GetMilesSeparator(): string{
-        return  this.milesSeparator
+    public GetThousandSeparator(): string{
+        return  this.thousandSeparator;
     }
 
     private SetDecimalsSeparator(sep: string):void{
@@ -114,9 +125,12 @@ export class InputNumber extends Input{
         return this.numValue;
     }
 
-    public SetValue(value: string): void {
-        this.SetNumValue(Number(value));
-        this.value = value;
+    public SetValue(value: number): void {
+        var val: string = '';
+        if(value){
+            val = value.toString().replace('.', this.GetDecimalsSeparator());
+        }
+        this.value = val;
     }
 
     public GetValue(): number{
@@ -124,15 +138,29 @@ export class InputNumber extends Input{
     }
 
     public Draw(): void {
-        this.value = '';
+
+        var decimals: number = this.GetDecimals();
+        var decimalsSeparator: string = this.GetDecimalsSeparator();
+        var thousandsSeparator: string = this.GetThousandSeparator();
+        
+        debugger;
+        IMask(this, {
+            mask: Number, 
+            scale: decimals,   
+            radix: decimalsSeparator,
+            thousandsSeparator: thousandsSeparator, 
+        })
+
+        /* this.value = '';
         var value = this.GetValue();
         if(value) {
             this.value = this.convertString(value);
-        }
+        } */
+
     }
 
     public Supr(): void {
-        this.SetValue('');
+        this.SetValue(null);
     }
 
     public convertString(value: number): string {

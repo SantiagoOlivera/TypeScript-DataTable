@@ -77,15 +77,15 @@
                 'remove',
             ],
             rows:[
-                { id:'t1', text:'Test 1', year: 2023, salary: 3000.56, select: '1' },
-                { id:'t2', text:'Test 2', year: 2023, salary: 3000.56, select: '2', liveSearch: {id:'1', text: '1 - Volkswagen'} },
-                { id:'t3', text:'Test 3', year: 2023, salary: 3000.56, select: '3' },
+                { id:'t1', text:'Test 1', year: 2023, salary: 3000.56, select: '1', date: null },
+                { id:'t2', text:'Test 2', year: 2023, salary: 3000.56, select: '2', liveSearch: {id:'1', text: '1 - Volkswagen'}, date: new Date() },
+                { id:'t3', text:'Test 3', year: 2023, salary: 3000.56, select: '3', date: null },
             ],
             columns: [
                 { title: 'Id', data: 'id', type:'text', editable: false },
                 { title: 'Text', data:'text', type:'text', editable: true },
-                { title: 'Year', data:'year', type:'number', editable: true },
-                { title: 'Salary', data:'salary', type:'number', editable: true, decimals: 3 },
+                { title: 'Year', data:'year', type:'number', editable: true,  },
+                { title: 'Salary', data:'salary', type:'number', editable: true, decimals: 3, thousandSeparator: '.', decimalsSeparator: ',' },
                 { 
                     title: 'Select', 
                     data:'select', 
@@ -98,6 +98,7 @@
                     ],
                 },
                 { title: 'Live search', data: 'liveSearch', type:'livesearch', editable: false },
+                { title: 'Date', data: 'date', type:'date', editable: false },
             ],
         });
         

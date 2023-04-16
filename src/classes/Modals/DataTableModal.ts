@@ -5,6 +5,7 @@ import { InputSelect } from '../Input/InputSelect';
 import { InputText } from '../Input/InputText';
 import { LiveSearchInput } from '../Input/LiveSearchInput';
 import { IInput } from '../Interfaces/IInput';
+import { InputDate } from '../Input/InputDate';
 
 export class DataTableModal extends HTMLDivElement {
     
@@ -22,6 +23,7 @@ export class DataTableModal extends HTMLDivElement {
         NUMBER: 'number',
         LIVE_SEARCH: 'livesearch',
         SELECT: 'select',
+        DATE: 'date',
     }
 
     private ModalId: string;
@@ -82,6 +84,8 @@ export class DataTableModal extends HTMLDivElement {
                 input = new InputSelect();
             } else if(type === this.colTypes.LIVE_SEARCH){
                 input = new LiveSearchInput();
+            } else if (type === this.colTypes.DATE){
+                input = new InputDate();
             }
             
             if(input){
