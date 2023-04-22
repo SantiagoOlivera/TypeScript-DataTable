@@ -11,6 +11,7 @@ export abstract class ConfigDataTable {
     private columns: any
     private rowNum: boolean
     private resizableColumns: boolean
+    private headerText: string
     
     readonly props = {
         ROWS: 'rows',
@@ -19,6 +20,7 @@ export abstract class ConfigDataTable {
         BUTTONS: 'buttons',
         ROW_STATUS: 'rowStatus',
         RESIZABLE_COLUMNS: 'resizableColumns',
+        HEADER_TEXT: 'headerText',
     }
 
     constructor(config: any){
@@ -41,6 +43,11 @@ export abstract class ConfigDataTable {
             this.SetRowNum(rowNum);
             var resizableColums: boolean = config[this.props.RESIZABLE_COLUMNS]
             this.SetResizableColumns(resizableColums);
+
+            var headerText: string = config[this.props.HEADER_TEXT];
+            if(headerText){
+                this.SetHeaderText(headerText);
+            }
         }
 
     }
@@ -77,6 +84,13 @@ export abstract class ConfigDataTable {
         return this.columns;
     }
 
+    private SetHeaderText(headerText: string): void{
+        this.headerText = headerText;
+    }
+
+    public GetHeaderText(): string{
+        return this.headerText;
+    }
 
 }
 

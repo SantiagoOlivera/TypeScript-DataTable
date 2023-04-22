@@ -121,6 +121,9 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
         this.thead.appendChild(row);
     }
 
+    public AppendChildFoot(row: DataTableRow){
+        this.tfoot.appendChild(row);
+    }
 
 
     //Configs

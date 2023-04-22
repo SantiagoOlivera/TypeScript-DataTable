@@ -73,8 +73,6 @@ export class DataTableEditable extends DataTable {
             columns.unshift(DataTableEditable.ROW_NUM_COLUMN);
         }
 
-        
-
         for(var c of columns){
             cols.push(
                 new DataTableCellColumn(
@@ -85,20 +83,32 @@ export class DataTableEditable extends DataTable {
         }
 
         var tr:DataTableRowHeader = new DataTableRowHeader(cols);
+
+        //Set Header text
+        var trHdText = <DataTableRow>document.createElement('tr');
+        var tdHdText = <DataTableCellEditable>document.createElement('td');
+        tdHdText.colSpan = tr.children.length;
+        tdHdText.innerText = config.GetHeaderText();
+        trHdText.appendChild(tdHdText);
         
-        var newTr = <DataTableRow>document.createElement('tr');
-        var newTd = <DataTableCellEditable>document.createElement('td');
-        newTr.appendChild(newTd);
-        newTd.colSpan = tr.children.length;
-
-        //this.GetConfig()
+        //Set Operation Bar
         var opBar: DataTableOperationBar = new DataTableOperationBar( this );
-        newTd.appendChild(opBar); 
+        var trOpBar = <DataTableRow>document.createElement('tr');
+        var tdOpBar = <DataTableCellEditable>document.createElement('td');
+        tdOpBar.colSpan = tr.children.length;
+        trOpBar.appendChild(tdOpBar);
+        tdOpBar.appendChild(opBar); 
 
-        this.AppendChildHead(newTr);
 
+
+        this.AppendChildHead(trHdText);
+        this.AppendChildHead(trOpBar);
         this.AppendChildHead(tr);
 
+
+    }
+
+    private SetOpBar(config: ConfigDataTableEditable): void {
 
     }
 
@@ -131,7 +141,9 @@ export class DataTableEditable extends DataTable {
                 var columnName: string = null;
                 var options: Array<any>= null;
                 var opts: Array<OptionSelect> = new Array<OptionSelect>();
-
+                var disabled: boolean = false;
+                var hidden: boolean = false;
+                
                 if(rowNum){
                     r[this.props.ROW_NUM] = (i+1);
                 }
@@ -150,6 +162,8 @@ export class DataTableEditable extends DataTable {
                     decimals = column.decimals;
                     className = column.className ? column.className : '';
                     options = column.options;
+                    disabled = column.disabled;
+                    hidden = column.hidden;
                     
 
                     if(type === this.colType.NUMBER){
@@ -190,6 +204,10 @@ export class DataTableEditable extends DataTable {
                     } else {
                         input = new InputText(value);
                     }
+                    
+                    input.Disable(disabled);
+                    input.Hide(hidden);
+                    
 
                     cell = new DataTableCellEditable(columnName, i, x, input, className);
 
@@ -211,12 +229,55 @@ export class DataTableEditable extends DataTable {
 
     }
 
+    private SetFoot(config: ConfigDataTableEditable):void{
+
+        /* var rowNum: boolean = config.GetRowNum();
+        var rowStatus: boolean = config.GetRowStatus();
+        var columns = config.GetColumns();
+        var cols: Array<DataTableCellColumn> = [];
+        
+        if(rowStatus){
+            columns.unshift(DataTableEditable.ROW_STATUS_COLUMN);
+        }
+
+        if(rowNum){
+            columns.unshift(DataTableEditable.ROW_NUM_COLUMN);
+        }
+
+        for(var c of columns){
+            cols.push(
+                new DataTableCellColumn(
+                    c[this.props.DATA], 
+                    c[this.props.TITLE]
+                )
+            );
+        }
+
+        var tr:DataTableRowHeader = new DataTableRowHeader(cols);
+        
+        var newTr = <DataTableRow>document.createElement('tr');
+        var newTd = <DataTableCellEditable>document.createElement('td');
+        newTr.appendChild(newTd);
+        newTd.colSpan = tr.children.length;
+
+        //this.GetConfig()
+        var opBar: DataTableOperationBar = new DataTableOperationBar( this );
+        newTd.appendChild(opBar); 
+
+        this.AppendChildFoot(newTr);
+
+        this.AppendChildFoot(tr); */
+
+
+    }
+
     public Draw(): void {
         this.setAttribute('border', '0');
         var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
         this.Destroy();
         this.SetHead(config);
         this.SetBody(config);
+        this.SetFoot(config);
     }
 
 
@@ -370,7 +431,7 @@ export class DataTableEditable extends DataTable {
             cell = <DataTableCellEditable>row.GetCell(x);
             if(cell){
                 var input: IInput = cell.GetInput();
-                if(input.IsFocusable()){
+                if(input.IsFocusable() && !input.IsDisabled() ){
                     input.Focus();
                 }else{
                     console.log("Jump cell:", cell, y, x, input);

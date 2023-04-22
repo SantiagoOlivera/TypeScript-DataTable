@@ -75,6 +75,20 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput{
        return true;
     }
 
+    public Disable(disabled: boolean): void {
+        this.disabled = disabled;
+    }
+    public Hide(hidden: boolean): void {
+       this.hidden = hidden;
+    }
+    public IsDisabled(): boolean {
+        return this.disabled;
+    }
+    public IsHidden(): boolean {
+        return this.hidden;
+    }
+    
+
 }
 
 window.customElements.define('input-button', InputButton, { extends: 'button' });

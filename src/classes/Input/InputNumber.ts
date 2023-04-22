@@ -16,10 +16,17 @@ export class InputNumber extends Input{
     //public static REGEX_DECIMAL = new RegExp(/[^0-9,]|(?<=\,,*)\,/g);
     public static REGEX_DECIMAL = new RegExp(/[0-9]+(\,[0-9]*)?/g);
 
+    private readonly props = {
+       MASKED: 'masked', 
+       NUMBER: 'number',
+    }
+
     private numValue: number;
     private decimals: number;
     private decimalsSeparator: string;
     private thousandSeparator: string;
+    private mask: any;
+
     
     constructor(
         value?: number, 
@@ -134,7 +141,9 @@ export class InputNumber extends Input{
     }
 
     public GetValue(): number{
-        return this.GetNumValue();
+        var val: number = this.mask[this.props.MASKED][this.props.NUMBER];
+        //return this.GetNumValue();
+        return val;
     }
 
     public Draw(): void {
@@ -143,8 +152,7 @@ export class InputNumber extends Input{
         var decimalsSeparator: string = this.GetDecimalsSeparator();
         var thousandsSeparator: string = this.GetThousandSeparator();
         
-        debugger;
-        IMask(this, {
+        this.mask = IMask(this, {
             mask: Number, 
             scale: decimals,   
             radix: decimalsSeparator,
@@ -182,7 +190,19 @@ export class InputNumber extends Input{
         this.focus();
     }
     
-
+    public Disable(disabled: boolean): void {
+        this.disabled = disabled;
+    }
+    public Hide(hidden: boolean): void {
+       this.hidden = hidden;
+    }
+    public IsDisabled(): boolean {
+        return this.disabled;
+    }
+    public IsHidden(): boolean {
+        return this.hidden;
+    }
+    
 }
 
 window.customElements.define('input-number', InputNumber, { extends: 'input'});

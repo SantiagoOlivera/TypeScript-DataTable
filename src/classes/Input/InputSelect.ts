@@ -90,6 +90,20 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     public Focus(): void {
         this.focus();
     }
+
+    public Disable(disabled: boolean): void {
+        this.disabled = disabled;
+    }
+    public Hide(hidden: boolean): void {
+       this.hidden = hidden;
+    }
+    public IsDisabled(): boolean {
+        return this.disabled;
+    }
+    public IsHidden(): boolean {
+        return this.hidden;
+    }
+    
 }
 
 window.customElements.define('input-select', InputSelect, { extends: 'select'});

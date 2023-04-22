@@ -146,6 +146,20 @@ export class InputDate extends Input {
             console.log(this,this.value, value);
         });
     }
+    
+    public Disable(disabled: boolean): void {
+        this.disabled = disabled;
+    }
+    public Hide(hidden: boolean): void {
+       this.hidden = hidden;
+    }
+    public IsDisabled(): boolean {
+        return this.disabled;
+    }
+    public IsHidden(): boolean {
+        return this.hidden;
+    }
+    
 
 }
 

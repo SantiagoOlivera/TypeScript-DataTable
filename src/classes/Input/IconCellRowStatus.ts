@@ -71,6 +71,20 @@ export class IconCellRowStatus extends IconCell implements IInput{
         return false;
     }
 
+    public Disable(disabled: boolean): void {
+        //this.disabled = disabled;
+    }
+    public Hide(hidden: boolean): void {
+       this.hidden = hidden;
+    }
+    public IsDisabled(): boolean {
+        return false;
+    }
+    public IsHidden(): boolean {
+        return this.hidden;
+    }
+    
+
 }
 
 window.customElements.define('icon-cell-row-status', IconCellRowStatus, { extends: 'i' });

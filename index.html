@@ -68,6 +68,8 @@
         body.appendChild(dt1);
 
         var config2 = new window.DataTable.ConfigDataTableEditable({
+            filter: true,
+            headerText: 'DataTable Editable',
             rowNum: true,
             rowStatus: true,
             columnFilter: false,
@@ -78,27 +80,28 @@
             ],
             rows:[
                 { id:'t1', text:'Test 1', year: 2023, salary: 3000.56, select: '1', date: null },
-                { id:'t2', text:'Test 2', year: 2023, salary: 3000.56, select: '2', liveSearch: {id:'1', text: '1 - Volkswagen'}, date: new Date() },
+                { id:'t2', text:'Test 2', year: 2023, salary: 3000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date() },
                 { id:'t3', text:'Test 3', year: 2023, salary: 3000.56, select: '3', date: null },
             ],
             columns: [
-                { title: 'Id', data: 'id', type:'text', editable: false },
-                { title: 'Text', data:'text', type:'text', editable: true },
-                { title: 'Year', data:'year', type:'number', editable: true,  },
-                { title: 'Salary', data:'salary', type:'number', editable: true, decimals: 3, thousandSeparator: '.', decimalsSeparator: ',' },
+                { title: 'Id', data: 'id', type:'text', disabled: true, hidden: false },
+                { title: 'Text', data:'text', type:'text',  disabled: false, hidden: false },
+                { title: 'Year', data:'year', type:'number',  disabled: false, hidden: false  },
+                { title: 'Salary', data:'salary', type:'number', disabled: false, hidden: false, decimals: 3, thousandSeparator: '.', decimalsSeparator: ',' }, 
                 { 
                     title: 'Select', 
                     data:'select', 
                     type:'select', 
-                    editable: true, 
+                    disabled: true, 
+                    hidden: false,
                     options: [
                         {id:'1', text:'Option 1'},
                         {id:'2', text:'Option 2'},
                         {id:'3', text:'Option 3'},
                     ],
                 },
-                { title: 'Live search', data: 'liveSearch', type:'livesearch', editable: false },
-                { title: 'Date', data: 'date', type:'date', editable: false },
+                { title: 'Live search', data: 'liveSearch', type:'livesearch', disabled: false, hidden: false },
+                { title: 'Date', data: 'date', type:'date', editable: false, disabled: false, hidden: false },
             ],
         });
         

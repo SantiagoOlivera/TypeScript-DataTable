@@ -429,6 +429,8 @@ export class LiveSearchInput extends Input{
                 }
             } else if (keyCode === this.keys.SUPR || keyCode === this.keys.DELETE){
                 this.Supr();
+            } else if(keyCode === this.keys.ARROW_UP){
+                this.open(false);
             }
         });
     }
@@ -545,6 +547,20 @@ export class LiveSearchInput extends Input{
     public Focus(): void {
         this.focus();
     }
+    
+    public Disable(disabled: boolean): void {
+        this.disabled = disabled;
+    }
+    public Hide(hidden: boolean): void {
+       this.hidden = hidden;
+    }
+    public IsDisabled(): boolean {
+        return this.disabled;
+    }
+    public IsHidden(): boolean {
+        return this.hidden;
+    }
+    
 
 }
 

@@ -7,6 +7,7 @@ export class DataTableOperationBar extends HTMLDivElement {
     private readonly icons = {
         SAVE: '<i class="bi bi-save"></i>',
         ADD: '<i class="bi bi-plus"></i>',
+        UPDATE: '<i class="bi bi-pencil-square"></i>'
     };
 
     private readonly classes = {
@@ -19,6 +20,7 @@ export class DataTableOperationBar extends HTMLDivElement {
 
     private BtnSave: HTMLButtonElement;
     private BtnAdd: HTMLButtonElement;
+    private BtnUpdate: HTMLButtonElement;
     private BtnDelete: HTMLButtonElement;
     private BtnExcel: HTMLButtonElement;
     private ModalAddRow: DataTableEditableAddRowModal;
@@ -48,6 +50,7 @@ export class DataTableOperationBar extends HTMLDivElement {
     private SetButtons(): void {
         this.SetAddButton();
         this.SetSaveButton();
+        this.SetUpdateButton();
     }
 
     private SetSaveButton(): void {
@@ -101,6 +104,21 @@ export class DataTableOperationBar extends HTMLDivElement {
             this.OpenModalAdd();
         });
 
+    }
+
+    private SetUpdateButton():void{
+        this.BtnUpdate = <HTMLButtonElement>document.createElement('button');
+        this.BtnUpdate.style.maxWidth = '50px';
+        this.BtnUpdate.classList.add(this.classes.BTN);
+        this.BtnUpdate.classList.add(this.classes.BTN_SUCCESS);
+        this.BtnUpdate.classList.add(this.classes.BTN_SM);
+        this.BtnUpdate.innerHTML = this.icons.UPDATE;
+        this.appendChild(this.BtnUpdate);
+        this.appendChild(document.createTextNode( '\u00A0' ));
+
+        this.BtnUpdate.addEventListener('click', () => { 
+            //this.OpenModalAdd();
+        });
     }
 
 }

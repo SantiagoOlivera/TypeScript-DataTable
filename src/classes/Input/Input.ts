@@ -14,7 +14,7 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
         this.type = 'text';
         this.classList.add(this.bootrapClasses.FORM_CONTROL);
     }
-
+    
     public abstract Focus(): void 
     public abstract IsFocusable(): boolean 
     public abstract GetHTMLElement(): HTMLElement 
@@ -22,6 +22,11 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
     public abstract GetValue(): any    
     public abstract Draw(): void
     public abstract Supr(): void 
+    public abstract Disable(disabled:boolean): void 
+    public abstract Hide(hidden:boolean): void 
+    public abstract IsDisabled(): boolean 
+    public abstract IsHidden(): boolean 
+
 
 }
 

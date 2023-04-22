@@ -5,4 +5,8 @@ export interface IInput{
     Supr():void;
     IsFocusable(): boolean
     Focus(): void
+    Disable(disabled:boolean):void
+    Hide(hidden:boolean):void
+    IsDisabled():boolean
+    IsHidden():boolean
 }
