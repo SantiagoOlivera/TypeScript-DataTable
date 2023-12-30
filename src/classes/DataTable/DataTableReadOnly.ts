@@ -26,7 +26,12 @@ export class DataTableReadOnly extends DataTable{
         }
 
         for(var c of columns){
-            cols.push(new DataTableCellColumn(c.data, c.title, resizableColumns));
+            cols.push(new DataTableCellColumn(
+                c.data, 
+                c.title, 
+                false , 
+                resizableColumns)
+            );
         }
 
         var tr:DataTableRowHeader = new DataTableRowHeader(cols);

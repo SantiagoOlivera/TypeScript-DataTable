@@ -85,6 +85,8 @@ export class DataTableOperationBar extends HTMLDivElement {
             );
 
             body.prepend(this.ModalAddRow);
+
+            
         }
         this.ModalAddRow.Open();
     }

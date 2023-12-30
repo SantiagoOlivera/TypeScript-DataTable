@@ -1,6 +1,5 @@
 import { DataTableCell } from "./DataTableCell";
 
-
 export class DataTableCellColumn extends DataTableCell{
 
     private columnName: String
@@ -8,14 +7,24 @@ export class DataTableCellColumn extends DataTableCell{
     private isResizable: boolean
 
     private readonly classes = {
-        RESIZABLE: 'resizable'
+        RESIZABLE: 'resizable',
+        DISPLAY_NONE: 'd-none',
     }
 
-    constructor(columnName: string, title: string, isResizable?: boolean){
+    constructor(
+        columnName: string, 
+        title: string, 
+        bHidden: boolean,
+        isResizable: boolean
+    ){
         super(columnName);
         this.SetColumnName(columnName);
         this.SetTitle(title);
         this.SetIsResizable(isResizable);
+        this.SetHidden(bHidden);
+        if(isResizable){
+            this.SetResizable();
+        }
         this.Draw();
     }
 

@@ -7,11 +7,12 @@ export abstract class ConfigDataTable {
     public static readonly MSG_ERROR_CONFIG_COLUMNS_REQUIRED = 'Error: Config DataTable config columns are required';
     
     
-    private rows: any
-    private columns: any
-    private rowNum: boolean
-    private resizableColumns: boolean
-    private headerText: string
+    private rows: Array<any>;
+    private columns: any;
+    private rowNum: boolean;
+    private resizableColumns: boolean;
+    private headerText: string;
+    private data: Array<any>;
     
     readonly props = {
         ROWS: 'rows',
@@ -21,6 +22,7 @@ export abstract class ConfigDataTable {
         ROW_STATUS: 'rowStatus',
         RESIZABLE_COLUMNS: 'resizableColumns',
         HEADER_TEXT: 'headerText',
+        RESIZE_COLUMNS: 'resizeColumns',
     }
 
     constructor(config: any){

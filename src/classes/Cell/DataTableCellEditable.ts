@@ -7,12 +7,20 @@ export class DataTableCellEditable extends DataTableCell{
     private row: number;
     private col: number;
     
-    constructor(cellName: string, row:number, col:number, input: IInput, className: string){
+    constructor(
+        cellName: string, 
+        row:number, 
+        col:number, 
+        input: IInput, 
+        className: string,
+        hidden: boolean
+    ){
         super(cellName);
         this.SetRow(row);
         this.SetCol(col);
         this.SetInput(input);
         this.SetClassName(className);
+        this.SetHidden(hidden);
         this.Draw();
     }
 

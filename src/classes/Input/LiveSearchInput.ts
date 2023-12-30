@@ -299,7 +299,9 @@ export class LiveSearchInput extends Input{
         if(this.optionsContainer){
             this.ShowOptionsContainer(show);
         }else{
-            this.CreateOptionsContainer();
+            if(show){
+                this.CreateOptionsContainer();
+            }
         }
 
         this.SetIsOpen(show);

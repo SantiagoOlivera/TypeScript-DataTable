@@ -9,8 +9,4 @@ export class DataTableEditableAddRowModal extends DataTableModal {
 
 }
 
-window.customElements.define(
-    'data-table-editable-add-row-modal', 
-    DataTableEditableAddRowModal, 
-    { extends: 'div' }
-);
+window.customElements.define('data-table-editable-add-row-modal', DataTableEditableAddRowModal, { extends: 'div' } );

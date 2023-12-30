@@ -6,18 +6,15 @@ import { InputText } from '../Input/InputText';
 import { LiveSearchInput } from '../Input/LiveSearchInput';
 import { IInput } from '../Interfaces/IInput';
 import { InputDate } from '../Input/InputDate';
+import { Modal } from './Modal';
 
-export class DataTableModal extends HTMLDivElement {
+export class DataTableModal extends Modal {
     
-    private readonly classes = {
-        MODAL: 'modal',
-        FADE: 'fade',
-        MODAL_BODY: 'modal-body',
-    };
     private readonly props = {
         TYPE: 'type',
         TITLE: 'title',
     }
+
     private readonly colTypes = {
         TEXT: 'text',
         NUMBER: 'number',
@@ -26,24 +23,23 @@ export class DataTableModal extends HTMLDivElement {
         DATE: 'date',
     }
 
-    private ModalId: string;
-    private Title: string;
     private Config: ConfigDataTable;
 
     constructor(ModalId: string, Title: string, Config: ConfigDataTable){
-        super();
-        this.SetConfig(Config);
-        this.SetModalId(ModalId);
+        super(ModalId, Title);
+        //this.SetConfig(Config);
+        /* this.SetModalId(ModalId);
         this.SetTitle(Title);
-        this.Init();
+        this.Init(); */
+        //this.SetButtonsActions();
     }
 
     private SetConfig(Config: ConfigDataTable){
         this.Config = Config;
-        console.log("Config", this.Config);
+        //console.log("Config", this.Config);
     }
 
-    private SetTitle(Title: string):void{
+    /* private SetTitle(Title: string):void{
         this.Title = Title;
     }
     public GetTitle():string{
@@ -56,18 +52,18 @@ export class DataTableModal extends HTMLDivElement {
 
     private GetModalId():string{
         return this.ModalId;
-    }
+    } */
 
-    public Open(): void{
+    /* public Open(): void{
         var modal = new bootstrap.Modal(this);
         this.SetFormInputs();
         modal.show();
     }
-
+ */
     private SetFormInputs(): void {
         
-        var ModalBody: HTMLElement = document.getElementById(this.GetModalId()).querySelector(`.${this.classes.MODAL_BODY}`);
-        console.log("Modal Body", ModalBody);
+        /* var ModalBody: HTMLElement = document.getElementById(this.GetModalId()).querySelector(`.${this.classes.MODAL_BODY}`);
+        //console.log("Modal Body", ModalBody);
 
         ModalBody.innerHTML = '';
         
@@ -89,18 +85,30 @@ export class DataTableModal extends HTMLDivElement {
             }
             
             if(input){
+                var div: HTMLDivElement = document.createElement('div');
+                div.classList.add(this.classes.COL_LG_3);
+                div.classList.add(this.classes.COL_12);
                 var label: HTMLLabelElement = document.createElement('label');
                 label.innerHTML = col[this.props.TITLE];
-                ModalBody.appendChild(label);
-                ModalBody.appendChild(<HTMLElement><unknown>input);
-                ModalBody.appendChild(document.createTextNode( '\u00A0' ));
+                div.appendChild(label);
+                div.appendChild(<HTMLElement><unknown>input);
+                div.appendChild(document.createTextNode( '\u00A0' ));
+                ModalBody.appendChild(div);
             }
-        }
-
+        } */
         
     }
 
-    private Init(): void {
+    private SetButtonsActions():void{
+        //console.log(document.getElementById(this.GetModalId()));
+        //var AddButton: HTMLElement = document.getElementById(this.GetModalId()).querySelector(`.${this.classes.ADD_BUTTON}`);
+        /* var AddButton: HTMLElement = document.getElementById(this.GetModalId()).querySelector(`.${this.classes.ADD_BUTTON}`);
+        AddButton.addEventListener('click', (e) => {
+            console.log("Add");
+        }); */
+    }
+
+    /* private Init(): void {
         
         this.id = this.GetModalId();
         this.classList.add(this.classes.MODAL);
@@ -113,15 +121,15 @@ export class DataTableModal extends HTMLDivElement {
                     <h5 class="modal-title">${ this.GetTitle() }</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body row">
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary"> ${ this.GetTitle() } </button>
+                <div class="modal-footer float-right">
+                    <button type="button" class="btn btn-secondary " style="width:100px;" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary ${this.classes.ADD_BUTTON}" style="width:100px;"> ${ this.GetTitle() } </button>
                 </div>
                 </div>
             </div>
         `;
-    }
+    } */
 
 }

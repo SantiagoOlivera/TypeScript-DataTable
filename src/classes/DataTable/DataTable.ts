@@ -39,6 +39,7 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
         ROWS: 'rows',
         type: 'type',
         ROW_STATUS: 'rowStatus',
+        HIDDEN: 'hidden',
     }
 
     readonly tags = {

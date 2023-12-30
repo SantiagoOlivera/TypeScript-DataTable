@@ -77,7 +77,9 @@ export class DataTableEditable extends DataTable {
             cols.push(
                 new DataTableCellColumn(
                     c[this.props.DATA], 
-                    c[this.props.TITLE]
+                    c[this.props.TITLE],
+                    c[this.props.HIDDEN],
+                    false
                 )
             );
         }
@@ -111,6 +113,8 @@ export class DataTableEditable extends DataTable {
     private SetOpBar(config: ConfigDataTableEditable): void {
 
     }
+
+
 
     private SetBody(config: ConfigDataTableEditable):void{
         
@@ -163,7 +167,7 @@ export class DataTableEditable extends DataTable {
                     className = column.className ? column.className : '';
                     options = column.options;
                     disabled = column.disabled;
-                    hidden = column.hidden;
+                    hidden = column.hidden ? true : false;
                     
 
                     if(type === this.colType.NUMBER){
@@ -209,7 +213,7 @@ export class DataTableEditable extends DataTable {
                     input.Hide(hidden);
                     
 
-                    cell = new DataTableCellEditable(columnName, i, x, input, className);
+                    cell = new DataTableCellEditable(columnName, i, x, input, className, hidden);
 
                     cells.push(cell);
                     
@@ -228,6 +232,8 @@ export class DataTableEditable extends DataTable {
         }
 
     }
+
+    
 
     private SetFoot(config: ConfigDataTableEditable):void{
 
