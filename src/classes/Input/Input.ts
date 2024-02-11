@@ -1,3 +1,5 @@
+import { ConfigInput } from "../Config/ConfigInput";
+import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
 
@@ -9,12 +11,19 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
         DISPLAY_NONE: 'd-none',
     }
 
-    constructor(){
+    private config: ConfigInput;
+
+    constructor(config: ConfigInput){
         super();
-        this.type = 'text';
+        this.SetConfig(config);
+        this.SetType('text');
+        this.SetPlaceHolder(config.GetPlaceHolder());
+        this.SetMaxLength(config.GetMaxLength());
         this.classList.add(this.bootrapClasses.FORM_CONTROL);
     }
+
     
+
     public abstract Focus(): void 
     public abstract IsFocusable(): boolean 
     public abstract GetHTMLElement(): HTMLElement 
@@ -27,6 +36,32 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
     public abstract IsDisabled(): boolean 
     public abstract IsHidden(): boolean 
 
+    
+    public GetConfig() : ConfigInput {
+        return this.config;
+    }
+    public GetPlaceHolder(): string {
+        return this.placeholder;
+    }
+
+    private SetConfig(config: ConfigInput):void {
+        this.config = config;
+    }
+    private SetType(type: string): void{
+        this.type = type;
+    }
+    private SetMaxLength(maxLength: number): void{
+        if(!Functions.IsNullOrEmpty(maxLength)){
+            this.maxLength = maxLength;
+        }
+    }
+    private SetPlaceHolder(text: string){
+        var t: string = '';
+        if(!Functions.IsNullOrEmpty(text)) {
+            t = text;
+        }
+        this.placeholder = t;
+    }
 
 }
 

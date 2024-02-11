@@ -1,8 +1,12 @@
+import { ConfigInput } from "../Config/ConfigInput";
+import { Functions } from "../Functions/Functions";
 import { Input } from "./Input";
 
-export class LiveSearchOption{
+export class LiveSearchOption {
+    
     private id:string;
     private text: string;
+
     constructor(id:string, text:string){
         this.SetId(id);
         this.SetText(text);
@@ -271,14 +275,21 @@ export class LiveSearchInput extends Input{
         new LiveSearchOption('7','7 - Peugeot'),
     ];
 
-    constructor(
-        value?: LiveSearchOption, 
-        url?:'', 
-        options?: Array<LiveSearchOption>
-    ) {
-        super();
+    constructor(config: ConfigInput) {
+        super(config);
+
+        var value: any = config.GetValue();
+        var val: LiveSearchOption = null;
+        if(!Functions.IsNullOrEmpty(value)) {
+            val = new LiveSearchOption(value['id'], value['text']);
+        } else {
+            val = null;
+        }
+        var url: string = config.GetApiUrl();
+        var options: Array<any> = config.GetOptions();
+
         this.SetClassName();
-        this.SetInputValue(value);
+        this.SetInputValue(val);
         this.Draw();
     }
 

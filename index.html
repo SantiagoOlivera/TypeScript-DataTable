@@ -53,7 +53,7 @@
     <script>
 
         var container = document.querySelector('#dts');
-        var config1 = new window.DataTable.ConfigDataTableReadOnly({
+        var config1 = new window.Framework.ConfigDataTable({
             rowNum: true,
             rows:[
                 { id:'t1', text:'Test 1'},
@@ -66,11 +66,11 @@
             ],
         });
 
-        var dt1 = new window.DataTable.DataTableReadOnly(config1);
+        var dt1 = new window.Framework.DataTableReadOnly(config1);
 
         container.appendChild(dt1);
 
-        var config2 = new window.DataTable.ConfigDataTableEditable({
+        var config2 = new window.Framework.ConfigDataTable({
             filter: true,
             headerText: 'DataTable Editable',
             rowNum: true,
@@ -98,6 +98,7 @@
                     disabled: true, 
                     hidden: false,
                     editable: false,
+                    className: 'form-control',
                     options: [
                         {id:'1', text:'Option 1'},
                         {id:'2', text:'Option 2'},
@@ -106,10 +107,11 @@
                 },
                 { title: 'Live search', data: 'liveSearch', type:'livesearch', disabled: false, hidden: false, },
                 { title: 'Date', data: 'date', type:'date', editable: false, disabled: false, hidden: false, },
+                { title: 'Form', data: 'form', type:'form', editable: false, disabled: false, hidden: false, },
             ],
         });
         
-        var dt2 = new window.DataTable.DataTableEditable(config2);
+        var dt2 = new window.Framework.DataTableEditable(config2);
 
         container.appendChild(dt2);
 

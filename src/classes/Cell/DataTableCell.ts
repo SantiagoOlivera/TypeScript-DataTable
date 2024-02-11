@@ -1,21 +1,26 @@
 import * as $ from "jquery";
 import "jquery-ui/dist/jquery-ui";
+import { ConfigCell } from "../Config/ConfigCell";
 
 export abstract class DataTableCell extends HTMLTableCellElement{
     
     private cellName: string
+    private config: ConfigCell;
 
-    constructor(cellName:string){
+    constructor(config:ConfigCell){
         super();
-        this.SetCellName(cellName);
+        this.SetConfig(config);
+        this.SetCellName(config.GetData());
+    }
+
+    public abstract Draw(): void
+
+    private SetConfig(config:ConfigCell): void {
+        this.config = config;
     }
 
     private SetCellName(cellName:string):void{
         this.cellName = cellName;
-    }
-
-    public GetCellName():string{
-        return this.cellName;
     }
 
     public SetHidden(hidden: boolean): void {
@@ -29,6 +34,13 @@ export abstract class DataTableCell extends HTMLTableCellElement{
         });
     }
 
-    public abstract Draw():void
+    public GetCellName():string{
+        return this.cellName;
+    }
+
+    public GetConfig(): ConfigCell {
+        return this.config;
+    }
+
 }
 

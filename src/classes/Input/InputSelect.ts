@@ -1,3 +1,5 @@
+import { ConfigInput } from "../Config/ConfigInput";
+import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
 import { Input } from "./Input";
@@ -9,16 +11,48 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
 
     private optionsList: Array<OptionSelect>;
     private opt: string;
+    private config: ConfigInput;
     
-    constructor(opt?: string, options?: Array<OptionSelect>){
+    constructor(config: ConfigInput){
         super();
+        
+        var className: string = config.GetClassName();
+        var opt: string = config.GetValue();
 
-        this.SetOptions(options);
+        this.SetConfig(config);
+
+
+        if(Functions.IsNullOrEmpty(opt)){
+            opt = null;
+        }
+        var options: Array<any> = config.GetOptions();
+        var opts: Array<OptionSelect> = [];
+        if(!Functions.IsNullOrEmpty(options)){
+            for(var o of options) {
+                opts.push(new OptionSelect(o.id, o.text))
+            }
+        }
+
+        
+        this.SetClassName(className);
+        this.SetOptions(opts);
         this.SetOpt(opt);
-        this.className = 'form-control';
-        //this.style.marginTop = '1px';
+
+
         this.Draw();
 
+    }
+
+    public GetConfig(): ConfigInput {
+        return this.config;
+    }
+
+    private SetConfig(config: ConfigInput): void{
+        this.config = config;
+    }
+
+    private SetClassName(className:string):void{
+        this.className = className;
     }
     
     GetHTMLElement(): HTMLElement {
@@ -46,7 +80,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
 
     }
     
-    SetValue(value: string): void {
+    public SetValue(value: string): void {
         /* for(var o of this.options){
             var optVal: string = o.getAttribute('value');
             if(value === optVal){
@@ -56,11 +90,11 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
         } */
     }
 
-    GetValue(): string {
+    public GetValue(): string {
         return this.opt;
     }
 
-    Supr(): void {
+    public Supr(): void {
         throw new Error("Method not implemented.");
     }
 

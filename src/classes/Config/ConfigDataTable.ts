@@ -1,17 +1,28 @@
 import { DataTableRow } from "../Row/DataTableRow";
+import { Config } from "./Config";
+import { ConfigForm } from "./ConfigForm";
 
-export abstract class ConfigDataTable {
+export class ConfigDataTable extends Config {
 
     public static readonly MSG_ERROR_CONFIG_REQUIRED = 'Error: Config DataTable config is required';
     public static readonly MSG_ERROR_CONFIG_ROWS_REQUIRED = 'Error: Config DataTable config rows are required';
     public static readonly MSG_ERROR_CONFIG_COLUMNS_REQUIRED = 'Error: Config DataTable config columns are required';
     
+    public static ToConfigForm(config: ConfigDataTable): ConfigForm {
+        var c: any = config.GetConfig();
+        c.fields = c.columns;
+
+        var ret = new ConfigForm(c);
+        return ret;
+    }
     
     private rows: Array<any>;
     private columns: any;
     private rowNum: boolean;
     private resizableColumns: boolean;
     private headerText: string;
+    private buttons: any;
+    private rowStatus: boolean;
     private data: Array<any>;
     
     readonly props = {
@@ -26,6 +37,9 @@ export abstract class ConfigDataTable {
     }
 
     constructor(config: any){
+
+        super(config);
+
         if(!config){
             throw new Error(ConfigDataTable.MSG_ERROR_CONFIG_REQUIRED);
         }else if(!config[this.props.ROWS]){
@@ -51,6 +65,9 @@ export abstract class ConfigDataTable {
                 this.SetHeaderText(headerText);
             }
         }
+
+        this.SetButtons(config[this.props.BUTTONS])
+        this.SetRowStatus(config[this.props.ROW_STATUS]);
 
     }
 
@@ -94,15 +111,31 @@ export abstract class ConfigDataTable {
         return this.headerText;
     }
 
+    private SetRowStatus(rowStatus:boolean):void{
+        this.rowStatus = rowStatus;
+    }
+
+    public GetRowStatus():boolean{
+        return this.rowStatus;
+    }
+
+    public GetButtons(): any{
+        return this.buttons;
+    }
+
+    private SetButtons(buttons: any):void{
+        this.buttons = buttons;
+    }
+
 }
 
-export class ConfigDataTableReadOnly extends ConfigDataTable{
+/* export class ConfigDataTableReadOnly extends ConfigDataTable {
     constructor(config: any){
         super(config);
     }
-}
+} */
 
-export class ConfigDataTableEditable extends ConfigDataTable{
+/* export class ConfigDataTableEditable extends ConfigDataTable {
 
     private buttons: any;
     private rowStatus: boolean;
@@ -128,4 +161,4 @@ export class ConfigDataTableEditable extends ConfigDataTable{
     private SetButtons(buttons: any):void{
         this.buttons = buttons;
     }
-}
+} */

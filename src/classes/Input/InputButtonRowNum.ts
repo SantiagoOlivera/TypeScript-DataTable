@@ -1,9 +1,11 @@
+import { ConfigInput } from "../Config/ConfigInput";
 import { IDraw } from "../Interfaces/IDraw";
 import { InputButton } from "./InputButton";
 
 export class InputButtonRowNum extends InputButton {
-    constructor(html?: HTMLElement, str?: string){
-        super(html,str);
+    constructor(config: ConfigInput){
+        //html?: HTMLElement, str?: string
+        super(config);
         this.onclick = this.SelectRow;
     }
 

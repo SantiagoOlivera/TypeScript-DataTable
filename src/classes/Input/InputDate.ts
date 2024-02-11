@@ -1,5 +1,7 @@
 import IMask from 'imask';
 import { Input } from "./Input";
+import { ConfigInput } from '../Config/ConfigInput';
+import { Functions } from '../Functions/Functions';
 
 export class InputDate extends Input {
 
@@ -8,17 +10,21 @@ export class InputDate extends Input {
     private mask: any;
     
     private readonly EMPTY_STRING = '';
-    public readonly props = {
+    private readonly props = {
         MASKED: 'masked',
         DATE: 'date',
     };
+
     private readonly sep = '  /  ';
 
-    constructor(value?: Date){
-        super();
-        //this.value = '';
-        this.SetValue(value);
-        //this.SetFormat(format);
+    constructor(config: ConfigInput){
+        super(config);
+        var value: Date = config.GetValue();
+        if(!Functions.IsNullOrEmpty(value)){
+            this.SetValue(value);
+        }else {
+            this.SetValue(null);
+        }
         this.SetChangeEvent();
         this.Draw();
     }

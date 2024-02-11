@@ -1,24 +1,45 @@
+import { ConfigButton } from "../Config/ConfigButton";
+import { ConfigInput } from "../Config/ConfigInput";
+import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
 
-export class InputButton extends HTMLButtonElement implements IDraw, IInput{
+export class InputButton extends HTMLButtonElement implements IDraw, IInput {
     
     private html: HTMLElement;
     private str: string;
+    private config: ConfigInput;
 
-    constructor(html?: HTMLElement, str?: string ) {
+    constructor(config: ConfigInput) {
+        //html?: HTMLElement, str?: string
         super();
-        this.className = 'btn btn-success';
+        this.SetConfig(config);
+        //this.className = 'btn btn-success';
+        var className: string = config.GetClassName();
+        var title: string = config.GetTitle();
 
-        if(html){
+        this.className = className;
+        if(!Functions.IsNullOrEmpty(title)){
+
+        }
+        /* if(!Functions.IsNullOrEmpty()){
+
+        } */
+        /* if(html){
             this.SetHtml(html);
         }
         if(str){
             this.SetStr(str);
-        }
-
-
+        } */
         this.Draw();
+    }
+    
+    private SetConfig(config: ConfigInput): void {
+        this.config = config;
+    }
+
+    public GetConfig(): ConfigInput {
+        return this.config;
     }
     
     GetHTMLElement(): HTMLElement {
@@ -40,7 +61,7 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput{
         var html: HTMLElement = this.GetHtml();
         if(html){
             this.appendChild(html);
-        }else{
+        } else {
             this.innerHTML = this.GetStr();
         }
     }

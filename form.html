@@ -6,10 +6,143 @@
     <title>Document</title>
 </head>
 <body>
+    
+    <div id="forms" class="p-2">  
+    </div>
 
+    <!-- script for Safari Browser -->
+    <script src="//unpkg.com/@ungap/custom-elements/es.js"></script>
     <script type="text/javascript" src="./dist/bundle.js"></script>
+
     <script>
-        
+        var container = document.querySelector('#forms');
+
+        var config1 = new window.Framework.ConfigForm({
+            title: 'Form test 1',
+            className: 'p-2',
+            filter: true,
+            floatingForm: true,
+            transformTable: true,
+            buttons: [
+                {
+                    id: 'btnSave',
+                    title: 'Guardar',
+                    disabled: false,
+                    hidden: false,
+                    className: 'btn btn-success float-end',
+                    icon: 'bi bi-floppy',
+                    onclick: function(event, form){
+                        console.log(form.GetData());
+                    },
+                },
+            ],
+            groups: [
+                {
+                    title: 'Group 1',
+                    id: 'group1',
+                    className: 'col-12',
+                },
+                {
+                    title: 'Group 2',
+                    id: 'group2',
+                    className: 'col-12',
+                },
+            ],
+            fields:[
+                {
+                    label: 'Text',
+                    title: 'Text',
+                    placeholder: 'Text',
+                    type: 'text',
+                    name: 'text',
+                    data: 'text',
+                    value: 'Test form 1',
+                    required: false,
+                    disabled: false,
+                    hidden: false,
+                    className: 'col-6 p-2',
+                    maxLength: 10,
+                },
+                {
+                    label: 'Numerico',
+                    title: 'Numerico',
+                    placeholder: 'Númerico',
+                    type: 'number',
+                    name: 'number',
+                    data: 'number',
+                    value: null,
+                    required: false,
+                    disabled: false,
+                    hidden: false,
+                    className: 'col-6 p-2',
+                    decimals: 3,
+                },
+                {
+                    label: 'Año',
+                    title: 'Año',
+                    placeholder: 'Año',
+                    type: 'year',
+                    name: 'anio',
+                    data: 'anio',
+                    value: null,
+                    required: false,
+                    disabled: false,
+                    hidden: false,
+                    className: 'col-6 p-2',
+                    decimals: 0,
+                    minValue: 1200,
+                    maxValue: 3000,
+                    maxLength: 4,
+                },
+                {
+                    label: 'Formulario',
+                    title: 'Sub-Form',
+                    type: 'form',
+                    name: 'subform',
+                    data: 'form',
+                    value: null,
+                    hidden: false,
+                    className: '',
+                    floatingForm: true,
+                    fields: [
+                        {
+                            label: 'Text',
+                            title: 'Text',
+                            placeholder: 'Text',
+                            type: 'text',
+                            name: 'text',
+                            data: 'text',
+                            value: '',
+                            required: false,
+                            disabled: false,
+                            hidden: false,
+                            className: 'col-6 p-2',
+                            maxLength: 10,
+                        },
+                        {
+                            label: 'Valor texto',
+                            title: 'Valor texto',
+                            placeholder: 'Text',
+                            type: 'text',
+                            name: 'valortext',
+                            data: 'valortext',
+                            value: '',
+                            required: false,
+                            disabled: false,
+                            hidden: false,
+                            className: 'col-6 p-2',
+                            maxLength: 10,
+                        },
+                    ],
+                },
+            ],
+        });
+
+        var form1 = new window.Framework.FormEditable(config1);
+
+        container.appendChild(form1);
+
+        console.log(form1);
     </script>
 </body>
 </html>

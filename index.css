@@ -40,8 +40,9 @@ button{
     border-radius: 0;
     width: 100%;
 }
-tr.selected{
-    background-color:  rgba(13,110,253,.25);
+table tr.selected td {
+    /* background-color:  rgba(13,110,253,.25) !important; */
+    background-color:  rgba(0,255,85,.25) !important;
     /* outline: green; */
 }
 

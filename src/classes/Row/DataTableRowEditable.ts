@@ -93,10 +93,14 @@ export class DataTableRowEditable extends DataTableRow implements ISelectable {
         return o;
     }
 
-    public GetRowStatusCell(): DataTableCellEditable{
+    public GetRowStatusCell(): DataTableCellEditable {
         
         var cells: Array<DataTableCell> = this.GetCells();
-        var cell: DataTableCell = cells.find( e =>{ return e.GetCellName() === DataTableEditable.ROW_STATUS_COLUMN.data });
+        var cell: DataTableCell = cells.find( e => { 
+            console.log(e.GetConfig().GetData());
+            return e.GetConfig().GetData() === DataTableEditable.ROW_STATUS_COLUMN.data 
+        });
+        console.log(cells);
         var c: DataTableCellEditable = null;
         if(cell){
             c = <DataTableCellEditable>cell;

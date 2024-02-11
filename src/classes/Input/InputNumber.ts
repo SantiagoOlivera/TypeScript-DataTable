@@ -1,5 +1,7 @@
 import IMask from 'imask';
 import { Input } from "./Input";
+import { ConfigInput } from '../Config/ConfigInput';
+import { Functions } from '../Functions/Functions';
 
 
 export class InputNumber extends Input{
@@ -26,78 +28,60 @@ export class InputNumber extends Input{
     private decimalsSeparator: string;
     private thousandSeparator: string;
     private mask: any;
+    private minValue: number;
+    private maxValue: number; 
 
     
-    constructor(
-        value?: number, 
-        decimals?: number, 
-        decimalsSeparator?: string, 
-        thousandSeparator?: string
-    ){
-        super();
-        
-        if(!decimals){
+    constructor(config: ConfigInput) {
+        super(config);
+
+        var decimals: number = config.GetDecimals();
+        if(!Functions.IsNullOrEmpty(decimals)){
+            this.SetDecimals(decimals);
+        }else{
             decimals = InputNumber.DEFAULT_DECIMALS;
-        }        
-        
-        if(!decimalsSeparator){
-            decimalsSeparator = InputNumber.DEFAULT_DECIMALS_SEPARATOR;
         }
 
-        if(!thousandSeparator){
-            thousandSeparator = InputNumber.DEFAULT_THOUSAND_SEPARATOR
+        var decimalsSeparator: string = config.GetDecimalsSeparator();
+        if(!Functions.IsNullOrEmpty(decimalsSeparator)){
+            this.SetDecimalsSeparator(decimalsSeparator);
+        }else {
+            this.SetDecimalsSeparator(InputNumber.DEFAULT_DECIMALS_SEPARATOR);
         }
 
-        this.SetDecimals(decimals);
-        this.SetThousandSeparator(thousandSeparator);
-        this.SetDecimalsSeparator(decimalsSeparator);
-        
-        this.SetValue(value);
-        /* var val: any = Number(Number(value).toFixed(decimals));
-        if(value){
-            if(!isNaN(val)) {
-                this.SetValue(val);
-                this.SetNumValue(val);
-            }else{    
-                throw new Error(InputNumber.MSG_ERROR_NUMERIC_VALUE_INVALID);
-            }
+        var thousandSeparator: string = config.GetThousandSeparator();
+        if(!Functions.IsNullOrEmpty(thousandSeparator)){
+            this.SetThousandSeparator(thousandSeparator);
+        }else{
+            this.SetThousandSeparator(InputNumber.DEFAULT_THOUSAND_SEPARATOR);
         }
-         */
-        //this.SetValidateEvents();
+
+        var minValue: number = config.GetMinValue();
+        if(!Functions.IsNullOrEmpty(minValue)){
+            this.SetMinValue(minValue);
+        }
+        var maxValue: number = config.GetMaxValue();
+        if(!Functions.IsNullOrEmpty(maxValue)){
+            this.SetMaxValue(maxValue);
+        }
+
+        var value: number = config.GetValue();
+        if(!Functions.IsNullOrEmpty(value)){
+            this.SetValue(value);
+        }else{
+            this.SetValue(null);
+        }
+        
 
         this.Draw();
 
     }
 
-    private SetValidateEvents(){
-/* 
-        var decimals:number = this.GetDecimals();
-
-        if(!decimals){
-            this.addEventListener('input', function(event){
-                var input: InputNumber = <InputNumber>event.target;
-                var val: string = null;
-                val = this.value.replace(InputNumber.REGEX_ONLY_INT_NUMBER, '').replace(InputNumber.REGEX_REMOVE_ZEROS_START, '');
-                input.SetValue(val);
-            })
-        }else{
-            this.addEventListener('input', function(event){
-                var input: InputNumber = <InputNumber>event.target;
-                var val: string = input.GetValue().toString();
-
-                console.log(InputNumber.REGEX_DECIMAL.test(val))
-                if(InputNumber.REGEX_DECIMAL.test(val)){
-                    input.SetValue(val);
-                }
-            })
-            this.addEventListener('change', function(event){
-                var input: InputNumber = <InputNumber>event.target;
-                var val: number = input.GetValue();
-                input.SetValue(val.toString());
-            });
-        } */
-
-
+    private SetMaxValue(maxValue: number): void{
+        this.maxValue = maxValue;
+    }
+    private SetMinValue(minValue: number): void{
+        this.minValue = minValue;
     }
 
     private SetDecimals(decimals: number):void{
@@ -146,6 +130,13 @@ export class InputNumber extends Input{
         return val;
     }
 
+    public GetMaxValue(): number {
+        return this.maxValue;
+    }
+    public GetMinValue(): number{
+        return this.minValue;
+    }
+
     public Draw(): void {
 
         var decimals: number = this.GetDecimals();
@@ -157,8 +148,29 @@ export class InputNumber extends Input{
             scale: decimals,   
             radix: decimalsSeparator,
             thousandsSeparator: thousandsSeparator, 
-        })
+            signed: true,
+            normalizeZeros: true,
+            padFractionalZeros: true,
+            min: this.minValue,
+            max: this.maxValue,
+        });
 
+        /* this.addEventListener('change', function(event){
+            debugger;
+            var input = <InputNumber>event.target;
+            var ds: string = input.GetDecimalsSeparator();
+            var decimals: number = input.GetDecimals();
+
+            var split = input.value.toString().split(ds);
+
+            if(split.length > 1){
+                var sl = split[1].length;
+                if(sl !== decimals){
+                    input.value = split[0] + ds + split[1].padEnd(decimals ,'0');
+                }
+                
+            }
+        }); */
         /* this.value = '';
         var value = this.GetValue();
         if(value) {

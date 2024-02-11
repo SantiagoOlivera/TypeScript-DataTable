@@ -1,3 +1,4 @@
+import { ConfigInput } from "../Config/ConfigInput";
 import { RowStatus } from "../Enum/RowStatus";
 import { IInput } from "../Interfaces/IInput";
 import { IconCell } from "./IconCell";
@@ -17,6 +18,10 @@ export class IconCellRowStatus extends IconCell implements IInput{
         super();
         this.SetRowStatus(rowStatus);
         this.Render();
+    }
+    
+    public GetConfig(): ConfigInput {
+        throw new Error("Method not implemented.");
     }
     
     GetHTMLElement(): HTMLElement {

@@ -23,6 +23,8 @@ export abstract class DataTableRow extends HTMLTableRowElement{
     }
 
     public AddCell(cell: DataTableCell){
+        console.log(this.GetRowNum().toString());
+        cell.setAttribute('row', this.GetRowNum().toString() );
         this.cellsList.push(cell);
     }
 

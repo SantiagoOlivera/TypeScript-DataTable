@@ -1,4 +1,4 @@
-import { ConfigDataTableReadOnly } from '../Config/ConfigDataTable';
+import { ConfigDataTable } from '../Config/ConfigDataTable';
 import { DataTable } from './DataTable';
 import { DataTableCellColumn } from '../Cell/DataTableCellColumn';
 import { DataTableRowHeader } from '../Row/DataTableRowHeader';
@@ -6,16 +6,17 @@ import { DataTableRowReadOnly } from '../Row/DataTableRowReadOnly';
 import { DataTableCellReadOnly } from '../Cell/DataTableCellReadOnly';
 import * as $ from 'jquery';
 import "jquery-ui/dist/jquery-ui";
+import { ConfigCell } from '../Config/ConfigCell';
 
 export class DataTableReadOnly extends DataTable{
     
-    constructor(config: ConfigDataTableReadOnly){
+    constructor(config: ConfigDataTable){
         super(config);
         this.Draw();
     }
 
     private SetHead():void{
-        var config: ConfigDataTableReadOnly = this.GetConfig();
+        var config: ConfigDataTable = this.GetConfig();
         var rowNum: boolean = config.GetRowNum();
         var columns = config.GetColumns();
         var resizableColumns: boolean = config.GetResizableColumns();
@@ -25,13 +26,13 @@ export class DataTableReadOnly extends DataTable{
             columns.unshift(DataTableReadOnly.ROW_NUM_COLUMN);
         }
 
-        for(var c of columns){
-            cols.push(new DataTableCellColumn(
-                c.data, 
-                c.title, 
-                false , 
-                resizableColumns)
-            );
+        for(var c of columns) {
+            /* c.data, 
+            c.title, 
+            false , 
+            resizableColumns */
+            var cc: ConfigCell = new ConfigCell(c);
+            cols.push(new DataTableCellColumn(cc));
         }
 
         var tr:DataTableRowHeader = new DataTableRowHeader(cols);
@@ -58,7 +59,10 @@ export class DataTableReadOnly extends DataTable{
                 var column = columns[x];
                 value = r[column.data];
 
-                cell = new DataTableCellReadOnly(column.data, value);
+                var cc: ConfigCell = new ConfigCell(column);
+                //cell = new DataTableCellReadOnly(column.data, value);
+                cell = new DataTableCellReadOnly(cc);
+                cell.SetValue(value);
                 cells.push(cell);
             }
 

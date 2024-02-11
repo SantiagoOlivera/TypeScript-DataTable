@@ -3,6 +3,8 @@ import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
 import { IconButton } from "../Buttons/IconButton";
 import * as bootstrap from 'bootstrap';
+import { ConfigForm } from "../Config/ConfigForm";
+import { ConfigButton } from "../Config/ConfigButton";
 
 export abstract class Modal extends HTMLDivElement {
 
@@ -101,7 +103,21 @@ export abstract class Modal extends HTMLDivElement {
 
     private SetFooter(){
         var footer: Element = this.GetFooter();
-        var btnGuardar: IconButton = new IconButton('bi bi-floppy2-fill', 'Guardar');
+
+
+        var cb: ConfigButton = new ConfigButton({
+            id: 'btnModalGuardar',
+            title: 'Guardar',
+            icon: 'bi bi-floppy2-fill',
+            width: '125px',
+            disabled: false,
+            hidden: false,
+            onclick: null,
+            type: 'button',
+            className: 'btn btn-success',
+        });
+
+        var btnGuardar: IconButton = new IconButton(cb);
         btnGuardar.onclick = function(event){
             console.log("Guardar");
         }

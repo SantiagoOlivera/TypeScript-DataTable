@@ -11,6 +11,7 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
         data: 'rowNum',
         title: '#',
         type: 'rowNum',
+        className: 'btn btn-success',
     };
 
     public static readonly EMPTY_ARRAY: Array<any> = [];
@@ -56,16 +57,13 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
 
     constructor(config: ConfigDataTable){  
         super();
-        
-        if(!config){
+        if(!config) {
             throw new Error(DataTable.MSG_ERROR_CONSTRUCTOR_CONFIG_REQUIRED);
-        }else{
+        } else {
             this.SetTags();
             this.SetConfig(config);
         }
-
         this.className = 'table';
-
     }
     
 
@@ -91,13 +89,10 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
     }
 
     public GetRow(idx:number): any{
-        
         var row: DataTableRow = null;
-        
         if(idx < this.rowsList.length){
             row = this.rowsList[idx];
         }
-
         return row;
     }
 
@@ -142,9 +137,7 @@ export abstract class DataTable extends HTMLTableElement implements IDraw {
 
     public GetConfigRowNum(): boolean{
         return this.config.GetRowNum();
-    }
-
-    
+    }    
 }
 
 

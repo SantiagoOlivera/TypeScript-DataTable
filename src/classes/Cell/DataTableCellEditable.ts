@@ -1,26 +1,20 @@
+import { ConfigCell } from "../Config/ConfigCell";
 import { IInput } from "../Interfaces/IInput";
 import { DataTableCell } from "./DataTableCell";
 
-export class DataTableCellEditable extends DataTableCell{
+export class DataTableCellEditable extends DataTableCell {
 
     private input: IInput;
     private row: number;
     private col: number;
     
-    constructor(
-        cellName: string, 
-        row:number, 
-        col:number, 
-        input: IInput, 
-        className: string,
-        hidden: boolean
-    ){
-        super(cellName);
-        this.SetRow(row);
-        this.SetCol(col);
-        this.SetInput(input);
-        this.SetClassName(className);
-        this.SetHidden(hidden);
+    constructor(config: ConfigCell) {
+        super(config);
+        this.SetRow(config.GetRow());
+        this.SetCol(config.GetCol());
+        this.SetInput(config.GetInput());
+        this.SetClassName(config.GetClassName());
+        this.SetHidden(config.GetHidden());
         this.Draw();
     }
 

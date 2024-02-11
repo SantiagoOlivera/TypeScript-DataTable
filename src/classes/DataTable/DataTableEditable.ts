@@ -1,7 +1,7 @@
 import { DataTableCell } from "../Cell/DataTableCell";
 import { DataTableCellColumn } from "../Cell/DataTableCellColumn";
 import { DataTableCellEditable } from "../Cell/DataTableCellEditable";
-import { ConfigDataTableEditable } from "../Config/ConfigDataTable";
+import { ConfigDataTable } from "../Config/ConfigDataTable";
 import { RowStatus } from "../Enum/RowStatus";
 import { InputButton } from "../Input/InputButton";
 import { Input } from "../Input/Input";
@@ -18,10 +18,14 @@ import { IconCellRowStatus } from "../Input/IconCellRowStatus";
 import { IInput } from "../Interfaces/IInput";
 import { InputSelect } from "../Input/InputSelect";
 import { OptionSelect } from "../Input/OptionSelect";
-import { LiveSearchInput, LiveSearchOption } from "../Input/LiveSearchInput";
+import { LiveSearchInput } from "../Input/LiveSearchInput";
 import { CellMoveDirection } from "../Enum/CellMoveDirection";
 import { DataTableOperationBar } from "../DataTableOperationBar/DataTableOperationBar";
 import { InputDate } from "../Input/InputDate";
+import { ConfigInput } from "../Config/ConfigInput";
+import { ConfigCell } from "../Config/ConfigCell";
+import { Form } from "../Form/Form";
+import { ConfigButton } from "../Config/ConfigButton";
 
 export class DataTableEditable extends DataTable {
 
@@ -35,6 +39,7 @@ export class DataTableEditable extends DataTable {
         SELECT: 'select',
         LIVE_SEARCH: 'livesearch',
         DATE: 'date',
+        FORM: 'form',
     }
 
     public static readonly ROW_STATUS_COLUMN = {
@@ -44,7 +49,7 @@ export class DataTableEditable extends DataTable {
         className: 'text-center h2',
     };
 
-    constructor(config: ConfigDataTableEditable){
+    constructor(config: ConfigDataTable){
         super(config);
         this.Draw();
         this.SetMoveDtEvent();
@@ -52,13 +57,23 @@ export class DataTableEditable extends DataTable {
         this.AddDataTableClassName();
     }
 
+    public Draw(): void {
+        var config: ConfigDataTable = this.GetConfig();
+        this.setAttribute('border', '0');
+        this.Destroy();
+        this.SetHead();
+        this.SetBody();
+        this.SetFoot();
+    }
     
 
     private AddDataTableClassName():void{
         this.className += ` DataTableEditable`;
     }
 
-    private SetHead(config: ConfigDataTableEditable):void{
+    private SetHead(): void {
+
+        var config: ConfigDataTable = <ConfigDataTable>this.GetConfig();
         
         var rowNum: boolean = config.GetRowNum();
         var rowStatus: boolean = config.GetRowStatus();
@@ -74,14 +89,9 @@ export class DataTableEditable extends DataTable {
         }
 
         for(var c of columns){
-            cols.push(
-                new DataTableCellColumn(
-                    c[this.props.DATA], 
-                    c[this.props.TITLE],
-                    c[this.props.HIDDEN],
-                    false
-                )
-            );
+            var cc: ConfigCell = new ConfigCell(c);
+            var dtcc: DataTableCellColumn = new DataTableCellColumn(cc);
+            cols.push(dtcc);
         }
 
         var tr:DataTableRowHeader = new DataTableRowHeader(cols);
@@ -110,13 +120,13 @@ export class DataTableEditable extends DataTable {
 
     }
 
-    private SetOpBar(config: ConfigDataTableEditable): void {
+    private SetOpBar(config: ConfigDataTable): void {
 
     }
 
+    private SetBody(): void {
 
-
-    private SetBody(config: ConfigDataTableEditable):void{
+        var config: ConfigDataTable = <ConfigDataTable>this.GetConfig();
         
         var rowNum: boolean = config.GetRowNum();
         var rowStatus: boolean = config.GetRowStatus();
@@ -128,14 +138,14 @@ export class DataTableEditable extends DataTable {
         
         if(rowsLength === 0){
             this.AppendChildBody(new DataTableRowEmpty(colsLength));
-        }else{
+        } else {
             //ROWS
             for(var i=0; i<rowsLength; i++){
                 
                 var r = rows[i];
                 var row: DataTableRowEditable = null;
                 var column = null;
-                var value = null;
+                var value: any = null;
                 var input: IInput = null;
                 var type: string = null;
                 var decimals: number = null;
@@ -147,6 +157,8 @@ export class DataTableEditable extends DataTable {
                 var opts: Array<OptionSelect> = new Array<OptionSelect>();
                 var disabled: boolean = false;
                 var hidden: boolean = false;
+                var decimalsSeparator: string = null;
+                var thousandSeparator: string = null;
                 
                 if(rowNum){
                     r[this.props.ROW_NUM] = (i+1);
@@ -161,60 +173,54 @@ export class DataTableEditable extends DataTable {
                     
                     column = columns[x];
                     value = r[column.data];
-                    type = column.type;
-                    columnName = column.data ? column.data : '';
-                    decimals = column.decimals;
-                    className = column.className ? column.className : '';
-                    options = column.options;
-                    disabled = column.disabled;
+                    column.value = value;
+
+                    var ci: ConfigInput = new ConfigInput(column);
+                    type = ci.GetType();
+                    columnName = ci.GetData(); //column.data ? column.data : '';
+                    decimals = ci.GetDecimals();
+                    className = ci.GetClassName();
+                    options = ci.GetOptions();
+                    disabled = ci.GetDisabled();
                     hidden = column.hidden ? true : false;
-                    
+                    decimalsSeparator = ci.GetDecimalsSeparator();
+                    thousandSeparator = ci.GetThousandSeparator();
 
-                    if(type === this.colType.NUMBER){
-                        var decimalsSeparator: string = column.decimalsSeparator;
-                        var thousandSeparator: string = column.thousandSeparator;
-
-                        if(!decimalsSeparator){
-                            decimalsSeparator = '';
-                        }
-                        if(!thousandSeparator){
-                            thousandSeparator = '';
-                        }
-
-                        input = new InputNumber(
-                            value, 
-                            decimals, 
-                            decimalsSeparator,
-                            thousandSeparator
-                        );
+                    if(type === this.colType.NUMBER) {
+                        input = new InputNumber(ci);
                     }else if(type === this.colType.ICON){
                         input =  new IconCellRowStatus(RowStatus.NORMAL);
-                    } else if(type === this.colType.ROW_NUM){
-                        input =  new InputButton(undefined, value);
+                    } else if(type === this.colType.ROW_NUM) {
+                        input =  new InputButton(ci);
                     } else if(type === this.colType.SELECT){
-                        for(var o of options){
-                            opts.push(new OptionSelect(o.id, o.text))
-                        }
-                        //console.log(value, opts);
-                        input = new InputSelect(value, opts);
+                        input = new InputSelect(ci);
                     } else if(type === this.colType.LIVE_SEARCH){
-                        var val: LiveSearchOption = null;
-                        if(value){
-                            val = new LiveSearchOption(value['id'], value['text']);
-                        }
-                        input = new LiveSearchInput(val);
+                        input = new LiveSearchInput(ci);
                     } else if (type === this.colType.DATE){
-                        input =  new InputDate(value);
+                        input =  new InputDate(ci);
+                    } else if (type === this.colType.FORM){
+                        //var bc = new ConfigButton({})
+                        //input = new InputButton(bc);
                     } else {
-                        input = new InputText(value);
+                        input = new InputText(ci);
                     }
                     
-                    input.Disable(disabled);
-                    input.Hide(hidden);
-                    
 
-                    cell = new DataTableCellEditable(columnName, i, x, input, className, hidden);
+                    if(input != null){
+                        input.Disable(disabled);
+                        input.Hide(hidden);
+                    }
+                    //cell = new DataTableCellEditable(columnName, i, x, input, className, hidden);
 
+                    column.data = columnName;
+                    column.columnName = columnName;
+                    column.row = i;
+                    column.col = x;
+                    column.input = input;
+
+                    var cc: ConfigCell = new ConfigCell(column);
+                    cell = new DataTableCellEditable(cc);
+                    console.log(cell.GetConfig());
                     cells.push(cell);
                     
                 }
@@ -226,16 +232,13 @@ export class DataTableEditable extends DataTable {
                 this.AddRow(row);
 
                 this.AppendChildBody(row);
-
             }
-
         }
-
     }
 
     
 
-    private SetFoot(config: ConfigDataTableEditable):void{
+    private SetFoot():void{
 
         /* var rowNum: boolean = config.GetRowNum();
         var rowStatus: boolean = config.GetRowStatus();
@@ -277,19 +280,10 @@ export class DataTableEditable extends DataTable {
 
     }
 
-    public Draw(): void {
-        this.setAttribute('border', '0');
-        var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
-        this.Destroy();
-        this.SetHead(config);
-        this.SetBody(config);
-        this.SetFoot(config);
-    }
-
-
+    
     public GetData(): Array<object>{
         var data: Array<any> = new Array<any>();
-        var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
+        var config: ConfigDataTable = <ConfigDataTable>this.GetConfig();
         var rows: Array<DataTableRowEditable> = <Array<DataTableRowEditable>>this.GetRows();
         for(var r of rows) {
             var d: any = r.GetData();
@@ -304,7 +298,7 @@ export class DataTableEditable extends DataTable {
         this.addEventListener(this.events.CHANGE, function(e: Event){
             
             //Get config
-            var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetConfig();
+            var config: ConfigDataTable = <ConfigDataTable>this.GetConfig();
             //Get if use row status
             var rowStatus: boolean = config.GetRowStatus();
             
@@ -327,7 +321,7 @@ export class DataTableEditable extends DataTable {
                 //Cell datatable editable
                 var cell: DataTableCellEditable = row.GetRowStatusCell();
                 //Row status icon cell
-                var rowStatusIconCell = <IconCellRowStatus>cell.GetInput();
+                var rowStatusIconCell = <IconCellRowStatus>cell.GetConfig().GetInput();
                 
                 //console.log(row, cell, rowStatusIconCell);
 

@@ -1,23 +1,25 @@
+import { ConfigCell } from "../Config/ConfigCell";
 import { DataTableCell } from "./DataTableCell";
 
-export class DataTableCellIcon extends DataTableCell{
-    private icon: HTMLElement;
+export class DataTableCellIcon extends DataTableCell {
+    private icon: string;
 
-    constructor(cellName:string, icon: HTMLElement){
-        super(cellName);
-        this.SetIcon(icon);
+    constructor(config: ConfigCell) {
+        super(config);
+        this.SetIcon(config.GetIcon());
         this.Draw();
     }
 
-    private SetIcon(icon: HTMLElement):void{
+    private SetIcon(icon: string): void {
         this.icon = icon;
     }
-
-    public GetIcon(): HTMLElement{
+    public GetIcon(): string {
         return this.icon;
     }
-
     public Draw(): void {
-        this.appendChild(this.GetIcon());
+        var icon: HTMLElement = document.createElement('i');
+        icon.className = this.GetIcon();
+        
+        this.appendChild(icon);
     }
 }

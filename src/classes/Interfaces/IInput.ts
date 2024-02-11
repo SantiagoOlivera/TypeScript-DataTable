@@ -1,3 +1,5 @@
+import { Config } from "../Config/Config";
+
 export interface IInput{
     GetHTMLElement(): HTMLElement
     SetValue(value: any): void
@@ -9,4 +11,5 @@ export interface IInput{
     Hide(hidden:boolean):void
     IsDisabled():boolean
     IsHidden():boolean
+    GetConfig(): Config
 }

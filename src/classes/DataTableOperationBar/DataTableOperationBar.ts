@@ -1,6 +1,6 @@
-import { ConfigDataTable, ConfigDataTableEditable } from "src/classes/Config/ConfigDataTable";
 import { DataTableEditableAddRowModal } from "../Modals/DataTableModalAddRow";
 import { DataTable } from "../DataTable/DataTable";
+import { ConfigDataTable } from "../Config/ConfigDataTable";
 
 export class DataTableOperationBar extends HTMLDivElement {
 
@@ -76,7 +76,7 @@ export class DataTableOperationBar extends HTMLDivElement {
         if(!this.ModalAddRow){
             //reveer esto
             var body = document.querySelector('body');
-            var config: ConfigDataTableEditable = <ConfigDataTableEditable>this.GetDataTable().GetConfig();
+            var config: ConfigDataTable = <ConfigDataTable>this.GetDataTable().GetConfig();
             
             this.ModalAddRow = new DataTableEditableAddRowModal(
                 'DataTableModalAddRow', 
