@@ -1,4 +1,5 @@
 import { Config } from "../Config/Config";
+import { Form } from "../Form/Form";
 
 export interface IInput{
     GetHTMLElement(): HTMLElement
@@ -12,4 +13,6 @@ export interface IInput{
     IsDisabled():boolean
     IsHidden():boolean
     GetConfig(): Config
+    Empty(): void
+    GetForm(): Form
 }

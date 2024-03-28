@@ -1,9 +1,10 @@
 import { ConfigInput } from "../Config/ConfigInput";
+import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { Input } from "./Input";
 
 export class InputYear extends Input {
-
+   
     constructor(config: ConfigInput){
         super(config);
         this.maxLength = 4;
@@ -56,6 +57,12 @@ export class InputYear extends Input {
         throw new Error("Method not implemented.");
     }
     public IsHidden(): boolean {
+        throw new Error("Method not implemented.");
+    }
+    public GetForm(): Form {
+        throw new Error("Method not implemented.");
+    }
+    public Empty(): void {
         throw new Error("Method not implemented.");
     }
     

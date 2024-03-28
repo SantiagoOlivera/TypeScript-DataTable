@@ -2,7 +2,7 @@ import { ConfigCell } from "../Config/ConfigCell";
 import { IInput } from "../Interfaces/IInput";
 import { DataTableCell } from "./DataTableCell";
 
-export class DataTableCellEditable extends DataTableCell {
+/* export class DataTableCellEditable extends DataTableCell {
 
     private input: IInput;
     private row: number;
@@ -26,15 +26,15 @@ export class DataTableCellEditable extends DataTableCell {
         this.row = row;
     }
 
-    public GetRow():number{
+    public GetRow(): number {
         return this.row;
     }
 
-    public GetCol():number{
+    public GetCol(): number {
         return this.col;
     }
 
-    private SetCol(col: number):void {
+    private SetCol(col: number): void {
         this.col = col;
     }
 
@@ -58,4 +58,4 @@ export class DataTableCellEditable extends DataTableCell {
     }
 }
 
-window.customElements.define('data-table-cell-editable', DataTableCellEditable, { extends: 'td' });
+window.customElements.define('data-table-cell-editable', DataTableCellEditable, { extends: 'td' }); */

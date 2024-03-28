@@ -1,7 +1,9 @@
 import { ConfigInput } from "../Config/ConfigInput";
+import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
+import { Program } from "../Program/Program";
 import { Input } from "./Input";
 import { OptionSelect } from "./OptionSelect";
 
@@ -16,7 +18,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     constructor(config: ConfigInput){
         super();
         
-        var className: string = config.GetClassName();
+        var className: string = config.GetClassName() + ' ' + Program.classes.FORM_CONTROL_SMALL;
         var opt: string = config.GetValue();
 
         this.SetConfig(config);
@@ -42,6 +44,12 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
         this.Draw();
 
     }
+    public GetForm(): Form {
+        throw new Error("Method not implemented.");
+    }
+    public Empty(): void {
+        throw new Error("Method not implemented.");
+    }
 
     public GetConfig(): ConfigInput {
         return this.config;
@@ -55,11 +63,11 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
         this.className = className;
     }
     
-    GetHTMLElement(): HTMLElement {
+    public GetHTMLElement(): HTMLElement {
         return this;
     }
 
-    Draw(): void {
+    public Draw(): void {
 
         for(var o of this.optionsList){
 
@@ -91,7 +99,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     }
 
     public GetValue(): string {
-        return this.opt;
+        return this.value;
     }
 
     public Supr(): void {

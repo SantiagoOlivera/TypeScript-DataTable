@@ -1,8 +1,15 @@
 import { hide } from "@popperjs/core";
 import { Functions } from "../Functions/Functions";
 import { Config } from "./Config";
+import { ConfigForm } from "./ConfigForm";
 
 export class ConfigInput extends Config {
+
+    private static ToConfigForm(config: ConfigInput): ConfigForm {
+        var c: any = config.GetConfig();
+        var ret: ConfigForm = new ConfigForm(c);
+        return ret;
+    }
 
     private readonly defaults = {
         THOUSAND_SEPARATOR: '.',
@@ -24,6 +31,9 @@ export class ConfigInput extends Config {
     private placeholder: string;
     private maxValue: number;
     private minValue: number;
+    private onclick: Function;
+    
+    
     
     constructor(config: any) {
         super(config);
@@ -43,6 +53,7 @@ export class ConfigInput extends Config {
         var placeholder: string = config.placeholder;
         var maxValue: number = config.maxValue;
         var minValue: number = config.minValue;
+        var onclick: Function = config.onclick;
 
         if(!Functions.IsNullOrEmpty(data)){
             this.SetData(data);
@@ -108,7 +119,17 @@ export class ConfigInput extends Config {
         }else{
             this.SetMinValue(null);
         }
+        if(!Functions.IsNullOrEmpty(onclick)){
+            this.SetOnClick(onclick);
+        }else{
+            this.SetOnClick(null);
+        }
 
+    }
+
+    public ToConfigForm(): ConfigForm {
+        var ret: ConfigForm = ConfigInput.ToConfigForm(this);
+        return ret;
     }
 
     //Getters
@@ -154,7 +175,9 @@ export class ConfigInput extends Config {
     public GetMinValue(): number{
         return this.minValue;
     }
-    
+    public GetOnClick(): Function {
+        return this.onclick;
+    }
 
     //Setters
     private SetData(data: string):void {
@@ -198,6 +221,9 @@ export class ConfigInput extends Config {
     }
     private SetMinValue(minValue: number): void{
         this.minValue = minValue;
+    }
+    private SetOnClick(onclick: Function): void{
+        this.onclick = onclick;
     }
     
 }

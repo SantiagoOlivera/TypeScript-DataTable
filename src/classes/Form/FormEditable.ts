@@ -10,7 +10,11 @@ import { ConfigButton } from "../Config/ConfigButton";
 import { Button } from "../Buttons/Button";
 import { IconButton } from "../Buttons/IconButton";
 import { ConfigDataTable } from "../Config/ConfigDataTable";
-import { DataTableEditable } from "../DataTable/DataTableEditable";
+import { InputPageChager } from "../Input/InputPageChanger";
+import { isArray } from "jquery";
+import { InputNumber } from "../Input/InputNumber";
+import { Program } from "../Program/Program";
+import { DataTable } from "../DataTable/DataTable";
 
 export class FormEditable extends Form {
 
@@ -32,29 +36,95 @@ export class FormEditable extends Form {
         this.DrawHeader();
         this.DrawBody();
         this.DrawFooter();
+        this.SetFormData(null);
     }
 
     private DrawHeader() {
 
+        var form: FormEditable = this;
+
+        this.addEventListener('change', function(event: Event) {
+            //event.stopPropagation();
+            var e: Element = <Element>event.target;
+            var input: IInput = <IInput><unknown>e;
+            var inputs: Array<IInput> = this.GetInputs();
+            var data: any = form.Data();
+            var idx: number = form.GetIndex();
+            var d: any = null;
+            if(!Functions.IsNullOrEmpty(data)) { 
+                if(Functions.IsObject(data)) {
+                    d = data;
+                } else if(Functions.IsArray(data)) {
+                    d = data[idx];
+                }
+                for(var i of inputs){
+                    var value: any = i.GetValue();
+                    var name: string = i.GetConfig().GetName();
+                    d[name] = value;
+                    //console.log(input, name, data, value);
+                }
+            }
+        });
+
+        var cf: ConfigForm = <ConfigForm>this.GetConfig();
+        var data: any = this.Data();
+
+        //Header
         this.header = document.createElement('div');
         this.header.className = 'row';
 
+        //Container title
         var container: HTMLDivElement = document.createElement('div');
         container.className = 'col-12 col-lg-6';
-
-
 
         var title: HTMLElement = this.GetTitle();
         container.appendChild(title);
 
-        
+
         this.header.appendChild(container);
 
+        var isArray: boolean = Functions.IsArray(data);
+        if(isArray) {
+
+            var cpc: HTMLDivElement = document.createElement('div');
+            cpc.className = 'col-12 col-lg-6';
+
+            var ipc: InputPageChager = new InputPageChager(new ConfigInput({
+                type: 'form',
+                value: data.length,
+                width: '190px',
+                align: 'right',
+            }));
+
+            ipc.addEventListener(Program.events.CHANGE_PAGE, function(event: Event){
+                var input: InputNumber = <InputNumber>event.target;
+                var value: number = input.GetValue();
+                //console.log('Test change event', event);
+                if(!Functions.IsNullOrEmpty(value)) {
+                    var idx: number = value - 1;
+                    //var data: Array<any> = (<ConfigForm>form.GetConfig()).GetData();
+                    var data: any = form.Data();
+                    var d: any = data[idx];
+                    //console.log(data, d);
+                    form.SetIndex(idx);
+                    form.SetValue(d);
+                }
+            });
+
+            cpc.appendChild(ipc);
+            this.header.appendChild(cpc);
+        }
         
-        var cf: ConfigForm = <ConfigForm>this.GetConfig();
+        
+
+
+
+        
+
+        
         var filter: boolean = cf.GetFilter();
         
-        this.SetTransformFormToDataTable();
+        //this.SetTransformFormToDataTable();
     
         var fi: ConfigInput = new ConfigInput({
             value: '',
@@ -69,7 +139,6 @@ export class FormEditable extends Form {
     
         if(filter){
             var input: Input = inpF.GetInput();
-            var form: Form = this;
             input.addEventListener('keyup', function(event){
                 
                 var value: string = input.GetValue().toLowerCase();
@@ -99,16 +168,15 @@ export class FormEditable extends Form {
         var inputs: Array<IInput> = this.GetInputs();
         
         for(var i of inputs) {
-            if(!(i instanceof Form) ){
-                container = this.GetInputContainer(i);
-            } else {
+            if(i instanceof Form){
                 container = this.GetFormContainer(i);
+            } else {
+                container = this.GetInputContainer(i);
             }
 
             this.containers.push(container);
             this.body.appendChild(container);
         }
-
         this.AppendChild(this.body);
     }
 
@@ -125,6 +193,7 @@ export class FormEditable extends Form {
         this.AppendChild(this.footer);
     }
 
+    
     private GetFormContainer(form: Form): HTMLDivElement {
         
         var ret: HTMLDivElement = document.createElement('div');
@@ -225,7 +294,7 @@ export class FormEditable extends Form {
                 onclick: function(event: Event){
                     console.log(event);
                     var config: ConfigDataTable = cf.ToConfigDataTable();
-                    var dt = new DataTableEditable(config);
+                    var dt = new DataTable(config);
                     console.log(dt);
                 }
             });

@@ -1,4 +1,5 @@
 import { ConfigInput } from "../Config/ConfigInput";
+import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { Input } from "./Input";
 
@@ -62,6 +63,7 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement{
 
     constructor(opt: LiveSearchOption, input: LiveSearchInput, markStr?:string){
         super();
+        this.type='button';
         this.SetOpt(opt);
         this.SetProps();
         this.SetClassName();
@@ -218,6 +220,8 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement{
 window.customElements.define('live-search-option-input-item', LiveSearchOptionInputItem, { extends: 'button'});
 
 export class LiveSearchInput extends Input{
+    
+    
     
     private container: HTMLDivElement;
     private optionsContainer: HTMLDivElement;
@@ -513,6 +517,16 @@ export class LiveSearchInput extends Input{
         this.val = value;
     }
 
+    public Empty(): void {
+        throw new Error("Method not implemented.");
+    }
+    public GetForm(): Form {
+        throw new Error("Method not implemented.");
+    }
+
+
+
+    
     private TriggerChangeEvent(value: LiveSearchOption): void {
         var v: LiveSearchOption = this.GetValue();
         if(v){

@@ -4,7 +4,7 @@
     /* padding: 0 !important; */
     /*  padding: 0;
     padding: 2px !important;*/
-    border-radius: 0 !important;
+    /* border-radius: 0 !important; */
     /* padding: 2px !important;
     border: 2px;
     border-radius: 0 !important; */
@@ -14,9 +14,9 @@ table{
     padding: 0;
 }
 input {
-    margin: 1px;
+    /* margin: 1px; */
     border: 0;
-    border-radius: 0;
+    /* border-radius: 0; */
     outline: none;
     width: 100%;
 }
@@ -37,7 +37,7 @@ button{
     /* background: transparent; */
     /* border: 0;
     border-radius: 0; */
-    border-radius: 0;
+    /* border-radius: 0; */
     width: 100%;
 }
 table tr.selected td {
@@ -57,6 +57,7 @@ table tr.selected td {
     font-size: 10px;
     height: 25px;
     border: 0;
+    border-radius: 0;
 }
 .live-search-input-button span{
     background: aqua;

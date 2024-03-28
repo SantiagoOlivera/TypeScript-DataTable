@@ -1,8 +1,10 @@
 import { ConfigInput } from "../Config/ConfigInput";
+import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { Input } from "./Input";
 
 export class InputText extends Input {
+    
 
     private readonly defaults = {
         EMPTY_STRING: '',
@@ -17,16 +19,25 @@ export class InputText extends Input {
 
     public SetValue(value: string): void {
         var v: string = '';
+        var p: string = this.GetConfig().GetPrefix();
+        var s: string = this.GetConfig().GetSuffix();
         if(!Functions.IsNullOrEmpty(value)){
             var maxLength: number = this.GetConfig().GetMaxLength();
             v = value;
             if(!Functions.IsNullOrEmpty(maxLength)){
                 if(value.length > maxLength) {
                     v = value.substring(0, maxLength);
-                    console.log(v, maxLength);
                 }
             }
         }
+        
+        if(!Functions.IsNullOrEmpty(p)){
+            v = p + v;
+        }
+        if(!Functions.IsNullOrEmpty(s)){
+            v = v + s;
+        }
+
         this.value = v;
     }
     public GetValue() {
@@ -34,7 +45,6 @@ export class InputText extends Input {
     }
 
     public Supr(): void {
-        //console.log("SPR");
         this.SetValue('');
     }
 
@@ -51,7 +61,7 @@ export class InputText extends Input {
     }
 
     public GetHTMLElement(): HTMLElement {
-        throw new Error("Method not implemented.");
+        return this;
     }
 
     public Disable(disabled: boolean): void {
@@ -66,7 +76,12 @@ export class InputText extends Input {
     public IsHidden(): boolean {
         return this.hidden;
     }
-    
+    public GetForm(): Form {
+        throw new Error("Method not implemented.");
+    }
+    public Empty(): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 window.customElements.define('input-text', InputText, { extends: 'input'});

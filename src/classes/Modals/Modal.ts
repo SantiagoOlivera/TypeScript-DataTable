@@ -5,12 +5,16 @@ import { IconButton } from "../Buttons/IconButton";
 import * as bootstrap from 'bootstrap';
 import { ConfigForm } from "../Config/ConfigForm";
 import { ConfigButton } from "../Config/ConfigButton";
+import { ConfigModal } from "../Config/ConfigModal";
+import { Functions } from "../Functions/Functions";
 
 export abstract class Modal extends HTMLDivElement {
 
     private ModalId: string;
     private Title: string;
     private buttons: Array<Button>;
+    private config: ConfigModal;
+    private modal: bootstrap.Modal;
 
     private readonly classes = {
         MODAL: 'modal',
@@ -21,14 +25,36 @@ export abstract class Modal extends HTMLDivElement {
         ADD_BUTTON: 'add-button',
     };
 
-    constructor(
-        ModalId: string, 
-        Title: string
-    ) {
+    constructor(config: ConfigModal) {
         super();
-        this.SetModalId(ModalId);
-        this.SetTitle(Title);
+        this.SetConfig(config);
+
+        var id: string = config.GetId();
+        var title: string = config.GetTitle();
+        var buttons: Array<Button> = config.GetButtons();
+
+
+        if(!Functions.IsNullOrEmpty(buttons)){
+            this.buttons = new Array<Button>();
+            for(var b of buttons) {
+                var cb: ConfigButton = new ConfigButton(b);
+                var btn: IconButton = new IconButton(cb);
+                this.AddButton(btn);
+            }
+        }
+
+        this.SetModalId(id);
+        this.SetTitle(title);
+
         this.Init();
+    }
+
+    private SetConfig(config: ConfigModal){
+        this.config = config;
+    }
+
+    public GetConfig(): ConfigModal {
+        return this.config;
     }
 
     private SetTitle(Title: string):void{
@@ -52,16 +78,13 @@ export abstract class Modal extends HTMLDivElement {
     }
 
     public Open(): void {
-        var modal: bootstrap.Modal = new bootstrap.Modal(this);
-        modal.show();
+        this.modal = new bootstrap.Modal(this);
+        this.modal.show();
     }
 
     public Close(): void {
-        var modal: bootstrap.Modal = new bootstrap.Modal(this);
-        modal.hide();
+        this.modal.hide();
     }
-
-
 
     private Init(): void {
         this.id = this.GetModalId();
@@ -89,7 +112,7 @@ export abstract class Modal extends HTMLDivElement {
         `;
     }
 
-    private SetHeader(){
+    private SetHeader(): void {
         var header: Element = this.GetHeader();
         header.innerHTML = `
             <h5 class="modal-title">${ this.GetTitle() }</h5>
@@ -97,32 +120,31 @@ export abstract class Modal extends HTMLDivElement {
         `;
     }
 
-    private SetBody(){
+    private SetBody(): void {
         var body: Element = this.GetBody();
+    }
+
+    public AddElementInModalBody(e: Element): void {
+        var body: Element = this.GetBody();
+        body.appendChild(e);
+    }
+
+    public AddButton(button: Button): void {
+        this.buttons.push(button);
+    }
+
+    public GetButtons(): Array<Button> {
+        return this.buttons;
     }
 
     private SetFooter(){
         var footer: Element = this.GetFooter();
 
-
-        var cb: ConfigButton = new ConfigButton({
-            id: 'btnModalGuardar',
-            title: 'Guardar',
-            icon: 'bi bi-floppy2-fill',
-            width: '125px',
-            disabled: false,
-            hidden: false,
-            onclick: null,
-            type: 'button',
-            className: 'btn btn-success',
-        });
-
-        var btnGuardar: IconButton = new IconButton(cb);
-        btnGuardar.onclick = function(event){
-            console.log("Guardar");
+        if(!Functions.IsNullOrEmpty(this.buttons)) {
+            for(var b of this.buttons) {
+                footer.appendChild(b);
+            }
         }
-        
-        footer.appendChild(btnGuardar);
     }
 
     private GetBody(): Element {

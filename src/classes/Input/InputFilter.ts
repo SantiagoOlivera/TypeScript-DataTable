@@ -1,4 +1,5 @@
 import { ConfigInput } from "../Config/ConfigInput";
+import { Form } from "../Form/Form";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
 import { Input } from "./Input";
@@ -14,6 +15,8 @@ export class InputFilter extends HTMLDivElement implements IInput, IDraw {
         this.SetConfig(config);
         this.Draw();
     }
+    
+    
 
     public Draw(): void {
         this.className = this.config.GetClassName();
@@ -61,6 +64,12 @@ export class InputFilter extends HTMLDivElement implements IInput, IDraw {
         throw new Error("Method not implemented.");
     }
     GetConfig(): ConfigInput {
+        throw new Error("Method not implemented.");
+    }
+    Empty(): void {
+        throw new Error("Method not implemented.");
+    }
+    GetForm(): Form {
         throw new Error("Method not implemented.");
     }
 

@@ -2,8 +2,10 @@ import IMask from 'imask';
 import { Input } from "./Input";
 import { ConfigInput } from '../Config/ConfigInput';
 import { Functions } from '../Functions/Functions';
+import { Form } from '../Form/Form';
 
 export class InputDate extends Input {
+    
 
     private date: Date;
     //private format: string;
@@ -165,7 +167,13 @@ export class InputDate extends Input {
     public IsHidden(): boolean {
         return this.hidden;
     }
-    
+    public Empty(): void {
+        throw new Error("Method not implemented.");
+    }
+
+    public GetForm(): Form {
+        throw new Error('Method not implemented.');
+    }
 
 }
 

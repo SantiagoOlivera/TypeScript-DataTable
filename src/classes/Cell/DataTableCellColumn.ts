@@ -1,11 +1,14 @@
 import { ConfigCell } from "../Config/ConfigCell";
+import { Functions } from "../Functions/Functions";
+import { Cell } from "./Cell";
 import { DataTableCell } from "./DataTableCell";
 
-export class DataTableCellColumn extends DataTableCell {
+export class DataTableCellColumn extends Cell {
+    
 
-    private columnName: String
-    private sTitle: string
-    private isResizable: boolean
+    private columnName: string;
+    private sTitle: string;
+    //private isResizable: boolean;
 
     private readonly classes = {
         RESIZABLE: 'resizable',
@@ -14,9 +17,18 @@ export class DataTableCellColumn extends DataTableCell {
 
     constructor(config: ConfigCell){
         super(config);
-        this.SetColumnName(config.GetName());
-        this.SetTitle(config.GetTitle());
-        this.SetHidden(config.GetHidden());
+
+        var name: string = config.GetName();
+        var title: string = config.GetTitle();
+
+
+        this.SetColumnName(name);
+        if(!Functions.IsNullOrEmpty(title)){
+            this.SetTitle(title);
+        }else{
+            this.SetTitle('');
+        }
+        //this.SetHidden(config.GetHidden());
         this.Draw();
     }
 
@@ -33,7 +45,6 @@ export class DataTableCellColumn extends DataTableCell {
         return this.sTitle;
     }
 
-    
     private SetColumnName(columnName: string):void {
         this.columnName = columnName;
     }
@@ -42,5 +53,10 @@ export class DataTableCellColumn extends DataTableCell {
         this.sTitle = title;
     }
 
+    public GetValue() {
+        throw new Error("Method not implemented.");
+    }
+
 }
+
 window.customElements.define('data-table-cell-column', DataTableCellColumn, { extends: 'th' });

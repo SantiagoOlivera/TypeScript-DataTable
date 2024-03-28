@@ -1,7 +1,7 @@
 import { ConfigCell } from "../Config/ConfigCell";
 import { DataTableCell } from "./DataTableCell";
 
-export class DataTableCellIcon extends DataTableCell {
+/* export class DataTableCellIcon extends DataTableCell {
     private icon: string;
 
     constructor(config: ConfigCell) {
@@ -22,4 +22,4 @@ export class DataTableCellIcon extends DataTableCell {
         
         this.appendChild(icon);
     }
-}
+} */

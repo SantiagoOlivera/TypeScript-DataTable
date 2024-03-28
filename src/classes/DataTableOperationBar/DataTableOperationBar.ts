@@ -1,6 +1,7 @@
 import { DataTableEditableAddRowModal } from "../Modals/DataTableModalAddRow";
 import { DataTable } from "../DataTable/DataTable";
 import { ConfigDataTable } from "../Config/ConfigDataTable";
+import { ConfigModal } from "../Config/ConfigModal";
 
 export class DataTableOperationBar extends HTMLDivElement {
 
@@ -78,11 +79,12 @@ export class DataTableOperationBar extends HTMLDivElement {
             var body = document.querySelector('body');
             var config: ConfigDataTable = <ConfigDataTable>this.GetDataTable().GetConfig();
             
-            this.ModalAddRow = new DataTableEditableAddRowModal(
-                'DataTableModalAddRow', 
-                'Agregar', 
-                config
-            );
+            var cm: ConfigModal = new ConfigModal({
+                id: 'DataTableModalAddRow',
+                title: 'Agregar',
+            });
+
+            this.ModalAddRow = new DataTableEditableAddRowModal(cm);
 
             body.prepend(this.ModalAddRow);
 

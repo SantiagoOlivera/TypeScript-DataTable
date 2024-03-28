@@ -1,9 +1,10 @@
 import { ConfigInput } from "../Config/ConfigInput";
 import { RowStatus } from "../Enum/RowStatus";
+import { Form } from "../Form/Form";
 import { IInput } from "../Interfaces/IInput";
 import { IconCell } from "./IconCell";
 
-export class IconCellRowStatus extends IconCell implements IInput{
+export class IconCellRowStatus extends IconCell implements IInput {
     
     private rowStatus: RowStatus;
     
@@ -20,22 +21,24 @@ export class IconCellRowStatus extends IconCell implements IInput{
         this.Render();
     }
     
+    
+    
     public GetConfig(): ConfigInput {
         throw new Error("Method not implemented.");
     }
     
-    GetHTMLElement(): HTMLElement {
-        throw new Error("Method not implemented.");
+    public GetHTMLElement(): HTMLElement {
+        return this;
     }
 
-    SetValue(value: RowStatus): void {
+    public SetValue(value: RowStatus): void {
         //throw new Error("Method not implemented.");
         this.SetRowStatus(value);
     }
-    GetValue() {
+    public GetValue() {
         return this.GetRowStatus();
     }
-    Supr(): void {
+    public Supr(): void {
         throw new Error("Method not implemented.");
     }
 
@@ -43,7 +46,7 @@ export class IconCellRowStatus extends IconCell implements IInput{
         this.rowStatus = rowStatus;
     }
 
-    private GetRowStatus():RowStatus{
+    private GetRowStatus(): RowStatus {
         return this.rowStatus;
     }
 
@@ -88,7 +91,12 @@ export class IconCellRowStatus extends IconCell implements IInput{
     public IsHidden(): boolean {
         return this.hidden;
     }
-    
+    public Empty(): void {
+        throw new Error("Method not implemented.");
+    }
+    public GetForm(): Form {
+        throw new Error("Method not implemented.");
+    }
 
 }
 

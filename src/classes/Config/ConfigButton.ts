@@ -10,7 +10,6 @@ export class ConfigButton extends Config {
     private data: string;
     private icon: string;
     private onclick: Function;
-    private width: string;
 
     constructor(config: any) {
         super(config);
@@ -19,7 +18,6 @@ export class ConfigButton extends Config {
         var type: string = config.type;
         var icon: string = config.icon;
         var onclick: Function = config.onclick;
-        var width: string = config.width;
 
         if(!Functions.IsNullOrEmpty(data)){
             this.SetData(data);
@@ -33,24 +31,18 @@ export class ConfigButton extends Config {
         if(!Functions.IsNullOrEmpty(onclick)){
             this.SetOnClick(onclick);
         }
-        if(!Functions.IsNullOrEmpty(width)){
-            this.SetWidth(width);
-        }
 
     }
 
     //Getters
-    public GetData(): string{
+    public GetData(): string {
         return this.data;
     }
-    public GetIcon(): string{
+    public GetIcon(): string {
         return this.icon;
     }
-    public GetOnClick(): Function{
+    public GetOnClick(): Function {
         return this.onclick;
-    }
-    public GetWidth(): string{
-        return this.width;
     }
 
     //Setters
@@ -62,8 +54,5 @@ export class ConfigButton extends Config {
     }
     private SetOnClick(onClick: Function): void {
         this.onclick = onClick;
-    }
-    private SetWidth(width: string): void{
-        this.width = width;
     }
 }

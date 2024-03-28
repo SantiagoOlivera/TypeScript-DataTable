@@ -1,6 +1,8 @@
+import { Functions } from "../Functions/Functions";
 import { DataTableRow } from "../Row/DataTableRow";
 import { Config } from "./Config";
 import { ConfigForm } from "./ConfigForm";
+import { ConfigPagination } from "./ConfigPagination";
 
 export class ConfigDataTable extends Config {
 
@@ -23,6 +25,7 @@ export class ConfigDataTable extends Config {
     private headerText: string;
     private buttons: any;
     private rowStatus: boolean;
+    private pagination: ConfigPagination;
     private data: Array<any>;
     
     readonly props = {
@@ -64,6 +67,13 @@ export class ConfigDataTable extends Config {
             if(headerText){
                 this.SetHeaderText(headerText);
             }
+
+            var pagination: any = config.pagination;
+            if(!Functions.IsNullOrEmpty(pagination)){
+                var p: ConfigPagination = new ConfigPagination(pagination);
+                this.SetPagination(p);
+            }
+
         }
 
         this.SetButtons(config[this.props.BUTTONS])
@@ -71,60 +81,57 @@ export class ConfigDataTable extends Config {
 
     }
 
-    private SetResizableColumns(resizableColumns: boolean):void{
-        this.resizableColumns = resizableColumns;
-    }
-
+    //Getters
     public GetResizableColumns(): boolean{
         return this.resizableColumns;
     }
-
-    private SetRows(rows: Array<any>){
-        this.rows = rows;
-    }
-
-    private SetColumns(columns: Array<any>){
-        this.columns = columns;
-    }
-
-    private SetRowNum(rowNum: boolean){
-        this.rowNum = rowNum;
-    }
-    
-    public GetRowNum(): boolean{
+    public GetRowNum(): boolean {
         return this.rowNum;
     }
-
     public GetRows(){
         return this.rows;
     }
-
     public GetColumns(){
         return this.columns;
     }
-
-    private SetHeaderText(headerText: string): void{
-        this.headerText = headerText;
-    }
-
-    public GetHeaderText(): string{
-        return this.headerText;
-    }
-
-    private SetRowStatus(rowStatus:boolean):void{
-        this.rowStatus = rowStatus;
-    }
-
     public GetRowStatus():boolean{
         return this.rowStatus;
     }
-
     public GetButtons(): any{
         return this.buttons;
     }
+    public GetPagination(): ConfigPagination {
+        return this.pagination;
+    }
 
+
+    //Setters
+    private SetResizableColumns(resizableColumns: boolean):void{
+        this.resizableColumns = resizableColumns;
+    }
+    private SetRows(rows: Array<any>){
+        this.rows = rows;
+    }
+    private SetColumns(columns: Array<any>){
+        this.columns = columns;
+    }
+    private SetRowNum(rowNum: boolean){
+        this.rowNum = rowNum;
+    }
+    private SetHeaderText(headerText: string): void{
+        this.headerText = headerText;
+    }
+    public GetHeaderText(): string{
+        return this.headerText;
+    }
+    private SetRowStatus(rowStatus:boolean):void{
+        this.rowStatus = rowStatus;
+    }
     private SetButtons(buttons: any):void{
         this.buttons = buttons;
+    }
+    private SetPagination(pagination: ConfigPagination):void {
+        this.pagination = pagination;
     }
 
 }

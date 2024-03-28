@@ -7,6 +7,7 @@ import { LiveSearchInput } from '../Input/LiveSearchInput';
 import { IInput } from '../Interfaces/IInput';
 import { InputDate } from '../Input/InputDate';
 import { Modal } from './Modal';
+import { ConfigModal } from '../Config/ConfigModal';
 
 export class DataTableModal extends Modal {
     
@@ -23,10 +24,10 @@ export class DataTableModal extends Modal {
         DATE: 'date',
     }
 
-    private Config: ConfigDataTable;
 
-    constructor(ModalId: string, Title: string, Config: ConfigDataTable){
-        super(ModalId, Title);
+    constructor(config: ConfigModal){
+        /* ModalId: string, Title: string, Config: ConfigDataTable */
+        super(config);
         //this.SetConfig(Config);
         /* this.SetModalId(ModalId);
         this.SetTitle(Title);
@@ -34,10 +35,7 @@ export class DataTableModal extends Modal {
         //this.SetButtonsActions();
     }
 
-    private SetConfig(Config: ConfigDataTable){
-        this.Config = Config;
-        //console.log("Config", this.Config);
-    }
+    
 
     /* private SetTitle(Title: string):void{
         this.Title = Title;

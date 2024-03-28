@@ -20,7 +20,7 @@
         var config1 = new window.Framework.ConfigForm({
             title: 'Form test 1',
             className: 'p-2',
-            filter: true,
+            filter: false,
             floatingForm: true,
             transformTable: true,
             buttons: [
@@ -48,6 +48,18 @@
                     className: 'col-12',
                 },
             ],
+            data: [
+                { text: 'TestData1', number: 10, anio: 2010 },
+                { text: 'TestData2', number: 11, anio: 2018 },
+                { text: 'TestData3', number: 12, anio: 2015 },
+                { text: 'TestData4', number: 13, anio: 2030 },
+                { 
+                    text: 'Prueba 5', number: 14.32, anio: 2031, 
+                    subform: {
+                        text: 'Test subform',
+                    }
+                },
+            ], 
             fields:[
                 {
                     label: 'Text',

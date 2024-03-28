@@ -8,11 +8,14 @@ export abstract class Button extends HTMLButtonElement implements IDraw {
 
     constructor(config: ConfigButton){
         super();
-        this.config = config;
-        this.id = config.GetId();
-        this.className = config.GetClassName();
-        this.SetClickEvent();
         this.SetConfig(config);
+
+        console.log(this.config, this.config.GetId());
+
+        this.id = this.config.GetId();
+        this.className = this.config.GetClassName();
+
+        this.SetClickEvent();
     }
 
     public GetConfig(): ConfigButton {

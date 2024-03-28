@@ -1,17 +1,47 @@
-import { DataTableCell } from "../Cell/DataTableCell";
-import { DataTable } from "../DataTable/DataTable";
-import { DataTableEditable } from "../DataTable/DataTableEditable";
+import { Cell } from "../Cell/Cell";
+import { ConfigRow } from "../Config/ConfigRow";
+import { IDraw } from "../Interfaces/IDraw";
+import { Row } from "./Row";
 
-export abstract class DataTableRow extends HTMLTableRowElement{
+
+export class DataTableRow extends Row implements IDraw {
+
+    constructor(config: ConfigRow){
+        super(config);
+        this.Draw();
+    }
+
+    public Draw(): void {
+        var cells: Array<Cell> = this.GetCells();
+        for(var c of cells){
+            this.appendChild(c);
+        }
+    }
+}
+
+window.customElements.define('data-table-row', DataTableRow, { extends: 'tr' });
+
+/* export abstract class DataTableRow extends HTMLTableRowElement {
     
-    values: Object;
+    //values: Object;
     private rowNum: number;
     private cellsList: Array<DataTableCell>;
+    private config: ConfigRow;
 
-    constructor(rowNum?:number){
+    constructor(config: ConfigRow){
+        //rowNum?:number
         super();
+        this.SetConfig(config);
         this.SetCells(new Array<DataTableCell>());
-        this.SetRowNum(rowNum);
+        //this.SetRowNum(rowNum);
+    }
+
+    private SetConfig(config: ConfigRow): void {
+        this.config = config;
+    }
+
+    public GetConfig(): ConfigRow{
+        return this.config;
     }
 
     private SetRowNum(rowNum: number){
@@ -22,7 +52,7 @@ export abstract class DataTableRow extends HTMLTableRowElement{
         return this.rowNum;
     }
 
-    public AddCell(cell: DataTableCell){
+    public AddCell(cell: DataTableCell) {
         console.log(this.GetRowNum().toString());
         cell.setAttribute('row', this.GetRowNum().toString() );
         this.cellsList.push(cell);
@@ -37,7 +67,7 @@ export abstract class DataTableRow extends HTMLTableRowElement{
     }
 
     public GetRowNumCell(): DataTableCell{
-        var cell: DataTableCell = this.cellsList.find( e =>{ return e.GetCellName() === DataTable.ROW_NUM_COLUMN.data});
+        var cell: DataTableCell = this.cellsList.find( e =>{ return e.GetCellName() === DataTable.ROW_NUM_COLUMN.data });
         return cell;
     }
 
@@ -49,7 +79,19 @@ export abstract class DataTableRow extends HTMLTableRowElement{
         return cell;
     }
 
+    public GetData(): any {
+        var ret: any = {};
+        var cells: Array<DataTableCell> = this.GetCells();
+
+        for(var c of cells){
+            var field: string = c.GetCellName();
+            //ret[field] = c.GetInput().GetValue();
+        }
+
+        return ret;
+    }
+
     public abstract Draw(): void
 
-}
+} */
 

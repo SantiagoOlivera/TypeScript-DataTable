@@ -1,11 +1,14 @@
 import { ConfigDataTable } from "../Config/ConfigDataTable";
+import { ConfigModal } from "../Config/ConfigModal";
 import { DataTableModal } from "./DataTableModal";
 
 export class DataTableEditableAddRowModal extends DataTableModal {
-    
-    constructor(IdModal:string, Title: string, Config: ConfigDataTable ){
-        super(IdModal, Title, Config);
+    constructor(config: ConfigModal){
+        super(config);
     }
+    /* constructor(IdModal:string, Title: string, Config: ConfigDataTable ){
+        super(IdModal, Title, Config);
+    } */
 
 }
 

@@ -1,28 +1,24 @@
 import { DataTableCell } from "../Cell/DataTableCell";
+import { ConfigRow } from "../Config/ConfigRow";
 import { DataTableRow } from "./DataTableRow";
 
 export class DataTableRowEmpty extends DataTableRow{
+
     public static EMPTY_ROW_TEXT: string = 'No data';
-    private colSpan: number;
-    constructor(colSpan: number){
-        super();
-        this.SetColSpan(colSpan);
+
+    constructor(config: ConfigRow){
+        super(config);
         this.Draw();
     }
 
-    private SetColSpan(colSpan: number){
-        this.colSpan = colSpan;
-    }
-
-    public GetColSpan(): number{
-        return this.colSpan;
-    }
-
     public Draw(): void {
+        
         var td: HTMLElement = document.createElement('td');
-        td.setAttribute('colspan', this.GetColSpan().toString());
+        td.setAttribute('colspan', this.GetConfig().GetColSpan().toString());
+        
         td.innerHTML = DataTableRowEmpty.EMPTY_ROW_TEXT;
         td.className = 'text-center';
+
         this.appendChild(td);
     }
 }

@@ -1,8 +1,10 @@
 import { ConfigButton } from "../Config/ConfigButton";
 import { ConfigInput } from "../Config/ConfigInput";
+import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
+import { Program } from "../Program/Program";
 
 export class InputButton extends HTMLButtonElement implements IDraw, IInput {
     
@@ -14,56 +16,53 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput {
         //html?: HTMLElement, str?: string
         super();
         this.SetConfig(config);
-        //this.className = 'btn btn-success';
-        var className: string = config.GetClassName();
+
+        var className: string = Program.bootstrap.BUTTON_SUCCESS_SMALL;
         var title: string = config.GetTitle();
+        var value: any = config.GetValue();
+        var innerHTML: string = config.GetInnerHTML();
 
         this.className = className;
-        if(!Functions.IsNullOrEmpty(title)){
+        if(!Functions.IsNullOrEmpty(value)){
 
         }
-        /* if(!Functions.IsNullOrEmpty()){
 
-        } */
-        /* if(html){
-            this.SetHtml(html);
+        if(!Functions.IsNullOrEmpty(innerHTML)){
+            var html: string = this.GetConfig().GetInnerHTML();
+            this.append(html);
         }
-        if(str){
-            this.SetStr(str);
-        } */
+        
         this.Draw();
     }
-    
+
+    public GetForm(): Form {
+        throw new Error("Method not implemented.");
+    }
     private SetConfig(config: ConfigInput): void {
         this.config = config;
     }
-
     public GetConfig(): ConfigInput {
         return this.config;
     }
-    
-    GetHTMLElement(): HTMLElement {
+    public GetHTMLElement(): HTMLElement {
         return this;
     }
-
-    SetValue(value: any): void {
-        throw new Error("Method not implemented.");
+    public SetValue(value: any): void {
+        
     }
-    GetValue() {
+    public GetValue() {
         return this.GetStr();
     }
-    Supr(): void {
+    public Supr(): void {
         throw new Error("Method not implemented.");
     }
-
-
-    Draw(): void {
-        var html: HTMLElement = this.GetHtml();
+    public Draw(): void {
+        /* var html: string = this.GetConfig().GetInnerHTML();
         if(html){
-            this.appendChild(html);
+            this.append(html);
         } else {
             this.innerHTML = this.GetStr();
-        }
+        } */
     }
 
     private SetHtml(html: HTMLElement):void{
@@ -80,7 +79,7 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput {
         return this.html;
     }
 
-    private SetStr(str: string):void {
+    private SetStr(str: string): void {
         this.str = str;
     }
 
@@ -88,11 +87,11 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput {
         return this.str;
     }
 
-    Focus(): void {
+    public Focus(): void {
         this.focus();
     }
 
-    IsFocusable(): boolean {
+    public IsFocusable(): boolean {
        return true;
     }
 
@@ -109,7 +108,9 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput {
         return this.hidden;
     }
     
-
+    public Empty(): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 window.customElements.define('input-button', InputButton, { extends: 'button' });

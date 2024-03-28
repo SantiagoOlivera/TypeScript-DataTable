@@ -2,9 +2,11 @@ import IMask from 'imask';
 import { Input } from "./Input";
 import { ConfigInput } from '../Config/ConfigInput';
 import { Functions } from '../Functions/Functions';
+import { Form } from '../Form/Form';
 
 
-export class InputNumber extends Input{
+export class InputNumber extends Input {
+    
     
     public static MSG_ERROR_NUMERIC_VALUE_INVALID: string = "Error: invalid numeric value";
     public static DEFAULT_DECIMALS: number = 0;
@@ -65,16 +67,29 @@ export class InputNumber extends Input{
             this.SetMaxValue(maxValue);
         }
 
+        this.SetOnInput();
+        this.InitMask();
+
         var value: number = config.GetValue();
         if(!Functions.IsNullOrEmpty(value)){
             this.SetValue(value);
         }else{
             this.SetValue(null);
         }
-        
 
-        this.Draw();
+    }
 
+    private SetOnInput(): void {
+        var defualtValue: any = this.GetConfig().GetDefaultValue();
+        if(!Functions.IsNullOrEmpty(defualtValue)) {
+            this.addEventListener('change', function(event: Event){
+                var input: InputNumber = <InputNumber>event.target;
+                var value: any = input.GetValue();
+                if(Functions.IsNullOrEmpty(value)){
+                    input.SetValue(defualtValue);
+                }
+            });
+        }
     }
 
     private SetMaxValue(maxValue: number): void{
@@ -118,14 +133,25 @@ export class InputNumber extends Input{
 
     public SetValue(value: number): void {
         var val: string = '';
-        if(value){
-            val = value.toString().replace('.', this.GetDecimalsSeparator());
+        if(!Functions.IsNullOrEmpty(value)){
+            val = value
+                .toFixed(this.GetDecimals())
+                .replace('.', this.GetDecimalsSeparator());
         }
+
         this.value = val;
+        if(!Functions.IsNullOrEmpty(this.mask)){
+            this.mask.updateValue();
+            this.value = this.mask._value;
+        }
+
     }
 
     public GetValue(): number{
         var val: number = this.mask[this.props.MASKED][this.props.NUMBER];
+        if(Functions.IsNullOrEmpty(this.value)){
+            val = null;
+        }
         //return this.GetNumValue();
         return val;
     }
@@ -137,12 +163,12 @@ export class InputNumber extends Input{
         return this.minValue;
     }
 
-    public Draw(): void {
+    private InitMask() {
 
         var decimals: number = this.GetDecimals();
         var decimalsSeparator: string = this.GetDecimalsSeparator();
         var thousandsSeparator: string = this.GetThousandSeparator();
-        
+
         this.mask = IMask(this, {
             mask: Number, 
             scale: decimals,   
@@ -154,29 +180,15 @@ export class InputNumber extends Input{
             min: this.minValue,
             max: this.maxValue,
         });
+    }
 
-        /* this.addEventListener('change', function(event){
-            debugger;
-            var input = <InputNumber>event.target;
-            var ds: string = input.GetDecimalsSeparator();
-            var decimals: number = input.GetDecimals();
+    public Draw(): void {
 
-            var split = input.value.toString().split(ds);
+        
+        
+        
 
-            if(split.length > 1){
-                var sl = split[1].length;
-                if(sl !== decimals){
-                    input.value = split[0] + ds + split[1].padEnd(decimals ,'0');
-                }
-                
-            }
-        }); */
-        /* this.value = '';
-        var value = this.GetValue();
-        if(value) {
-            this.value = this.convertString(value);
-        } */
-
+        
     }
 
     public Supr(): void {
@@ -191,7 +203,7 @@ export class InputNumber extends Input{
     }
 
     public GetHTMLElement(): HTMLElement {
-        throw new Error("Method not implemented.");
+        return this;
     }
 
     public IsFocusable(): boolean {
@@ -213,6 +225,12 @@ export class InputNumber extends Input{
     }
     public IsHidden(): boolean {
         return this.hidden;
+    }
+    public GetForm(): Form {
+        throw new Error('Method not implemented.');
+    }
+    public Empty(): void {
+        throw new Error('Method not implemented.');
     }
     
 }

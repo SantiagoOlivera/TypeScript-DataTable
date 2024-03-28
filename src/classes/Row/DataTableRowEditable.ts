@@ -1,27 +1,27 @@
 import { DataTableCell } from "../Cell/DataTableCell";
-import { DataTableCellEditable } from "../Cell/DataTableCellEditable";
-import { DataTableEditable } from "../DataTable/DataTableEditable";
+/* import { DataTableCellEditable } from "../Cell/DataTableCellEditable"; */
+import { ConfigRow } from "../Config/ConfigRow";
 import { IInput } from "../Interfaces/IInput";
 import { ISelectable } from "../Interfaces/ISelectable";
 import { DataTableRow } from "./DataTableRow";
 
-export class DataTableRowEditable extends DataTableRow implements ISelectable {
+/* export class DataTableRowEditable extends DataTableRow implements ISelectable {
     
-    private value: string
-    selected: boolean = false;
-    toggleSelect: boolean = false;
-    classSelected: string = 'selected';
+    private value: string;
+    private selected: boolean = false;
+    private toggleSelect: boolean = false;
+    private classSelected: string = 'selected';
     private readonly ROW_NUM = 'rowNum';
 
-    SetToggleSelect(toggleSelect: boolean){
+    private SetToggleSelect(toggleSelect: boolean){
         this.toggleSelect = toggleSelect;
     }
 
-    IsSelected(): boolean {
+    public IsSelected(): boolean {
         return this.selected;
     }
 
-    Select(): void {
+    public Select(): void {
         console.log(this);
         if(this.IsSelected()){
             this.Deselect();
@@ -31,26 +31,31 @@ export class DataTableRowEditable extends DataTableRow implements ISelectable {
         }
     }
  
-    Deselect(): void {
+    public Deselect(): void {
         this.classList.remove(this.classSelected);
         this.selected = false;
     }
 
-    constructor(
+    constructor( config: ConfigRow ) {
+        super(config);
+
         rowNum:number, 
         cells: Array<DataTableCell>, 
         select?:boolean, 
-        toggleSelect?:boolean
-    ){
-        super(rowNum);
+        toggleSelect?:boolean 
+        //super(rowNum);
+        
+        
         if(cells){
             this.SetCells(cells);
         }else{
             this.SetCells(new Array<DataTableCellEditable>());
         }
+
         if(select){
             this.SetSelectEvent();
         }
+
         if(toggleSelect){
             this.SetToggleSelect(true);
         }
@@ -80,19 +85,6 @@ export class DataTableRowEditable extends DataTableRow implements ISelectable {
         }
     }
 
-    
-    public GetData(): any {
-        var o: any = {};
-        var cells: Array<DataTableCellEditable> = <Array<DataTableCellEditable>>this.GetCells();
-
-        for(var c of cells){
-            var field: string = c.GetCellName();
-            o[field] = c.GetInput().GetValue();
-        }
-
-        return o;
-    }
-
     public GetRowStatusCell(): DataTableCellEditable {
         
         var cells: Array<DataTableCell> = this.GetCells();
@@ -111,4 +103,4 @@ export class DataTableRowEditable extends DataTableRow implements ISelectable {
 
 }
 
-window.customElements.define('data-table-row-editable', DataTableRowEditable, { extends: 'tr' });
+window.customElements.define('data-table-row-editable', DataTableRowEditable, { extends: 'tr' }); */

@@ -19,7 +19,7 @@ export class IconButton extends Button {
         var icon: string = config.GetIcon();
         var title: string = config.GetTitle();
         var className: string = config.GetClassName();
-        var width: string = config.GetWidth();
+        var width: string = config.GetWidth() + 'px';
         var type: string = config.GetType();
 
 

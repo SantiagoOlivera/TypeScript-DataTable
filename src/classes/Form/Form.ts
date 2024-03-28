@@ -31,7 +31,7 @@ export abstract class Form extends HTMLFormElement implements IDraw, IForm, IInp
     readonly inputTypes = {
         TEXT: 'text',
         NUMBER: 'number',
-        LIVE_SEARCH: 'liveSerach',
+        LIVE_SEARCH: 'livesearch',
         SELECT: 'select',
         DATE: 'date',
         YEAR: 'year',
@@ -47,48 +47,99 @@ export abstract class Form extends HTMLFormElement implements IDraw, IForm, IInp
     private config: ConfigForm;
     private inputs: Array<IInput>;
     private buttons: Array<Button>;
+    private data: any;
+    private index: number;
+    private isMainForm: boolean;
 
     constructor(config: ConfigForm) {
         super();
         this.SetConfig(config);
+        this.SetData(config.GetData());
+        this.SetIndex(0);
         this.SetClassName(config.GetClassName());
         this.CreateInputs();
     }
+    
+    public GetForm(): Form {
+        throw new Error("Method not implemented.");
+    }
 
-    GetHTMLElement(): HTMLElement {
+    /* private SetIsMainForm(isMainForm: boolean): void{
+        this.isMainForm = isMainForm;
+    }
+
+    public IsMainForm(): boolean {
+        return this.isMainForm;
+    } */
+
+    private SetData(data: Array<any>): void {
+        this.data = data;
+    }
+
+    public SetIndex(index: number): void {
+        this.index = index;
+    }
+
+    public GetIndex(): number {
+        return this.index;
+    }
+
+    public Data(): any {
+        return this.data;
+    }
+
+
+    public GetHTMLElement(): HTMLElement {
         throw new Error("Method not implemented.");
     }
-    SetValue(value: any): void {
-        throw new Error("Method not implemented.");
+
+    public SetValue(value: any): void {
+        if(!Functions.IsNullOrEmpty(value)){
+            var inputs: Array<IInput> = this.GetInputs();
+            for(var i of inputs){
+                var name: string = i.GetConfig().GetName();
+                var v: any = value[name];
+                i.SetValue(v);
+            }
+        }else{
+            this.Empty();
+        }
     }
-    GetValue(): any {
+    public GetValue(): any {
         var ret: any = this.GetData();
         return ret;
     }
-    Supr(): void {
+    public Supr(): void {
         throw new Error("Method not implemented.");
     }
-    IsFocusable(): boolean {
+    public IsFocusable(): boolean {
         throw new Error("Method not implemented.");
     }
-    Focus(): void {
+    public Focus(): void {
         throw new Error("Method not implemented.");
     }
-    Disable(disabled: boolean): void {
+    public Disable(disabled: boolean): void {
         throw new Error("Method not implemented.");
     }
-    Hide(hidden: boolean): void {
+    public Hide(hidden: boolean): void {
         throw new Error("Method not implemented.");
     }
-    IsDisabled(): boolean {
+    public IsDisabled(): boolean {
         throw new Error("Method not implemented.");
     }
-    IsHidden(): boolean {
+    public IsHidden(): boolean {
         throw new Error("Method not implemented.");
     }
     
-    GetConfig(): Config {
+    public GetConfig(): Config {
         return this.config;
+    }
+
+    public Empty(): void {
+        var inputs: Array<IInput> = this.GetInputs();
+        for(var i of inputs){
+            i.SetValue(null);
+        }
     }
 
     public GetData(): any {
@@ -174,6 +225,7 @@ export abstract class Form extends HTMLFormElement implements IDraw, IForm, IInp
                 var input: IInput = null;
                 var config: ConfigInput = new ConfigInput(f);
                 var type: string = config.GetType();
+                var form: Form = this;
     
                 if(type === this.inputTypes.TEXT) {
                     input = new InputText(config);
@@ -188,13 +240,18 @@ export abstract class Form extends HTMLFormElement implements IDraw, IForm, IInp
                 } else if(type ===  this.inputTypes.YEAR){
                     input = new InputYear(config);
                 } else if(type === this.inputTypes.FORM) {
+                    f.data = null;
+                    
                     var cf: ConfigForm = new ConfigForm(f);
                     input = new FormEditable(cf);
                 }
-    
+
                 //input.SetPlaceHolder(placeholder);
                 if(input){
                     ret.push(input);
+                    input.GetForm = function(): Form {
+                        return form;
+                    }
                 }
             }
         }
@@ -210,6 +267,36 @@ export abstract class Form extends HTMLFormElement implements IDraw, IForm, IInp
     
     public AppendChild(e: any): void {
         this.appendChild(e);
+    }
+
+
+    public SetFormData(idx: number): void {
+        //var cf: ConfigForm = <ConfigForm>this.GetConfig();
+        //var data: any = cf.GetData();
+        var data: any = this.Data();
+        if(!Functions.IsNullOrEmpty(data)){
+            var inputs: Array<IInput> = this.GetInputs();
+            console.log("data", data, inputs);
+            if(Functions.IsObject(data)) {
+                for(var i of inputs){
+                    var name: string = i.GetConfig().GetName();
+                    var val: any = data[name];
+                    i.SetValue(val);
+                }
+            }else if(Array.isArray(data)){
+                if(data.length > 0){
+                    if(!Functions.IsNumber(idx)){
+                        idx = 0;
+                    }
+                    var d: any = data[idx];
+                    for(var i of inputs){
+                        var name: string = i.GetConfig().GetName();
+                        var val: any = d[name];
+                        i.SetValue(val);
+                    }
+                }                
+            }
+        }
     }
 
 }

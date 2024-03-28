@@ -17,10 +17,10 @@ export class ConfigForm extends Config {
     private filter: boolean;
     private floatingForm: boolean;
     private transformTable: boolean;
+    private data: any;
+    private pageLength: number;
 
-    
-
-    constructor( config:any ) {
+    constructor(config: any) {
 
         super(config);
         
@@ -29,6 +29,9 @@ export class ConfigForm extends Config {
         var filter: boolean = config.filter;
         var floatingForm: boolean = config.floatingForm;
         var transformTable: boolean = config.transformTable;
+        var data: any = config.data;
+        var pageLength: number = config.pageLength;
+        
 
         //Fields
         if( 
@@ -61,6 +64,17 @@ export class ConfigForm extends Config {
             this.SetTransformTable(false);
         }
 
+        if(!Functions.IsNullOrEmpty(data)){
+            this.SetData(data);
+        }else{
+            this.SetData(null);
+        }
+
+        if(!Functions.IsNullOrEmpty(pageLength)){
+            this.SetPageLength(pageLength);
+        }else{
+            this.SetPageLength(1);
+        }
     }
 
     //Getters
@@ -79,6 +93,12 @@ export class ConfigForm extends Config {
     public GetTransformTable(): boolean {
         return this.transformTable;
     }
+    public GetData(): any {
+        return this.data;
+    }
+    public GetPageLength(): number {
+        return this.pageLength;
+    }
 
     //Setters
     private SetButtons(buttons: Array<any>): void {
@@ -95,6 +115,12 @@ export class ConfigForm extends Config {
     }
     private SetTransformTable(transformTable: boolean): void {
         this.transformTable = transformTable;
+    }
+    private SetData(data: any): void {
+        this.data = data;
+    }
+    private SetPageLength(pageLength: number): void {
+        this.pageLength = pageLength;
     }
 
 
