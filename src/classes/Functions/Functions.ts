@@ -1,3 +1,6 @@
+import { Form } from "../Form/Form";
+import { LiveSearchOption } from "../Input/LiveSearchInput";
+
 export class Functions {
 
     private static readonly types = {
@@ -43,9 +46,17 @@ export class Functions {
     }
 
 
-    public static IsString(val: any){
+    public static IsString(val: any): boolean {
         var ret: boolean = false;
         if(typeof val === this.types.STRING){
+            ret = true;
+        }
+        return ret;
+    }
+
+    public static IsBoolean(val: any): boolean {
+        var ret: boolean = false;
+        if(typeof val === this.types.BOOLEAN){
             ret = true;
         }
         return ret;
@@ -71,7 +82,7 @@ export class Functions {
         if(val === null || val === undefined){
             ret = true;
         } else if (typeof val === this.types.STRING) {
-            if(val.length === 0){
+            if(val.trim().length === 0){
                 ret = true;
             }
         } else if(Array.isArray(val)){
@@ -129,5 +140,139 @@ export class Functions {
         }
         return ret;
     }
+
+
+    public static ToStringDate(
+        date: Date, 
+        format: string
+    ): string {
+        var ret: string = '';
+        if(!this.IsNullOrEmpty(date) && 
+            date instanceof Date
+        ){
+            if(format == 'dd/MM/yyyy'){
+                ret = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth() + 1).toString().padStart(2,'0')}/${date.getFullYear()}`;
+            } else if(format == 'd/M/yyyy'){
+                ret = `${date.getDate()}/${(date.getMonth() + 1)}/${date.getFullYear()}`;
+            } else {
+                ret = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+            }    
+        }
+        return ret;
+    }
+
+
+    public static StringFormat(str: string , ...vals: string[]) : string {
+        var ret: string = '';
+        for(var i = 0; i < vals.length; i++){
+            var val: string = vals[i];
+            if(!this.IsNullOrEmpty(val)){
+                str.replace(`{${i}}`, val);
+            }
+        }
+        
+        ret = str;
+
+        return ret;
+    }
+
+
+    
+    
+    public static ParseStringToDate(str: string): Date {
+        const sep = '  /  ';
+        var ret: Date = null;
+        if(!this.IsNullOrEmpty(str)){
+            var yearMonthDay: Array<string> = str.split(sep);
+
+            var y: number = Number.parseInt(yearMonthDay[2]);
+            var m: number = Number.parseInt(yearMonthDay[1]) - 1;
+            var d: number = Number.parseInt(yearMonthDay[0]);
+
+            ret = new Date(y, m, d);
+        }
+        return ret;
+    }
+
+    public static FormatDateToString(date: Date): string {
+        const sep = '  /  ';
+        var ret: string = `__${sep}__${sep}____`;
+        if(!Functions.IsNullOrEmpty(date)){
+            var day: any = date.getDate();
+            var month: any = date.getMonth() + 1;
+            var year: any = date.getFullYear();
+            if (day < 10) day = '0' + day;
+            if (month < 10) month = '0' + month;
+            ret = [day, month, year].join(sep);
+        }
+        return ret;
+    }
+
+    public static IsLiveSearchOption(opt: any): boolean {
+        var ret: boolean = false;
+        if(opt instanceof LiveSearchOption){
+            ret = true;
+        } else if(Functions.IsObject(opt)) {
+            var keys: number = Object.keys(opt).length;
+            if(keys === 2){
+                if( opt.hasOwnProperty('id') && 
+                    opt.hasOwnProperty('text')
+                ){
+                    ret = true;
+                }
+            }
+        }
+        return ret;
+    }
+
+
+    public static IsObjectModifided(oldVal: any, newVal: any): boolean{ 
+        var ret: boolean = false;
+        if(this.IsObject(oldVal) && this.IsObject(newVal)){
+            var keys1: Array<string> = Object.keys(oldVal)
+            var keys2: Array<string> = Object.keys(newVal);
+            if(keys1.length === keys2.length){
+                var i = 0;
+                while(i < keys1.length && !ret){
+                    var k: string = keys1[i];
+                    if(oldVal.hasOwnProperty(k) && newVal.hasOwnProperty(k)){
+                        if(
+                            this.IsObject(oldVal[k]) && 
+                            this.IsObject(newVal[k]) &&  
+                            !this.IsNullOrEmpty(oldVal[k]) &&
+                            !this.IsNullOrEmpty(newVal[k])
+                        ) {
+                            ret = this.IsObjectModifided(oldVal[k], newVal[k]);
+                        } else if(oldVal[k] !== newVal[k]){
+                            ret = true;
+                        }
+                    } else {
+                        ret = true;
+                    }
+                    i++;
+                }
+            } else {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public static AddSizes(...vals: string[]): number {
+        var ret: number = 0;
+        var val: number = 0;
+        for(var v of vals){
+            val = Number(v.replace('px', ''));
+            ret += val;
+        }
+        return ret;
+    }
+
+    public static GetForm( config: Object ): Form {
+        var ret: Form = null;
+        
+        return ret;
+    }
+
 
 }

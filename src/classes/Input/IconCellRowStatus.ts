@@ -1,57 +1,52 @@
 import { ConfigInput } from "../Config/ConfigInput";
 import { RowStatus } from "../Enum/RowStatus";
 import { Form } from "../Form/Form";
+import { Functions } from "../Functions/Functions";
 import { IInput } from "../Interfaces/IInput";
 import { IconCell } from "./IconCell";
 
 export class IconCellRowStatus extends IconCell implements IInput {
-    
-    private rowStatus: RowStatus;
-    
-    private readonly iconsClasses = {
-        UPDATED: 'bi bi-pencil-square',
-        NEW: 'bi bi-plus-lg',
-        DELETE: 'bi bi-trash3',
-        ERROR: ''
-    }
-
-    constructor(rowStatus: RowStatus){
-        super();
-        this.SetRowStatus(rowStatus);
-        this.Render();
-    }
-    
-    
-    
-    public GetConfig(): ConfigInput {
+    public Render(): void {
         throw new Error("Method not implemented.");
     }
     
+    private rowStatus: RowStatus;
+    
+    constructor(rowStatus: RowStatus){
+        super();
+        this.SetRowStatus(rowStatus);
+    }
+
+    public GetConfig(): ConfigInput {
+        throw new Error("Method not implemented.");
+    }
+
     public GetHTMLElement(): HTMLElement {
         return this;
     }
 
     public SetValue(value: RowStatus): void {
-        //throw new Error("Method not implemented.");
         this.SetRowStatus(value);
     }
+
     public GetValue() {
         return this.GetRowStatus();
     }
+
     public Supr(): void {
         throw new Error("Method not implemented.");
     }
 
-    private SetRowStatus(rowStatus: RowStatus):void{
-        this.rowStatus = rowStatus;
+    private SetRowStatus(value: RowStatus): void {
+        this.rowStatus = value;
     }
 
     private GetRowStatus(): RowStatus {
         return this.rowStatus;
     }
 
-    public Render(): void {
-        this.className = '';
+    public Draw(): void {
+       /*  this.className = '';
         var html: HTMLElement = null;
         switch(this.rowStatus){
             case RowStatus.NORMAL:
@@ -68,17 +63,15 @@ export class IconCellRowStatus extends IconCell implements IInput {
             case RowStatus.ERROR:
                 this.className = this.iconsClasses.ERROR;
                 break;
-        }
+        } */
     }
 
-    Focus(): void {
+    public Focus(): void {
         throw new Error("Method not implemented.");
     }
-
-    IsFocusable(): boolean {
+    public IsFocusable(): boolean {
         return false;
     }
-
     public Disable(disabled: boolean): void {
         //this.disabled = disabled;
     }
@@ -97,7 +90,15 @@ export class IconCellRowStatus extends IconCell implements IInput {
     public GetForm(): Form {
         throw new Error("Method not implemented.");
     }
-
+    public GetText(): string {
+        throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 window.customElements.define('icon-cell-row-status', IconCellRowStatus, { extends: 'i' });

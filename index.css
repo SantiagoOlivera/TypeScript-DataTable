@@ -20,10 +20,32 @@ input {
     outline: none;
     width: 100%;
 }
-
-td{
+th {
+    /* font-size: 0.8rem; */
+}
+tr{
+    height: 20px;
+}
+td {
     margin: 0;
     padding: 4px !important;
+    height: 100% !important;
+}
+
+form input.form-control,
+form select.form-control{
+    border-radius: 0 !important;
+}
+td input.form-control,
+td select.form-control {
+    border-radius: 0 !important;
+    border: none;
+    box-shadow: none;
+    height: 100%;
+}
+tbody td button.btn {
+    border-radius: 0;
+    height: 100%;
 }
 
 input:focus{
@@ -43,7 +65,9 @@ button{
 table tr.selected td {
     /* background-color:  rgba(13,110,253,.25) !important; */
     background-color:  rgba(0,255,85,.25) !important;
+    /* outline: 2px solid rgba(0,255,85,1); */
     /* outline: green; */
+    max-height: 40px !important;
 }
 
 .DataTableEditable{
@@ -65,9 +89,64 @@ table tr.selected td {
 .live-search-input-options-container{
 
 }
-.live-search-input-options-sub-container{
+.live-search-input-options-sub-container {
     max-height: 150px;
     overflow-x: none;
     overflow-y: auto;
+}
 
+table {
+    /* min-width: 1500px; */
+}
+.sticky-columns th:first-child, 
+.sticky-columns td:first-child {
+    background-color: red;
+    position: sticky;
+    left:0px;
+    background-color:grey;
+}
+
+table th.sticky-column,
+table td.sticky-column {
+    position: sticky;
+    z-index: 10;
+    overflow: hidden;
+    /* outline:2px solid grey; */
+}
+
+.table th, 
+.table td {
+
+    /* background-color: #64dfa2; */
+    vertical-align: middle;
+}
+/* .table td,
+.table td input, 
+.table td select,
+.table td button {
+    font-size: 0.8rem;
+}
+ */
+.required {
+    /* border-left-color: #00885b; */
+    border-left-color: #64dfa2;
+    border-left-width: thick;
+}
+
+.popover-body, 
+.popover-body .list-group {
+    padding: 0;
+}
+.popover-body .list-group .list-group-item {
+    border-color: transparent !important;
+}
+
+
+.btn-massive-update-column-header {
+    width: 22px;
+    border: none;
+    height: 25px;
+    font-size: 12px;
+    text-align: center;
+    padding: 0;
 }

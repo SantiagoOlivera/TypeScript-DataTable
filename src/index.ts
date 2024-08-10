@@ -1,25 +1,22 @@
-
-import * as $ from "jquery";
 import 'bootstrap/dist/js/bootstrap';
-import "jquery-ui/dist/jquery-ui";
 import "jquery-ui/themes/base/all.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../index.css';
-import { Form } from "./classes/Form/Form";
-import { FormEditable } from "./classes/Form/FormEditable";
 import { ConfigForm } from "./classes/Config/ConfigForm";
+import { DataForm } from "./classes/Form/DataForm";
 import { ConfigDataTable } from "./classes/Config/ConfigDataTable";
 import { DataTable } from "./classes/DataTable/DataTable";
 
 
-$(function(){
+
+/* $(function(){
     $('#resizable').resizable();
-})
+}) */
 
 export {
-    DataTable,
-    ConfigDataTable,
-    FormEditable,
+    DataForm,
     ConfigForm,
+    ConfigDataTable,
+    DataTable,
 }

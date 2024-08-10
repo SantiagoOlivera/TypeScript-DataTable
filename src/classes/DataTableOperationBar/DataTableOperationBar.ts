@@ -66,7 +66,7 @@ export class DataTableOperationBar extends HTMLDivElement {
         this.appendChild(document.createTextNode( '\u00A0' ));
 
         this.BtnSave.addEventListener('click', () => { 
-            console.log(this.GetDataTable().GetData());
+            //console.log(this.GetDataTable().GetData());
         });
     }
 
@@ -124,7 +124,7 @@ export class DataTableOperationBar extends HTMLDivElement {
             //this.OpenModalAdd();
         });
     }
-
+    
 }
 
 window.customElements.define('data-table-operation-bar', DataTableOperationBar, { extends: 'div' });

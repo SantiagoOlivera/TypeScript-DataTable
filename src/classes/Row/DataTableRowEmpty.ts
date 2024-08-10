@@ -8,7 +8,6 @@ export class DataTableRowEmpty extends DataTableRow{
 
     constructor(config: ConfigRow){
         super(config);
-        this.Draw();
     }
 
     public Draw(): void {

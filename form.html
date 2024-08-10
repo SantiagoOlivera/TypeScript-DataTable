@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
@@ -17,12 +18,14 @@
     <script>
         var container = document.querySelector('#forms');
 
-        var config1 = new window.Framework.ConfigForm({
+        var c = {
             title: 'Form test 1',
             className: 'p-2',
             filter: false,
             floatingForm: true,
             transformTable: true,
+            addElements: true,
+            rowStatus: true,
             buttons: [
                 {
                     id: 'btnSave',
@@ -49,16 +52,12 @@
                 },
             ],
             data: [
-                { text: 'TestData1', number: 10, anio: 2010 },
-                { text: 'TestData2', number: 11, anio: 2018 },
-                { text: 'TestData3', number: 12, anio: 2015 },
-                { text: 'TestData4', number: 13, anio: 2030 },
-                { 
-                    text: 'Prueba 5', number: 14.32, anio: 2031, 
-                    subform: {
-                        text: 'Test subform',
-                    }
-                },
+                { text: 'TestData1', number: 10, anio: 2010, date: new Date(), checkbox: true, liveSearch: { id: '10', text: '10 - Lexus'}, select: '1' },
+                { text: 'TestData2', number: 11, anio: 2018, date: new Date(), checkbox: false, },
+                { text: 'TestData3', number: 12, anio: 2015, date: new Date(), checkbox: false, select: '2'},
+                { text: 'TestData4', number: 13, anio: 2030, date: new Date(), checkbox: true, },
+                { text: 'Prueba 5', number: 14.32, anio: 2031, subform: { text: 'Test subform', }, checkbox: false, },
+                { text: 'Prueba 6', number: 14, anio: 2030, date: new Date(), checkbox: false, liveSearch: { id: '10', text: '10 - Lexus' } },
             ], 
             fields:[
                 {
@@ -74,6 +73,38 @@
                     hidden: false,
                     className: 'col-6 p-2',
                     maxLength: 10,
+                    massiveUpdate: true,
+                    defaultValue: 'TEST',
+                },
+                {
+                    id: 'checkbox',
+                    label: 'Checkbox',
+                    title: 'Checkbox',
+                    placeholder: 'Checkbox',
+                    type: 'checkbox',
+                    name: 'checkbox',
+                    data: 'checkbox',
+                    value: false,
+                    required: false,
+                    disabled: false,
+                    hidden: false,
+                    massiveUpdate: true,
+                    className: 'col-6 p-2',
+                },
+                {
+                    id: 'checkboxswitch',
+                    label: 'Checkbox switch',
+                    title: 'Checkbox switch',
+                    placeholder: 'Checkbox switch',
+                    type: 'checkbox-switch',
+                    name: 'checkboxswitch',
+                    data: 'checkboxswitch',
+                    value: false,
+                    required: false,
+                    disabled: false,
+                    hidden: false,
+                    massiveUpdate: true,
+                    className: 'col-6 p-2',
                 },
                 {
                     label: 'Numerico',
@@ -107,15 +138,58 @@
                     maxLength: 4,
                 },
                 {
-                    label: 'Formulario',
+                    label: 'Date',
+                    title: 'Date',
+                    placeholder: 'Date',
+                    type: 'date',
+                    name: 'date',
+                    data: 'date',
+                    required: false,
+                    editable: true,
+                    disabled: false,
+                    hidden: false,
+                    className: 'col-6 p-2',
+                },
+                { 
+                    label: 'Select',
+                    title: 'Select', 
+                    name: 'select',
+                    data:'select', 
+                    type:'select', 
+                    disabled: false, 
+                    hidden: false,
+                    editable: true,
+                    allowEmpty: false,
+                    className: 'col-6 p-2',
+                    options: [
+                        {id:'', text:''},
+                        {id:'1', text:'Option 1'},
+                        {id:'2', text:'Option 2'},
+                        {id:'3', text:'Option 3'},
+                    ],
+                },
+                { 
+                    label: 'Live search',
+                    title: 'Live search', 
+                    name: 'liveSearch',
+                    data: 'liveSearch', 
+                    type:'livesearch', 
+                    disabled: false, 
+                    hidden: false, 
+                    editable: true,
+                    className: 'col-6 p-2',
+                },
+                {
+                    label: 'Sub-Formulario',
                     title: 'Sub-Form',
                     type: 'form',
                     name: 'subform',
-                    data: 'form',
+                    data: 'subform',
                     value: null,
                     hidden: false,
                     className: '',
                     floatingForm: true,
+                    formtype: 'single',
                     fields: [
                         {
                             label: 'Text',
@@ -148,13 +222,11 @@
                     ],
                 },
             ],
-        });
-
-        var form1 = new window.Framework.FormEditable(config1);
-
+        };
+        
+        var config1 = new window.Framework.ConfigForm(c);
+        var form1 = new window.Framework.DataForm(config1);
         container.appendChild(form1);
-
-        console.log(form1);
     </script>
 </body>
 </html>

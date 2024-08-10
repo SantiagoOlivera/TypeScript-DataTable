@@ -20,89 +20,27 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
     private txtNumberOfElements: InputText;
     private btnNext: IconButton;
 
+
+    private numberOfElements: number;
+
+
     constructor(config: ConfigInput) {
         super();
         this.SetConfig(config);
 
-        var maxValue: number = this.config.GetValue();
-        var type: string = this.config.GetType();
-
-        this.btnPrev = new IconButton(new ConfigButton({
-            type: 'button',
-            icon: 'bi bi-caret-left-fill',
-            className: 'btn btn-outline-secondary',
-            width: 35,
-        }));
-
-        this.txtPageNumber = new InputNumber(new ConfigInput({
-            type: 'text',
-            className: 'text-center',
-            maxWidth: 60,
-            minWidth: 60,
-            align: 'right',
-            value: 1,
-            minValue: 1,
-            maxValue: maxValue,
-            defaultValue: 1,
-        }));
-
-        this.txtNumberOfElements = new InputText(new ConfigInput({
-            type: 'text',
-            className: 'text-center',
-            maxWidth: 60,
-            minWidth: 60,
-            align: 'center',
-            editable: false,
-            value: maxValue,
-            prefix: 'de ',
-        }));
-
-        this.btnNext = new IconButton(new ConfigButton({
-            type: 'button',
-            icon: 'bi bi-caret-right-fill',
-            className: 'btn btn-outline-secondary',
-            width: 35,
-        }));
-
-        var ipn: InputNumber = this.txtPageNumber;
-        this.btnPrev.addEventListener('click', function(event: Event){
-            var value: number = ipn.GetValue();
-            if(value > 1){
-                ipn.SetValue(value-1);
-                ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
-            }
-        });
-
-        this.btnNext.addEventListener('click', function(event: Event){
-            var value: number = ipn.GetValue();
-            if(value < maxValue){
-                ipn.SetValue(value+1);
-                ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
-            }
-        });
-
-        this.txtPageNumber.addEventListener('change', function(event: Event) {
-            ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
-        });
-
-        this.txtPageNumber.addEventListener('keyup', function(event: KeyboardEvent) {
-            var input: InputNumber = <InputNumber>event.target;
-            var value: number = input.GetValue();
-            var keycode: number = event.keyCode;
-            if(keycode === Program.keycodes.KEY_DOWN) {
-                if(value > 1){
-                    input.SetValue(value-1);
-                    input.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
-                }
-            } else if (keycode === Program.keycodes.KEY_UP) {
-                if(value < maxValue){
-                    input.SetValue(value+1);
-                    input.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
-                }
-            }
-        });
+        var maxValue: number = (<ConfigInput>this.GetConfig()).GetValue();
+        this.SetNumberOfElements(maxValue);
 
 
+        this.SetTxtPageNumber();
+        this.SetTxtNumberOfElements();
+        this.SetButtonPrevious();
+        this.SetButtonNext();
+        this.SetClassName();
+        this.Draw();
+    }
+
+    private SetClassName(): void {
         this.style.width = this.GetConfig().GetWidth() + 'px';
         var align: string = this.GetConfig().GetAlign();
         this.classList.add(
@@ -116,15 +54,119 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
         }else if(Program.align.LEFT){
             
         }
-    
-
-        this.Draw();
-      
     }
-    GetForm(): Form {
+
+    public ChangePage(index: number, triggerEvent?: boolean): void {
+        this.txtPageNumber.SetValue(index);
+        if(triggerEvent){
+            this.txtPageNumber.dispatchEvent(new Event(Program.events.CHANGE_PAGE, {bubbles:true}));
+        }
+    }
+
+    private SetNumberOfElements(length: number): void {
+        this.numberOfElements = length;
+        if(!Functions.IsNullOrEmpty(this.txtNumberOfElements)){
+            this.txtNumberOfElements.SetValue(this.numberOfElements.toString());   
+        }
+    }
+
+    public GetNumberOfElements(): number {
+        return this.numberOfElements;
+    }
+
+    private SetTxtNumberOfElements(): void {
+        var numberOfElements: number = this.GetNumberOfElements();
+        this.txtNumberOfElements = new InputText(new ConfigInput({
+            type: 'text',
+            className: 'text-center',
+            maxWidth: 60,
+            minWidth: 60,
+            align: 'center',
+            editable: false,
+            value: numberOfElements,
+            prefix: 'de ',
+        }));
+    }
+
+    private SetButtonPrevious(): void {
+        var ipn: InputNumber = this.txtPageNumber;
+        this.btnPrev = new IconButton(new ConfigButton({
+            type: 'button',
+            icon: 'bi bi-caret-left-fill',
+            className: 'btn btn-outline-secondary',
+            width: 35,
+        }));
+        this.btnPrev.addEventListener(Program.events.CLICK, function(event: Event){
+            var value: number = ipn.GetValue();
+            if(value > 1){
+                ipn.SetValue(value-1);
+                ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
+            }
+        });
+    }
+
+    private SetButtonNext(): void {
+        var ipc: InputPageChager = this;
+        var ipn: InputNumber = this.txtPageNumber;
+        this.btnNext = new IconButton(new ConfigButton({
+            type: 'button',
+            icon: 'bi bi-caret-right-fill',
+            className: 'btn btn-outline-secondary',
+            width: 35,
+        }));
+        this.btnNext.addEventListener(Program.events.CLICK, function(event: Event) {
+            var value: number = ipn.GetValue();
+            if(value < ipc.GetNumberOfElements()){
+                ipn.SetValue(value+1);
+                ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
+            }
+        });
+    }
+
+    private SetTxtPageNumber(): void {
+        var ipc: InputPageChager = this;
+        this.txtPageNumber = new InputNumber(new ConfigInput({
+            type: 'text',
+            className: 'text-center',
+            maxWidth: 60,
+            minWidth: 60,
+            align: 'right',
+            value: 1,
+            minValue: 1,
+            defaultValue: 1,
+        }));
+        var ipn: InputNumber = this.txtPageNumber;
+        this.txtPageNumber.addEventListener('change', function(event: Event) {
+            ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
+        });
+        this.txtPageNumber.addEventListener('keyup', function(event: KeyboardEvent) {
+            var input: InputNumber = <InputNumber>event.target;
+            var value: number = input.GetValue();
+            var keycode: number = event.keyCode;
+            if(keycode === Program.keycodes.KEY_DOWN) {
+                if(value > 1){
+                    input.SetValue(value-1);
+                    input.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
+                }
+            } else if (keycode === Program.keycodes.KEY_UP) {
+                if(value < ipc.GetNumberOfElements()){
+                    input.SetValue(value+1);
+                    input.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
+                }
+            }
+        });
+    }
+
+    public AddNewPage(): void {
+        //this.SetNumberOfElements()
+        var length: number = this.GetNumberOfElements()+1;
+        this.SetNumberOfElements(length);
+    }
+
+    public GetForm(): Form {
         throw new Error("Method not implemented.");
     }
-    Empty(): void {
+    public Empty(): void {
         throw new Error("Method not implemented.");
     }
 
@@ -132,7 +174,7 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
         this.config = config;
     }
 
-    Draw(): void {
+    public Draw(): void {
         //this.className = 'input-group input-group-sm mb-3';
         this.txtNumberOfElements.Disable(true);
         this.appendChild(this.btnPrev);
@@ -141,43 +183,49 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
         this.appendChild(this.btnNext);
     }
 
-    GetHTMLElement(): HTMLElement {
+    public GetHTMLElement(): HTMLElement {
         throw new Error("Method not implemented.");
     }
-    SetValue(value: any): void {
+    public SetValue(value: any): void {
         throw new Error("Method not implemented.");
     }
-    GetValue() {
+    public GetValue() {
         throw new Error("Method not implemented.");
     }
-    Supr(): void {
+    public Supr(): void {
         throw new Error("Method not implemented.");
     }
-    IsFocusable(): boolean {
+    public IsFocusable(): boolean {
         throw new Error("Method not implemented.");
     }
-    Focus(): void {
+    public Focus(): void {
         throw new Error("Method not implemented.");
     }
-    Disable(disabled: boolean): void {
+    public Disable(disabled: boolean): void {
         throw new Error("Method not implemented.");
     }
-    Hide(hidden: boolean): void {
+    public Hide(hidden: boolean): void {
         throw new Error("Method not implemented.");
     }
-    IsDisabled(): boolean {
+    public IsDisabled(): boolean {
         throw new Error("Method not implemented.");
     }
-    IsHidden(): boolean {
+    public IsHidden(): boolean {
         throw new Error("Method not implemented.");
     }
-    GetConfig(): Config {
+    public GetConfig(): Config {
         return this.config;
     }
+    public GetText(): string {
+        throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        throw new Error("Method not implemented.");
+    }
     
-
-
-
 }
 
 window.customElements.define('input-page-changer', InputPageChager, { extends: 'div' });

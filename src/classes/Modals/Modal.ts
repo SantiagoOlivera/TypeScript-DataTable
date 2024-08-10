@@ -7,6 +7,7 @@ import { ConfigForm } from "../Config/ConfigForm";
 import { ConfigButton } from "../Config/ConfigButton";
 import { ConfigModal } from "../Config/ConfigModal";
 import { Functions } from "../Functions/Functions";
+import { Program } from "../Program/Program";
 
 export abstract class Modal extends HTMLDivElement {
 
@@ -15,6 +16,10 @@ export abstract class Modal extends HTMLDivElement {
     private buttons: Array<Button>;
     private config: ConfigModal;
     private modal: bootstrap.Modal;
+
+    private modalHeader: HTMLDivElement;
+    private modalBody: HTMLDivElement;
+    private modalFooter: HTMLDivElement;
 
     private readonly classes = {
         MODAL: 'modal',
@@ -28,12 +33,18 @@ export abstract class Modal extends HTMLDivElement {
     constructor(config: ConfigModal) {
         super();
         this.SetConfig(config);
+        this.SetModalId();
+        this.SetTitle();
+        this.SetButtons();
+        this.Init();
+    }
 
-        var id: string = config.GetId();
-        var title: string = config.GetTitle();
-        var buttons: Array<Button> = config.GetButtons();
+    private SetConfig(config: ConfigModal){
+        this.config = config;
+    }
 
-
+    private SetButtons(): void {
+        var buttons: Array<Button> = this.GetConfig().GetButtons();
         if(!Functions.IsNullOrEmpty(buttons)){
             this.buttons = new Array<Button>();
             for(var b of buttons) {
@@ -42,31 +53,22 @@ export abstract class Modal extends HTMLDivElement {
                 this.AddButton(btn);
             }
         }
-
-        this.SetModalId(id);
-        this.SetTitle(title);
-
-        this.Init();
-    }
-
-    private SetConfig(config: ConfigModal){
-        this.config = config;
     }
 
     public GetConfig(): ConfigModal {
         return this.config;
     }
 
-    private SetTitle(Title: string):void{
-        this.Title = Title;
+    private SetTitle():void{
+        this.Title = this.GetConfig().GetTitle();
     }
 
     public GetTitle():string{
         return this.Title;
     }
 
-    private SetModalId(ModalId: string):void{
-        this.ModalId = ModalId;
+    private SetModalId():void{
+        this.ModalId = this.GetConfig().GetId();
     }
 
     private GetModalId():string{
@@ -95,9 +97,34 @@ export abstract class Modal extends HTMLDivElement {
         this.SetModal();
         this.SetHeader();
         this.SetFooter();
+
+        var beforeClose: Function = this.GetConfig().GetBeforeClose();
+        if(!Functions.IsNullOrEmpty(beforeClose)){
+            this.addEventListener(Program.events.BEFORE_CLOSE_MODAL, function(){
+                beforeClose();
+            });
+        }
+        
+        this.addEventListener(Program.events.AFTER_CLOSE_MODAL, function(){
+            var afterClose: Function = this.GetConfig().GetAfterClose();
+            if(!Functions.IsNullOrEmpty(afterClose)){
+                afterClose();
+            }
+        });
     }
 
-    private SetModal(){
+    private SetModal(): void {
+
+        /* this.modalHeader = document.createElement('div');
+        this.modalHeader.className = 'modal-header';
+        
+        this.modalBody = document.createElement('div');
+        this.modalBody.className = 'modal-body row';
+
+        this.modalFooter = document.createElement('div');
+        this.modalBody.className = 'modal-footer'; */
+
+
         this.innerHTML = `
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
@@ -139,7 +166,6 @@ export abstract class Modal extends HTMLDivElement {
 
     private SetFooter(){
         var footer: Element = this.GetFooter();
-
         if(!Functions.IsNullOrEmpty(this.buttons)) {
             for(var b of this.buttons) {
                 footer.appendChild(b);
@@ -152,7 +178,7 @@ export abstract class Modal extends HTMLDivElement {
         return ret;
     }
 
-    private GetHeader():Element{
+    private GetHeader(): Element {
         var ret: Element = this.getElementsByClassName('modal-header')[0];
         return ret;
     }

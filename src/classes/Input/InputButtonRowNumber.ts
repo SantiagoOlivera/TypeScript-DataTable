@@ -10,7 +10,7 @@ export class InputButtonRowNumber extends InputButton {
         super(config);
         this.addEventListener('click', function( event: Event ){
             var btn: InputButtonRowNumber = <InputButtonRowNumber>event.target;
-            btn.GetRow().Select();
+            //btn.GetRow().Select();
             event.stopPropagation();
         });
     }

@@ -2,7 +2,9 @@ import { ConfigInput } from "../Config/ConfigInput";
 import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
+import { IFocusable } from "../Interfaces/IFocusable";
 import { IInput } from "../Interfaces/IInput";
+import { Program } from "../Program/Program";
 
 export abstract class Input extends HTMLInputElement implements IInput, IDraw {
 
@@ -18,26 +20,15 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
     constructor(config: ConfigInput){
         super();
         this.SetConfig(config);
-        this.SetType('text');
+        this.SetType();
         this.SetPlaceHolder(config.GetPlaceHolder());
-        this.SetMaxLength(config.GetMaxLength());
         //this.SetClassName();
         this.SetStyle();
         this.classList.add(this.bootrapClasses.FORM_CONTROL);
         this.classList.add(this.bootrapClasses.FORM_CONTROL_SM);
     }
     
-    
 
-    
-
-
-
-
-
-
-    public abstract Focus(): void 
-    public abstract IsFocusable(): boolean 
     public abstract GetHTMLElement(): HTMLElement 
     public abstract SetValue(value: any): void 
     public abstract GetValue(): any    
@@ -47,8 +38,14 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
     public abstract Hide(hidden:boolean): void 
     public abstract IsDisabled(): boolean 
     public abstract IsHidden(): boolean 
+    public abstract IsEditable(): boolean 
     public abstract Empty(): void 
     public abstract GetForm(): Form
+    public abstract GetText(): string 
+    public abstract SetDefault(): void
+    public abstract IsFocusable(): boolean
+    public abstract Focus(): void
+    
 
     
     public GetConfig() : ConfigInput {
@@ -61,14 +58,10 @@ export abstract class Input extends HTMLInputElement implements IInput, IDraw {
     private SetConfig(config: ConfigInput):void {
         this.config = config;
     }
-    private SetType(type: string): void{
-        this.type = type;
+    private SetType(): void {
+        this.type = 'text';
     }
-    private SetMaxLength(maxLength: number): void{
-        if(!Functions.IsNullOrEmpty(maxLength)){
-            this.maxLength = maxLength;
-        }
-    }
+    
     private SetPlaceHolder(text: string){
         var t: string = '';
         if(!Functions.IsNullOrEmpty(text)) {

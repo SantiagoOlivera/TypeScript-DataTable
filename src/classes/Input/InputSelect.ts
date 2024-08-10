@@ -7,7 +7,7 @@ import { Program } from "../Program/Program";
 import { Input } from "./Input";
 import { OptionSelect } from "./OptionSelect";
 
-export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
+export class InputSelect extends HTMLSelectElement implements IInput, IDraw {
 
     private readonly HTML_OPTION: string = 'option';
 
@@ -17,38 +17,18 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     
     constructor(config: ConfigInput){
         super();
-        
-        var className: string = config.GetClassName() + ' ' + Program.classes.FORM_CONTROL_SMALL;
-        var opt: string = config.GetValue();
-
         this.SetConfig(config);
-
-
-        if(Functions.IsNullOrEmpty(opt)){
-            opt = null;
-        }
-        var options: Array<any> = config.GetOptions();
-        var opts: Array<OptionSelect> = [];
-        if(!Functions.IsNullOrEmpty(options)){
-            for(var o of options) {
-                opts.push(new OptionSelect(o.id, o.text))
-            }
-        }
-
-        
-        this.SetClassName(className);
-        this.SetOptions(opts);
-        this.SetOpt(opt);
-
-
+        this.SetClassName();
+        this.SetOptions();
         this.Draw();
-
     }
+    
+    
     public GetForm(): Form {
         throw new Error("Method not implemented.");
     }
     public Empty(): void {
-        throw new Error("Method not implemented.");
+        this.SetValue(null);
     }
 
     public GetConfig(): ConfigInput {
@@ -59,8 +39,8 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
         this.config = config;
     }
 
-    private SetClassName(className:string):void{
-        this.className = className;
+    private SetClassName(): void {
+        this.className = `${Program.classes.FORM_CONTROL_SMALL}`;
     }
     
     public GetHTMLElement(): HTMLElement {
@@ -68,38 +48,44 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     }
 
     public Draw(): void {
-
-        for(var o of this.optionsList){
-
+        for(var o of this.optionsList) {
             var opt: HTMLOptionElement = <HTMLOptionElement>document.createElement(this.HTML_OPTION);
-
-            var value: string =  o.GetValue();
+            var value: string = o.GetValue();
             opt.value = value;
             opt.innerHTML = o.GetDescription();
-            
             //console.log("VALUE OPT:" + opt.value, "VALUE:" + this.GetValue());
-
             if(value === this.GetOpt()){
                 opt.selected = true;
             }
-
             this.appendChild(opt);
         }
-
     }
     
     public SetValue(value: string): void {
-        /* for(var o of this.options){
-            var optVal: string = o.getAttribute('value');
-            if(value === optVal){
-                this.SetOpt(optVal);
-                o.selected = true;
+        var val: string = '';
+        if(!Functions.IsNullOrEmpty(value)) {
+             var opt: OptionSelect = this.optionsList.find( e => { return e.GetValue() === value; });
+             if(!Functions.IsNullOrEmpty(opt)){
+                val = value;
+             } else if(!this.GetConfig().GetAllowEmpty()) {
+                val = this.GetConfig().GetDefaultValue();
+             }
+        } else {
+            if(this.GetConfig().GetAllowEmpty()){
+                val = '';
+            } else {
+                val = this.GetConfig().GetDefaultValue();
             }
-        } */
+        }
+        this.value = val;
     }
 
     public GetValue(): string {
-        return this.value;
+        var ret: string = null;
+        if(!Functions.IsNullOrEmpty(this.value)) {
+            ret = this.value;
+        }
+        return ret;
     }
 
     public Supr(): void {
@@ -114,10 +100,25 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
         return this.opt;
     }
 
-    private SetOptions(options: Array<OptionSelect>):void{
+    private SetOptions():void {
         this.optionsList = new Array<OptionSelect>();
-        if(options){
-            this.optionsList = options;
+        var options: Array<any> = this.GetConfig().GetOptions();
+        if(!Functions.IsNullOrEmpty(options)){
+            if(Functions.IsArray(options)) {
+                for(var o of options) {
+                    this.optionsList.push(new OptionSelect(o.id, o.text));
+                }
+                var exists = this.optionsList.find(e => { return e.GetValue() === ''; });
+                var allowEmpty: boolean = this.GetConfig().GetAllowEmpty();
+                if(Functions.IsNullOrEmpty(exists) && allowEmpty) {
+                    this.optionsList.unshift(new OptionSelect('', ''));
+                } else if(!Functions.IsNullOrEmpty(exists) && !allowEmpty) {
+                    var index = this.optionsList.indexOf(exists);
+                    if(index !== Program.defaults.NOT_FOUND){
+                        this.optionsList.splice(index, 1);
+                    }
+                }
+            }
         }
     }
 
@@ -145,7 +146,31 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw{
     public IsHidden(): boolean {
         return this.hidden;
     }
-    
+    public GetText(): string {
+        var ret: string = '';
+        var option = this.optionsList.find( o => { return o.GetValue() === this.opt; })
+        if(!Functions.IsNullOrEmpty(option)){
+            ret = option.GetDescription();
+        }
+        return ret;
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        var val: string = '';
+        var allowEmpty: boolean = this.GetConfig().GetAllowEmpty();
+        var defaultValue: string = this.GetConfig().GetDefaultValue();
+        var options: Array<OptionSelect> = this.GetOptions();
+        
+        if(!Functions.IsNullOrEmpty(defaultValue)){
+            val = defaultValue;
+        } else if(options.length > 0 && !allowEmpty) {
+            val = options[0].GetValue();
+        } 
+
+        this.SetValue(val);
+    }
 }
 
 window.customElements.define('input-select', InputSelect, { extends: 'select'});

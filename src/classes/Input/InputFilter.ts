@@ -17,6 +17,7 @@ export class InputFilter extends HTMLDivElement implements IInput, IDraw {
     }
     
     
+    
 
     public Draw(): void {
         this.className = this.config.GetClassName();
@@ -36,43 +37,51 @@ export class InputFilter extends HTMLDivElement implements IInput, IDraw {
     public GetHTMLElement(): HTMLElement {
         return this;
     }
-    SetValue(value: any): void {
+    public SetValue(value: any): void {
         throw new Error("Method not implemented.");
     }
-    GetValue() {
+    public GetValue() {
         throw new Error("Method not implemented.");
     }
-    Supr(): void {
+    public Supr(): void {
         throw new Error("Method not implemented.");
     }
-    IsFocusable(): boolean {
+    public IsFocusable(): boolean {
         throw new Error("Method not implemented.");
     }
-    Focus(): void {
+    public Focus(): void {
         throw new Error("Method not implemented.");
     }
-    Disable(disabled: boolean): void {
+    public Disable(disabled: boolean): void {
         throw new Error("Method not implemented.");
     }
-    Hide(hidden: boolean): void {
+    public Hide(hidden: boolean): void {
         throw new Error("Method not implemented.");
     }
-    IsDisabled(): boolean {
+    public IsDisabled(): boolean {
         throw new Error("Method not implemented.");
     }
-    IsHidden(): boolean {
+    public IsHidden(): boolean {
         throw new Error("Method not implemented.");
     }
-    GetConfig(): ConfigInput {
+    public GetConfig(): ConfigInput {
         throw new Error("Method not implemented.");
     }
-    Empty(): void {
+    public Empty(): void {
         throw new Error("Method not implemented.");
     }
-    GetForm(): Form {
+    public GetForm(): Form {
         throw new Error("Method not implemented.");
     }
-
+    public GetText(): string {
+        throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 window.customElements.define('input-filter', InputFilter, { extends: 'div' });

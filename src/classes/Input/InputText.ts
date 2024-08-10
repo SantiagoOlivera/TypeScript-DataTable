@@ -5,7 +5,6 @@ import { Input } from "./Input";
 
 export class InputText extends Input {
     
-
     private readonly defaults = {
         EMPTY_STRING: '',
     }
@@ -13,8 +12,15 @@ export class InputText extends Input {
     constructor(config: ConfigInput){
         super(config);
         var value: string = config.GetValue();
+        this.SetMaxLength(config.GetMaxLength());
         this.SetValue(value);
         this.Draw();
+    }
+
+    private SetMaxLength(maxLength: number): void{
+        if(!Functions.IsNullOrEmpty(maxLength)){
+            this.maxLength = maxLength;
+        }
     }
 
     public SetValue(value: string): void {
@@ -80,7 +86,21 @@ export class InputText extends Input {
         throw new Error("Method not implemented.");
     }
     public Empty(): void {
+        this.value = '';
+    }
+    public GetText(): string {
         throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        var val: string = '';
+        var defaultValue: string = this.GetConfig().GetDefaultValue();
+        if(!Functions.IsNullOrEmpty(defaultValue)){
+            val = defaultValue;
+        }
+        this.SetValue(val);
     }
 }
 

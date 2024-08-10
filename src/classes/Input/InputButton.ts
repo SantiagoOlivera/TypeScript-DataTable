@@ -3,6 +3,7 @@ import { ConfigInput } from "../Config/ConfigInput";
 import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
+import { IFocusable } from "../Interfaces/IFocusable";
 import { IInput } from "../Interfaces/IInput";
 import { Program } from "../Program/Program";
 
@@ -16,24 +17,26 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput {
         //html?: HTMLElement, str?: string
         super();
         this.SetConfig(config);
+        this.SetClassName();
+        
+        /* var title: string = config.GetTitle();
+        var value: any = config.GetValue(); */
+        /* var innerHTML: string = config.GetInnerHTML();
 
-        var className: string = Program.bootstrap.BUTTON_SUCCESS_SMALL;
-        var title: string = config.GetTitle();
-        var value: any = config.GetValue();
-        var innerHTML: string = config.GetInnerHTML();
-
-        this.className = className;
-        if(!Functions.IsNullOrEmpty(value)){
-
-        }
-
-        if(!Functions.IsNullOrEmpty(innerHTML)){
+        if(!Functions.IsNullOrEmpty(innerHTML)) {
             var html: string = this.GetConfig().GetInnerHTML();
             this.append(html);
-        }
+        } */
         
         this.Draw();
     }
+
+    private SetClassName(): void {
+        var className: string = Program.bootstrap.BUTTON_SUCCESS_SMALL;
+        this.className = className;
+    }
+
+
 
     public GetForm(): Form {
         throw new Error("Method not implemented.");
@@ -109,6 +112,15 @@ export class InputButton extends HTMLButtonElement implements IDraw, IInput {
     }
     
     public Empty(): void {
+        throw new Error("Method not implemented.");
+    }
+    public GetText(): string {
+        throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
         throw new Error("Method not implemented.");
     }
 }

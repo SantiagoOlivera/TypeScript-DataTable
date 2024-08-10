@@ -1,94 +1,138 @@
+import { Button } from "bootstrap";
 import { Config } from "../Config/Config";
+import { ConfigForm } from "../Config/ConfigForm";
 import { ConfigInput } from "../Config/ConfigInput";
 import { ConfigModal } from "../Config/ConfigModal";
+import { DataTable } from "../DataTable/DataTable";
 import { Form } from "../Form/Form";
-import { FormEditable } from "../Form/FormEditable";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
 import { FormModal } from "../Modals/FormModal";
+import { Program } from "../Program/Program";
+import { Factory } from "../Factory/Factory";
 
 export class InputFormButton extends HTMLButtonElement implements IDraw, IInput {
 
     private config: ConfigInput;
+    private formmodal: Form;
+    public afterClose: Function;
+    private dt: DataTable;
     
-    constructor(config: ConfigInput){
+    constructor(config: ConfigInput) {
         super();
         this.SetConfig(config);
         this.Draw();
     }
-    
 
     private SetConfig(config: ConfigInput): void {
         this.config = config;
-    }
+    }    
 
-    
-    Draw(): void {
-        var html: string = this.config.GetInnerHTML();
-        var className: string = 'btn btn-success btn-sm';
-
-
-        this.className = className;
+    public Draw(): void {
+        var html: string = this.GetConfig().GetTitle();
+        this.SetClassName();
         this.append(html);
         this.SetOpenModal();
     }
 
-    private SetOpenModal(): void{
-        var config: ConfigInput = this.config;
-        var form: FormEditable = new FormEditable(config.ToConfigForm());
+    private SetClassName(): void {
+        var className: string = 'btn btn-success btn-sm';
+        this.className = className;
+    }
+
+    private SetForm(form: Form): void {
+        this.formmodal = form;
+    }
+    public SetDataTable(dt: DataTable): void{
+        this.dt = dt;
+    }
+    public GetDataTable(): DataTable {
+        return this.dt;
+    }
+
+    public SetAfterClose(afterClose: Function): void {
+        this.afterClose = afterClose;
+    }
+
+    public GetAfterClose(): Function {
+        return this.afterClose;
+    }
+
+    private SetOpenModal(): void {
+        var button: InputFormButton = this;
+        //var config: Object = <ConfigInput>this.GetConfig().GetConfig();
+        //debugger;
+        var cInput: ConfigInput = this.config;
+        var cForm: ConfigForm = cInput.ToConfigForm();
+        var config: Object = cInput.GetConfig();
+
+        var form: Form = Factory.GetForm(cForm.GetConfig());
+        
+        this.SetForm(form);
+        //form.SetValue(cForm.GetData());
 
         this.onclick = function(event: Event) {
-            console.log(config);
             var cm: ConfigModal = new ConfigModal({
-                id: config.GetData() + 'Modal',
-                title: config.GetTitle(),
+                id: cInput.GetData() + 'Modal',
+                title: cInput.GetTitle(),
                 form: form,
+                beforeClose: function(){
+                    button.dispatchEvent(new Event(Program.events.CHANGE, { bubbles: true }));
+                },
             });
             var modal: FormModal = new FormModal(cm);
             modal.Open();
         }
     }
 
-    GetHTMLElement(): HTMLElement {
+    public GetHTMLElement(): HTMLElement {
         return this;
     }
-    SetValue(value: any): void {
+    public SetValue(value: any): void {
+        this.formmodal.SetValue(value);
+    }
+    public GetValue() {
+        return this.formmodal.GetValue();
+    }
+    public Supr(): void {
         throw new Error("Method not implemented.");
     }
-    GetValue() {
-        throw new Error("Method not implemented.");
-    }
-    Supr(): void {
-        throw new Error("Method not implemented.");
-    }
-    IsFocusable(): boolean {
+    public IsFocusable(): boolean {
         return true;
     }
-    Focus(): void {
+    public Focus(): void {
         this.focus();
     }
-    Disable(disabled: boolean): void {
+    public Disable(disabled: boolean): void {
         //throw new Error("Method not implemented.");
     }
-    Hide(hidden: boolean): void {
+    public Hide(hidden: boolean): void {
         //throw new Error("Method not implemented.");
     }
-    IsDisabled(): boolean {
+    public IsDisabled(): boolean {
         return this.disabled;
     }
-    IsHidden(): boolean {
+    public IsHidden(): boolean {
         throw new Error("Method not implemented.");
     }
-    GetConfig(): Config {
+    public GetConfig(): ConfigInput {
         return this.config;
     }
-    GetForm(): Form {
+    public GetForm(): Form {
+        return this.formmodal;
+    }
+    public Empty(): void {
         throw new Error("Method not implemented.");
     }
-    Empty(): void {
+    public GetText(): string {
         throw new Error("Method not implemented.");
     }
-
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        throw new Error("Method not implemented.");
+    }
 
 }
 

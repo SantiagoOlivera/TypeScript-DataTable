@@ -1,12 +1,9 @@
 import { Functions } from "../Functions/Functions";
+import { Program } from "../Program/Program";
 
 export class Config {
-
-    private static readonly defaults = {
-        ALIGN: 'left',
-    }
     
-    private config: any;
+    private config: Object;
 
     private disabled: boolean;
     private hidden: boolean;
@@ -33,11 +30,6 @@ export class Config {
     private size: number;
     private length: number;
     private index: number;
-
-    
-
-    
-    
     
 
 
@@ -116,7 +108,7 @@ export class Config {
         if(!Functions.IsNullOrEmpty(align)){
             this.SetAlign(align);
         } else {
-            this.SetAlign(Config.defaults.ALIGN);
+            this.SetAlign(Program.align.LEFT);
         }
         if(!Functions.IsNullOrEmpty(prefix)){
             this.SetPrefix(prefix);
@@ -141,7 +133,7 @@ export class Config {
         if(!Functions.IsNullOrEmpty(editable)){
             this.SetEditable(editable);
         } else {
-            this.SetEditable(false);
+            this.SetEditable(true);
         }
         if(!Functions.IsNullOrEmpty(text)){
             this.SetText(text);
@@ -163,11 +155,12 @@ export class Config {
         }else{
             this.SetIndex(null);
         }
+        
     }
 
     
     //Getters
-    public GetConfig(): any {
+    public GetConfig(): Object {
         return this.config;
     }
     public GetId(): string {
@@ -241,7 +234,7 @@ export class Config {
     }
 
     //Setters
-    private SetConfig(config: any){
+    private SetConfig(config: Object){
         this.config = config;
     }
     private SetId(id: string): void {
@@ -313,4 +306,5 @@ export class Config {
     private SetIndex(index: number): void {
         this.index = index;
     }
+    
 }

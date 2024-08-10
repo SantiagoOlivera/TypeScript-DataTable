@@ -1,6 +1,5 @@
 import { ConfigModal } from "../Config/ConfigModal";
 import { Form } from "../Form/Form";
-import { FormEditable } from "../Form/FormEditable";
 import { Modal } from "./Modal";
 
 export class FormModal extends Modal {
@@ -11,8 +10,6 @@ export class FormModal extends Modal {
         super(config);
         var form: Form = this.GetConfig().GetForm();
         this.SetForm(form);
-
-        
         this.Draw();
     }
 
@@ -20,7 +17,7 @@ export class FormModal extends Modal {
         return this.form;
     }
 
-    private SetForm(form: Form){
+    private SetForm(form: Form): void {
         this.form = form;
     }
 

@@ -1,19 +1,20 @@
 import { ConfigInput } from "../Config/ConfigInput";
 import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
+import { Program } from "../Program/Program";
 import { Input } from "./Input";
 
 export class LiveSearchOption {
-    
+
     private id:string;
     private text: string;
+    private disabled: boolean;
+    private hidden: boolean;
 
-    constructor(id:string, text:string){
+    constructor( id: string, text: string ){
         this.SetId(id);
         this.SetText(text);
     }
-
-
     public GetId(): string{
         return this.id;
     }
@@ -26,9 +27,49 @@ export class LiveSearchOption {
     private SetText(text:string){
         this.text = text;
     }
+    public static IsLiveSearchOption(val: any): boolean {
+        var ret: boolean = false;
+        if(val instanceof LiveSearchOption){
+            ret = true;
+        }
+        return ret;
+    }
+    private static IsValidObject(val: any): boolean {
+        var ret: boolean = false;
+        if(!Functions.IsNullOrEmpty(val)){
+            if(Functions.IsObject(val)){
+                var keys: number = Object.keys(val).length;
+                if(keys === 2){
+                    if( val.hasOwnProperty('id') && val.hasOwnProperty('text')) {
+                        ret = true;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+    public static ConvertObjectToLiveSearchOption(val: any): LiveSearchOption {
+        var ret: LiveSearchOption = null;
+        if(LiveSearchOption.IsValidObject(val)){
+            ret = new LiveSearchOption(val.id, val.text);
+        }
+        return ret;
+    }
+    public static ConvertArrayObjectToArrayLiveSearchOption(options: any): Array<LiveSearchOption> {
+        var ret: Array<LiveSearchOption> = [];
+        if(Functions.IsArray(options)){
+            for(var o of options){
+                var opt: LiveSearchOption = LiveSearchOption.ConvertObjectToLiveSearchOption(o);
+                if(!Functions.IsNullOrEmpty(opt)) {
+                    ret.push(opt);
+                }
+            }
+        }
+        return ret;
+    }
 }
 
-export class LiveSearchOptionInputItem extends HTMLButtonElement{
+export class LiveSearchOptionInputItem extends HTMLButtonElement {
     
     private opt: LiveSearchOption;
     private input: LiveSearchInput;
@@ -44,59 +85,45 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement{
         MARGIN_TOP_1: 'mt-1',
     };
 
-    private readonly keys = {
-        ARROW_UP: 38,
-        ARROW_DOWN: 40,
-        ARROW_LEFT: 37,
-        ARROW_RIGHT: 39,
-        SUPR: 46,
-        ENTER: 13,
-        DELETE: 8,
-    }
-
-    private readonly events = {
-        CLICK: 'click',
-        DOUBLE_CLICK: 'dblclick',
-        FOCUSOUT: 'focusout',
-        KEYDOWN: 'keydown'
-    }
+    
 
     constructor(opt: LiveSearchOption, input: LiveSearchInput, markStr?:string){
         super();
-        this.type='button';
+        this.type = 'button';
         this.SetOpt(opt);
         this.SetProps();
         this.SetClassName();
         this.MarkStr(markStr);
 
-        this.addEventListener(this.events.CLICK, (event) => {
-            input.SetInputValue(this.GetOpt());
+        this.addEventListener(Program.events.CLICK, (event) => {
+            input.SetInputValue(this.GetOpt(), true);
             input.focus();
             input.open(false);
         });
 
-        this.addEventListener(this.events.DOUBLE_CLICK, (event) => {
+        this.addEventListener(Program.events.DOUBLE_CLICK, (event) => {
             event.stopPropagation();
         });
 
-        this.addEventListener(this.events.FOCUSOUT, ( event: FocusEvent ) => {
+        this.addEventListener(Program.events.FOCUSOUT, ( event: FocusEvent ) => {
             var isNextAnOption = event.relatedTarget instanceof LiveSearchOptionInputItem;
             if(!isNextAnOption){
                 var value: LiveSearchOption = input.GetValue();
-                if(!value){
-                    input.SetInputValue(null);
-                    input.filter('', false);
+                if(Functions.IsNullOrEmpty(value)){
+                    input.SetInputValue(null, true);
+                    input.filter(Program.defaults.EMPTY_STRING, false);
+                    input.EmptyInputText();
                 }
                 input.open(false);
             }
         });
 
-        this.addEventListener(this.events.KEYDOWN, (event: KeyboardEvent) => {
+        this.addEventListener(Program.events.KEYDOWN, (event: KeyboardEvent) => {
             var keyCode: number = event.keyCode;
             //console.log("rwead", this, this.nextElementSibling, this.previousElementSibling);
             var isLiveSearchOptionInputItem: boolean = false;
 
-            if(keyCode === this.keys.ARROW_DOWN){
+            if(keyCode === Program.keycodes.ARROW_DOWN){
                 isLiveSearchOptionInputItem = ( this.nextElementSibling instanceof LiveSearchOptionInputItem );
                 if(isLiveSearchOptionInputItem && !this.GetIsLastOption()){
                     var nextElement = <LiveSearchOptionInputItem>this.nextElementSibling;
@@ -107,7 +134,7 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement{
                 }
                 
                 event.preventDefault();
-            }else if(keyCode === this.keys.ARROW_UP){
+            }else if(keyCode === Program.keycodes.ARROW_UP){
                 isLiveSearchOptionInputItem = ( this.previousElementSibling instanceof LiveSearchOptionInputItem );
                 if(isLiveSearchOptionInputItem){
                     var nextElement = <LiveSearchOptionInputItem>this.previousElementSibling;
@@ -202,7 +229,7 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement{
         this.classList.add(this.classes.LIVE_SEARCH_INPUT_BUTTON);
     }
 
-    private SetProps(): void{
+    private SetProps(): void {
         var opt: LiveSearchOption = this.GetOpt();
         this.setAttribute( 'value', opt.GetId() );
         this.innerHTML = opt.GetText();
@@ -219,7 +246,8 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement{
 
 window.customElements.define('live-search-option-input-item', LiveSearchOptionInputItem, { extends: 'button'});
 
-export class LiveSearchInput extends Input{
+export class LiveSearchInput extends Input {
+    
     
     
     
@@ -227,7 +255,7 @@ export class LiveSearchInput extends Input{
     private optionsContainer: HTMLDivElement;
     private options: Array<LiveSearchOption>;
     private val: LiveSearchOption;
-    private readonly EMPTY_STRING: string = '';
+    private previusValue: LiveSearchOption;
     private deleteAll: boolean = true;
     private isOpen: boolean;
 
@@ -259,16 +287,7 @@ export class LiveSearchInput extends Input{
         //OVERFLOW_AUTO: 'overflow-auto',
     }
 
-    private readonly keys = {
-        ARROW_UP: 38,
-        ARROW_DOWN: 40,
-        ARROW_LEFT: 37,
-        ARROW_RIGHT: 39,
-        SUPR: 46,
-        ENTER: 13,
-        DELETE: 8,
-    }
-
+    
     private static test: Array<LiveSearchOption> = [
         new LiveSearchOption('1','1 - Volkswagen'),
         new LiveSearchOption('2','2 - FIAT'),
@@ -277,6 +296,7 @@ export class LiveSearchInput extends Input{
         new LiveSearchOption('5','5 - Volvo'),
         new LiveSearchOption('6','6 - Toyota'),
         new LiveSearchOption('7','7 - Peugeot'),
+        new LiveSearchOption('15','15 - Descripcion muy muy muy larga'),
     ];
 
     constructor(config: ConfigInput) {
@@ -292,9 +312,30 @@ export class LiveSearchInput extends Input{
         var url: string = config.GetApiUrl();
         var options: Array<any> = config.GetOptions();
 
+        this.SetOptions(LiveSearchOption.ConvertArrayObjectToArrayLiveSearchOption(LiveSearchInput.test));
         this.SetClassName();
-        this.SetInputValue(val);
+        this.SetInputValue(val, false);
+        this.SetPreviousValue(val);
         this.Draw();
+    }
+
+    public GetOptions(): Array<LiveSearchOption> {
+        return this.options;
+    }
+
+    private SetOptions(options: Array<LiveSearchOption>): void {
+        this.options = options;
+    }
+
+    private SetPreviousValue(value: LiveSearchOption): void {
+        this.previusValue = null;
+        if(!Functions.IsNullOrEmpty(value)){
+            this.previusValue = value;
+        } 
+    }
+
+    public GetPreviusValue(): LiveSearchOption {
+        return this.previusValue;
     }
 
     private SetClassName():void{
@@ -323,7 +364,7 @@ export class LiveSearchInput extends Input{
 
     }
 
-    private CreateOptionsContainer():void{
+    private CreateOptionsContainer(): void {
 
         var div1: HTMLDivElement = <HTMLDivElement>document.createElement(this.HTMLElements.DIV);
         var div2: HTMLDivElement = <HTMLDivElement>document.createElement(this.HTMLElements.DIV);
@@ -340,6 +381,7 @@ export class LiveSearchInput extends Input{
         div2.classList.add(this.classes.LIVE_SEARCH_INPUT_OPTIONS_CONTAINER);
         div2.classList.add(this.classes.WIDTH_100);
         div2.classList.add(this.classes.POSITION_ABSOLUTE);
+        div2.style.zIndex = '10000';
 
         //div3.className = `live-search-input-options-sub-container bg-light p-1 mt-1 border`;
         div3.classList.add(this.classes.LIVE_SEARCH_INPUT_OPTIONS_SUB_CONTAINER);
@@ -353,7 +395,8 @@ export class LiveSearchInput extends Input{
         div1.appendChild(div2);
         this.after(div1);
         this.SetOptionsContainer(div3);
-        this.SetOptionsInContainer(LiveSearchInput.test);
+        //this.SetOptionsInContainer(LiveSearchInput.test);
+        this.SetOptionsInContainer(this.GetOptions());
         this.SetContainer(div1);
     }
 
@@ -395,65 +438,71 @@ export class LiveSearchInput extends Input{
 
     private SetEvents(): void {
 
-        this.addEventListener(this.events.CLICK, (event: Event)=>{
+        this.addEventListener(Program.events.CLICK, (event: Event) => {
             this.open(true);
-            this.filter(this.EMPTY_STRING, false);
+            this.filter(Program.defaults.EMPTY_STRING, false);
         });
 
-        this.addEventListener(this.events.FOCUS, (event : FocusEvent)=>{
+        this.addEventListener(Program.events.FOCUS, (event : FocusEvent) => {
             var opt: LiveSearchOption = this.GetValue();
-            if(!opt){
+            if(Functions.IsNullOrEmpty(opt)){
                 this.open(true);
-                this.filter(this.EMPTY_STRING, false);
+                this.filter(Program.defaults.EMPTY_STRING, false);
             }
         });
 
-        this.addEventListener(this.events.FOCUSOUT, (event: FocusEvent) => {
+        this.addEventListener(Program.events.FOCUSOUT, (event: FocusEvent) => {
             var nextElement: HTMLElement = <HTMLElement>event.relatedTarget;
             var isLiveSearchOptionInputItem: boolean = nextElement instanceof LiveSearchOptionInputItem;
             //var isOptionsContainer: boolean =  nextElement.classList.contains(this.classes.LIVE_SEARCH_INPUT_OPTIONS_SUB_CONTAINER);
             //console.log(isLiveSearchOptionInputItem, isOptionsContainer, event.relatedTarget);
-            if(!isLiveSearchOptionInputItem){
-                var value: LiveSearchOption = this.GetValue();
-                //console.log(value);
-                if(!value){
-                    this.SetInputValue(null);
-                    this.filter(this.EMPTY_STRING, false);
+            var value: LiveSearchOption = this.GetValue();
+            if(!isLiveSearchOptionInputItem) {
+                if(Functions.IsNullOrEmpty(value)){
+                    this.SetInputValue(null, true);
+                    this.filter(Program.defaults.EMPTY_STRING, false);
+                    this.EmptyInputText();
                 }
                 this.open(false);
             }
         });
 
-        this.addEventListener(this.events.INPUT, (event: InputEvent)=>{
-            this.filter(this.value, false);
+        this.addEventListener(Program.events.INPUT, (event: InputEvent) => {
+            var val: LiveSearchOption = this.GetValue();
+            if(Functions.IsNullOrEmpty(val)){
+                //Solo filtrar si no esta seleccionado
+                this.filter(this.value, false);
+            } else {
+                this.value = val.GetText();
+            }
         });
 
-        this.addEventListener(this.events.KEYDOWN, (event: KeyboardEvent) => {
+        this.addEventListener(Program.events.KEYDOWN, (event: KeyboardEvent) => {
             var keyCode:number = event.keyCode;
             var isOpen: boolean = this.GetIsOpen();
-            if(keyCode === this.keys.ARROW_DOWN){
+            if(keyCode === Program.keycodes.ARROW_DOWN){
                 if(isOpen){
                     if(!this.GetValue()){
                         this.filter(this.value, true);
                     }else{
-                        this.filter(this.EMPTY_STRING, true);
+                        this.filter(Program.defaults.EMPTY_STRING, true);
                     }
                     event.stopPropagation();
                 }
-            }else if(keyCode === this.keys.ENTER){
+            }else if(keyCode === Program.keycodes.ENTER){
                 if(!isOpen){
                     this.open(true);
                 }
-            } else if (keyCode === this.keys.SUPR || keyCode === this.keys.DELETE){
+            } else if (keyCode === Program.keycodes.SUPR || keyCode === Program.keycodes.DELETE){
                 this.Supr();
-            } else if(keyCode === this.keys.ARROW_UP){
+            } else if(keyCode === Program.keycodes.ARROW_UP){
                 this.open(false);
             }
         });
     }
 
-    public filter(value: string, focus: boolean):void{
-        var val:string = value.toLocaleLowerCase();
+    public filter(value: string, focus: boolean): void {
+        var val: string = value.toLocaleLowerCase();
         var options = this.options.filter(
             e => { 
                 return ( 
@@ -466,11 +515,10 @@ export class LiveSearchInput extends Input{
 
         if(options.length > 0){
             this.deleteAll = false;
-        }else{
+        } else {
             this.deleteAll = true;
-            this.SetValue(null);
+            //this.SetValue(null);
         }
-
         this.DrawOptions(options, focus, val);
     }
 
@@ -512,14 +560,48 @@ export class LiveSearchInput extends Input{
         this.optionsContainer = divContainer;
     }
 
-    public SetValue(value: LiveSearchOption): void {
-        this.TriggerChangeEvent(value);
-        this.val = value;
+    public SetValue(value: any): void {
+        var opt: LiveSearchOption = null;
+        var text: string = '';
+        if(!Functions.IsNullOrEmpty(value)){
+            if(value instanceof LiveSearchOption){
+                opt = value;
+                text = value.GetText();
+            } else {
+                opt = LiveSearchOption.ConvertObjectToLiveSearchOption(value);
+                if(!Functions.IsNullOrEmpty(opt)) {
+                    text = opt.GetText();
+                    this.AddOption(opt);
+                }
+            }
+        }
+        this.val = opt;
+        this.value = text;
+    }
+
+    private AddOption(opt: LiveSearchOption): void {
+        if(!this.ExistOption(opt.GetId())){
+            this.options.push(opt);
+        }
+    }
+
+    private ExistOption(id: string): boolean {
+        var ret: boolean = false;
+        if(!Functions.IsNullOrEmpty(this.options)){
+            ret = this.options.some( e => { return e.GetId() === id; });
+        }
+        return ret;
     }
 
     public Empty(): void {
-        throw new Error("Method not implemented.");
+        this.EmptyInputText();
+        this.SetInputValue(null, false);  
     }
+
+    public EmptyInputText(): void {
+        this.value = Program.defaults.EMPTY_STRING;
+    }
+
     public GetForm(): Form {
         throw new Error("Method not implemented.");
     }
@@ -527,19 +609,23 @@ export class LiveSearchInput extends Input{
 
 
     
-    private TriggerChangeEvent(value: LiveSearchOption): void {
+    private TriggerChangeEvent(): void {
         var v: LiveSearchOption = this.GetValue();
-        if(v){
-            if(value){
-                if(v.GetId() !== value.GetId()){
-                    //trigger change event
-                    this.dispatchEvent(new Event('change', { bubbles: true }));
-                }
+        var pv: LiveSearchOption = this.GetPreviusValue();
+        if(!Functions.IsNullOrEmpty(v) && !Functions.IsNullOrEmpty(pv)) {
+            if(v.GetId() !== pv.GetId()){
+                //trigger change event
+                this.dispatchEvent(new Event(Program.events.CHANGE, { bubbles: true }));
             }
-        } else {
-            if(value){
+        } else if(!Functions.IsNullOrEmpty(v) && Functions.IsNullOrEmpty(pv)) {
+            this.dispatchEvent(new Event(Program.events.CHANGE, { bubbles: true }));
+           /*  if(!Functions.IsNullOrEmpty(value)){
                 this.dispatchEvent(new Event('change', { bubbles: true }));
-            }
+            } else {
+                this.Empty();
+            } */
+        } else if(!Functions.IsNullOrEmpty(pv) && Functions.IsNullOrEmpty(v) ) {
+            this.dispatchEvent(new Event(Program.events.CHANGE, { bubbles: true }));
         }
     }
 
@@ -551,20 +637,28 @@ export class LiveSearchInput extends Input{
         return this;
     }
     
-    public SetInputValue(value:LiveSearchOption){
-        this.SetValue(value);
-        if(value){
-            this.value = value.GetText();
-        }else{
-            this.value = '';
+    public SetInputValue( value: LiveSearchOption, dispatchChange: boolean ) {
+        var v: LiveSearchOption = null;
+        var pv: LiveSearchOption = this.GetValue();
+        this.SetPreviousValue(pv);
+
+        if(!Functions.IsNullOrEmpty(value)){
+            if(Functions.IsLiveSearchOption(value)) {
+                v = value;
+            }
+        }
+
+        this.SetValue(v);
+        if(dispatchChange){
+            this.TriggerChangeEvent();
         }
     }
 
     public Supr(): void {
-        var val: string = this.EMPTY_STRING;
-        this.SetInputValue(null);     
+        this.EmptyInputText();
+        this.SetInputValue(null, true);     
         this.open(true);
-        this.filter(val, false);
+        this.filter(Program.defaults.EMPTY_STRING, false);
     }
 
     public IsFocusable(): boolean {
@@ -587,8 +681,15 @@ export class LiveSearchInput extends Input{
     public IsHidden(): boolean {
         return this.hidden;
     }
-    
-
+    public GetText(): string {
+        throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        this.SetValue(null);
+    }
 }
 
 window.customElements.define('live-search-input', LiveSearchInput, { extends: 'input'});

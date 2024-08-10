@@ -7,8 +7,17 @@ import { IconButton } from "../Buttons/IconButton";
 import { ConfigButton } from "../Config/ConfigButton";
 import { Button } from "../Buttons/Button";
 import { Functions } from "../Functions/Functions";
+import { DataTableRow } from "./DataTableRow";
+import { Cell } from "../Cell/Cell";
+import { DataTable } from "../DataTable/DataTable";
+import { FormModal } from "../Modals/FormModal";
+import { ConfigModal } from "../Config/ConfigModal";
+import { ConfigForm } from "../Config/ConfigForm";
+import { DataForm } from "../Form/DataForm";
+import { Factory } from "../Factory/Factory";
+import { Program } from "../Program/Program";
 
-export class DataTableRowOperationBar extends Row implements IDraw {
+export class DataTableRowOperationBar extends DataTableRow implements IDraw {
 
     public readonly types = {
         ADD: 'add',
@@ -19,77 +28,32 @@ export class DataTableRowOperationBar extends Row implements IDraw {
     private cell: HTMLTableCellElement;
 
     constructor(config: ConfigRow){
-        super(config);
-        this.Draw();
+        super(config);   
     }
 
-    public Draw(): void {
+    public Draw(): void {        
+        this.InitCell();
+        this.InitButtons();
+    }
 
-        this.innerHTML = null;
-        this.cell = null;
-        this.buttons = [];
-
-
-        var colSpan: number = this.GetConfig().GetColSpan();
-        var buttons: Array<any> = this.GetConfig().GetButtons();
-
-
+    private InitCell(): void {
         var td: HTMLTableCellElement = document.createElement('td');
+        var colSpan: number = this.GetConfig().GetColSpan();
         td.colSpan = colSpan;
-
-        /* 
-            var cc: ConfigCell = new ConfigCell({
-                colSpan: colSpan,
-            });
-        */
-
-        //var cell: DataTableCell = new DataTableCell(cc); 
-        
         this.cell = td;
-
-        for(var b of buttons) {
-
-            var c: any = null;
-            var cb: ConfigButton = null;
-
-            if(Functions.IsString(b)) {
-                if(b === this.types.ADD){
-                    c = {
-                        id: 'btnAdd',
-                        title: '',
-                        name: 'add',
-                        data: 'add',
-                        icon: 'bi bi-plus',
-                        width: 45,
-                        height: 45,
-                        className: 'btn btn-success btn-sm',
-                        default: true,
-                    } 
-                } else if(b === this.types.EXCEL){
-                    c = {
-                        id: 'btnExcel',
-                        title: '',
-                        name: 'excel',
-                        icon: 'bi bi-file-excel',
-                        width: 45,
-                        height: 45,
-                        data: 'excel',
-                        className: 'btn btn-success btn-sm m-1',
-                        default: true,
-                        tooltip: 'Agregar',
-                    } 
-                }
-                cb = new ConfigButton(c);
-            } else if (Functions.IsObject(b)) {
-                cb = new ConfigButton(b);
-            }
-
-            var btn: IconButton = new IconButton(cb);
-            this.AddButton(btn);
-
-        }
-
         this.appendChild(this.cell);
+    }
+
+    private InitButtons(): void {
+        this.buttons = new Array<Button>();
+        var buttons: Array<any> = this.GetConfig().GetButtons();
+        for(var b of buttons){
+            if(Functions.IsString(b)) {
+                if(b === Program.buttons.ADD){
+                    this.InitButtonAdd();
+                }
+            }
+        }
     }
 
     public AddButton(button: Button){
@@ -101,6 +65,59 @@ export class DataTableRowOperationBar extends Row implements IDraw {
         return this.buttons;
     }
 
+
+    private InitButtonAdd(): void {
+        var dt: DataTable = <DataTable>this.GetTable();
+        var modal: FormModal = new FormModal(new ConfigModal({
+            id: 'addFormModal',
+            title: 'Agregar',
+            form: new DataForm(new ConfigForm({
+                title: '',
+                id: 'addForm',
+                className: '',
+                filter: false,
+                floatingForm: false,
+                transformTable: true,
+                fields: dt.GetColumns(),
+            })),
+            buttons: [
+                {
+                    id: 'btnModalAdd',
+                    title: 'Agregar',
+                    icon: 'bi bi-plus',
+                    width: 125,
+                    disabled: false,
+                    hidden: false,
+                    type: 'button',
+                    className: 'btn btn-success',
+                    onclick: function(event: Event){
+                        var data: any = modal.GetForm().GetValue();
+                        dt.AddData(data);
+                        modal.Close();
+                    }
+                },
+            ],
+        }));
+
+        var c: any = {
+            id: 'btnAdd',
+            title: '',
+            name: 'add',
+            data: 'add',
+            icon: 'bi bi-plus',
+            width: 45,
+            height: 45,
+            className: 'btn btn-success btn-sm',
+            default: true,
+            onclick: function(event: Event) {
+                modal.Open();
+                modal.GetForm().Empty();
+            },
+        };
+        var cb: ConfigButton = new ConfigButton(c);
+        var btn: IconButton = new IconButton(cb);
+        this.AddButton(btn);
+    }
 
 }
 

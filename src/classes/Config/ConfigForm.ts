@@ -1,16 +1,15 @@
 import { Functions } from "../Functions/Functions";
 import { Config } from "./Config";
-import { ConfigDataTable } from "./ConfigDataTable";
 
 export class ConfigForm extends Config {
 
-    public static ToConfigDataTable(config: ConfigForm): ConfigDataTable {
+    /* public static ToConfigDataTable(config: ConfigForm): ConfigDataTable {
         var c: any = config.GetConfig();
         c.columns = c.fields;
         c.rows = [];
         var ret = new ConfigDataTable(c);
         return ret;
-    }
+    } */
 
     private fields: Array<any>;
     private buttons: Array<any>;
@@ -19,6 +18,9 @@ export class ConfigForm extends Config {
     private transformTable: boolean;
     private data: any;
     private pageLength: number;
+    private addElements: boolean;
+    private rowStatus: boolean;
+    private formtype: string;
 
     constructor(config: any) {
 
@@ -31,6 +33,9 @@ export class ConfigForm extends Config {
         var transformTable: boolean = config.transformTable;
         var data: any = config.data;
         var pageLength: number = config.pageLength;
+        var addElements: boolean = config.addElements;
+        var rowStatus: boolean = config.rowStatus;
+        var formtype: string = config.formtype;
         
 
         //Fields
@@ -75,6 +80,21 @@ export class ConfigForm extends Config {
         }else{
             this.SetPageLength(1);
         }
+        if(!Functions.IsNullOrEmpty(rowStatus)){
+            this.SetRowStatus(rowStatus);
+        }else{
+            this.SetRowStatus(false);
+        }
+        if(!Functions.IsNullOrEmpty(addElements)){
+            this.SetAddElements(addElements);
+        }else{
+            this.SetAddElements(false);
+        }
+        if(!Functions.IsNullOrEmpty(formtype)){
+            this.SetFormType(formtype);
+        } else {
+            this.SetFormType('single');
+        }
     }
 
     //Getters
@@ -99,6 +119,15 @@ export class ConfigForm extends Config {
     public GetPageLength(): number {
         return this.pageLength;
     }
+    public GetRowStatus(): boolean {
+        return this.rowStatus;
+    }
+    public GetAddElements(): boolean {
+        return this.addElements;
+    }
+    public GetFormType(): string {
+        return this.formtype;
+    }
 
     //Setters
     private SetButtons(buttons: Array<any>): void {
@@ -122,13 +151,20 @@ export class ConfigForm extends Config {
     private SetPageLength(pageLength: number): void {
         this.pageLength = pageLength;
     }
-
-
+    private SetRowStatus(rowStatus: boolean): void {
+        this.rowStatus = rowStatus;
+    }
+    private SetAddElements(addElements: boolean): void {
+        this.addElements = addElements;
+    }
+    private SetFormType(formtype: string): void {
+        this.formtype = formtype;
+    }
     
 
-    public ToConfigDataTable(): ConfigDataTable {
+    /* public ToConfigDataTable(): ConfigDataTable {
         var ret: ConfigDataTable = ConfigForm.ToConfigDataTable(this);
         return ret;
-    }
+    } */
 
 }

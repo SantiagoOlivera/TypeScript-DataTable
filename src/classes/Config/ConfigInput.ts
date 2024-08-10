@@ -1,4 +1,3 @@
-import { hide } from "@popperjs/core";
 import { Functions } from "../Functions/Functions";
 import { Config } from "./Config";
 import { ConfigForm } from "./ConfigForm";
@@ -6,7 +5,8 @@ import { ConfigForm } from "./ConfigForm";
 export class ConfigInput extends Config {
 
     private static ToConfigForm(config: ConfigInput): ConfigForm {
-        var c: any = config.GetConfig();
+        var c: any = Functions.CloneObject(config.GetConfig());
+        c.data = Functions.CloneObject(c.value);
         var ret: ConfigForm = new ConfigForm(c);
         return ret;
     }
@@ -32,6 +32,7 @@ export class ConfigInput extends Config {
     private maxValue: number;
     private minValue: number;
     private onclick: Function;
+    private allowEmpty: boolean;
     
     
     
@@ -45,7 +46,6 @@ export class ConfigInput extends Config {
         var decimalsSeparator: string = config.decimalsSeparator;
         var defaultValue: any = config.defaultValue;
         var value: any = config.value;
-        var className: string = config.className;
         var apiUrl: string = config.apiUrl;
         var maxLength: number = config.maxLength;
         var minLength: number = config.minLength;
@@ -54,6 +54,7 @@ export class ConfigInput extends Config {
         var maxValue: number = config.maxValue;
         var minValue: number = config.minValue;
         var onclick: Function = config.onclick;
+        var allowEmpty: boolean = config.allowEmpty;
 
         if(!Functions.IsNullOrEmpty(data)){
             this.SetData(data);
@@ -124,7 +125,11 @@ export class ConfigInput extends Config {
         }else{
             this.SetOnClick(null);
         }
-
+        if(!Functions.IsNullOrEmpty(allowEmpty)){
+            this.SetAllowEmpty(allowEmpty);
+        }else{
+            this.SetAllowEmpty(true);
+        }
     }
 
     public ToConfigForm(): ConfigForm {
@@ -178,6 +183,9 @@ export class ConfigInput extends Config {
     public GetOnClick(): Function {
         return this.onclick;
     }
+    public GetAllowEmpty(): boolean {
+        return this.allowEmpty;
+    }
 
     //Setters
     private SetData(data: string):void {
@@ -224,6 +232,9 @@ export class ConfigInput extends Config {
     }
     private SetOnClick(onclick: Function): void{
         this.onclick = onclick;
+    }
+    private SetAllowEmpty(allowEmpty: boolean): void {
+        this.allowEmpty = allowEmpty;
     }
     
 }

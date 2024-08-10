@@ -1,21 +1,24 @@
 import { Cell } from "../Cell/Cell";
-import { DataTableCell } from "../Cell/DataTableCell";
+import { DataTableCellColumn } from "../Cell/DataTableCellColumn";
+import { ConfigCell } from "../Config/ConfigCell";
 import { ConfigRow } from "../Config/ConfigRow";
+import { Factory } from "../Factory/Factory";
+import { Program } from "../Program/Program";
 import { DataTableRow } from "./DataTableRow";
+import { Row } from "./Row";
 
-export class DataTableRowHeader extends DataTableRow {
+export class DataTableRowHeader extends Row {
    
     constructor(config: ConfigRow){
         super(config);
-        var cells: Array<DataTableCell> = config.GetCells();
-        this.SetCells(cells);   
-        this.Draw();
+        this.SetCells();   
     }
 
-    public Draw(): void {
-        var cells: Array<Cell> = this.GetCells();
-        for(var c of cells){
-            this.appendChild(c);
+    private SetCells(): void {
+        var configcells: Array<Object> = this.GetConfig().GetCells();
+        var cells: Array<Cell> = Factory.GetCells(configcells, this);
+        for(var i=0;i<cells.length; i++){
+            this.AddCell(cells[i]);
         }
     }
 

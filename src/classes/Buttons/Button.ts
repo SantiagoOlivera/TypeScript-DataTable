@@ -1,4 +1,5 @@
 import { ConfigButton } from "../Config/ConfigButton";
+import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
 
@@ -9,13 +10,17 @@ export abstract class Button extends HTMLButtonElement implements IDraw {
     constructor(config: ConfigButton){
         super();
         this.SetConfig(config);
-
-        console.log(this.config, this.config.GetId());
-
-        this.id = this.config.GetId();
-        this.className = this.config.GetClassName();
-
+        this.SetId();
+        this.SetClassName();
         this.SetClickEvent();
+    }
+
+    private SetId(): void {
+        this.id = this.GetConfig().GetId();
+    }
+
+    private SetClassName(): void {
+        this.className = this.GetConfig().GetClassName();
     }
 
     public GetConfig(): ConfigButton {
@@ -36,5 +41,11 @@ export abstract class Button extends HTMLButtonElement implements IDraw {
     }
 
     public abstract Draw(): void 
+
+    public static GetForm( config: Object ): Form {
+        var ret: Form = null;
+        
+        return ret;
+    }
 
 }

@@ -2,96 +2,128 @@ import { Cell } from "../Cell/Cell";
 import { ConfigRow } from "../Config/ConfigRow";
 import { IDraw } from "../Interfaces/IDraw";
 import { Row } from "./Row";
+import { DataTableCell } from "../Cell/DataTableCell";
+import { ISelectable } from "../Interfaces/ISelectable";
+import { Program } from "../Program/Program";
+import { ConfigCell } from "../Config/ConfigCell";
+import { Factory } from "../Factory/Factory";
+import { DataTable } from "../DataTable/DataTable";
+import bootstrap, { Popover } from "bootstrap";
 
 
-export class DataTableRow extends Row implements IDraw {
+export class DataTableRow extends Row implements IDraw, ISelectable {
+
+    public selected: boolean;
+    public toggleSelect: boolean;
+    private dropdownOptions: Popover;
 
     constructor(config: ConfigRow){
         super(config);
-        this.Draw();
+        this.SetCells();
+        this.SetEventSelect();
+        this.SetDropdownOptions();
     }
 
-    public Draw(): void {
-        var cells: Array<Cell> = this.GetCells();
-        for(var c of cells){
-            this.appendChild(c);
+    private SetCells(): void {
+        var cellsconfig: Array<Object> = this.GetConfig().GetCells();
+        var cells: Array<Cell> = Factory.GetCells(cellsconfig, this);
+        for(var i=0;i<cells.length;i++) {
+            this.AddCell(cells[i]);
         }
     }
-}
 
-window.customElements.define('data-table-row', DataTableRow, { extends: 'tr' });
-
-/* export abstract class DataTableRow extends HTMLTableRowElement {
+    private SetEventSelect(): void {
+        var isSelectable: boolean = this.GetConfig().GetIsSelectable();
+        if(isSelectable){
+            var r: DataTableRow = this;
+            this.addEventListener(Program.events.DOUBLE_CLICK, function(event: Event) {
+                event.stopPropagation();
+                r.Select();
+            });
+        }
+    }
     
-    //values: Object;
-    private rowNum: number;
-    private cellsList: Array<DataTableCell>;
-    private config: ConfigRow;
-
-    constructor(config: ConfigRow){
-        //rowNum?:number
-        super();
-        this.SetConfig(config);
-        this.SetCells(new Array<DataTableCell>());
-        //this.SetRowNum(rowNum);
+    public IsSelected(): boolean {
+        throw new Error("Method not implemented.");
+    }
+    public Select(): void {
+        //throw new Error("Method not implemented.");
+    }
+    public Deselect(): void {
+        throw new Error("Method not implemented.");
     }
 
-    private SetConfig(config: ConfigRow): void {
-        this.config = config;
-    }
-
-    public GetConfig(): ConfigRow{
-        return this.config;
-    }
-
-    private SetRowNum(rowNum: number){
-        this.rowNum = rowNum;
-    }
-
-    public GetRowNum(){
-        return this.rowNum;
-    }
-
-    public AddCell(cell: DataTableCell) {
-        console.log(this.GetRowNum().toString());
-        cell.setAttribute('row', this.GetRowNum().toString() );
-        this.cellsList.push(cell);
-    }
-
-    public GetCells(): Array<DataTableCell>{
-        return this.cellsList;
-    }
-
-    public SetCells(cells: Array<DataTableCell>){
-        this.cellsList = cells;
-    }
-
-    public GetRowNumCell(): DataTableCell{
-        var cell: DataTableCell = this.cellsList.find( e =>{ return e.GetCellName() === DataTable.ROW_NUM_COLUMN.data });
-        return cell;
-    }
-
-    public GetCell(idx: number): DataTableCell{
-        var cell: DataTableCell = null;
-        if(idx < this.cellsList.length){
-            cell = this.cellsList[idx];
+    public SetValue(data: any): void {
+        var cells: Array<Cell> = this.GetCells();
+        for(var i=0;i<cells.length; i++){
+            var cell: Cell = cells[i];
+            var cellname: string = cell.GetColumnName();
+            var value: any = data[cellname];
+            cell.SetValue(value);
         }
-        return cell;
     }
 
-    public GetData(): any {
-        var ret: any = {};
-        var cells: Array<DataTableCell> = this.GetCells();
-
-        for(var c of cells){
-            var field: string = c.GetCellName();
-            //ret[field] = c.GetInput().GetValue();
-        }
-
+    public GetRowStatusCell(): Cell {
+        var rsc: any = DataTable.ROW_STATUS_COLUMN;
+        var name: string = rsc.data;
+        var ret: Cell = this.GetCellByColumnName(name);
+        return ret;
+    }
+    public GetRowNumCell(): Cell {
+        var rsc: any = DataTable.ROW_NUM_COLUMN;
+        var name: string = rsc.data;
+        var ret: Cell = this.GetCellByColumnName(name);
         return ret;
     }
 
-    public abstract Draw(): void
+    private SetDropdownOptions(): void {
+        /* this.dropdownOptions = new Popover(this, {
+            container: 'body',
+            content: `<div class="w-100">
+                <button class="btn btn-danger btn-sm"><i class="${Program.icons.DELETE}"></i></button>
+                <button class="btn btn-info btn-sm"><i class="${Program.icons.INFO}"></i></button>
+            </div>`,
+            placement: 'left',
+            html: true,
+            sanitize: false,
+            trigger: 'manual',
+        });
+        let x = 0;
+        let y = 0;
+        this.addEventListener(Program.events.RIGHT_CLICK, function(event: any) {
+            event.preventDefault();
+            var row: DataTableRow = <DataTableRow>event.currentTarget;
+            var dt: DataTable = <DataTable>row.GetTable();
+            dt.CloseAllDropdownOptions();
+            x = event.clientX;
+            row.OpenDropdownOptions();
+        }, false);
+        this.addEventListener('inserted.bs.popover', function(event: Event){
+            var popover: any = Popover.getInstance(this);
+            var html: HTMLDivElement = <HTMLDivElement>popover.tip;
+            html.style.display = 'none';
+        });
+        this.addEventListener('shown.bs.popover', function(event: Event){
+            var popover: any = Popover.getInstance(this);
+            var html: HTMLDivElement = <HTMLDivElement>popover.tip;
+            var translate: string = html.style.transform.replace('translate', '').replace('px', '').replace('px', '').replace('(', '').replace(')', '');
+            var split: Array<string> = translate.split(',');
+            y = Number(split[1]);
+            y = y + 25;
+            html.style.transform = `translate(${x}px, ${y}px)`;
+            html.style.display = 'block';
+        }); */
+    }
 
-} */
+    public OpenDropdownOptions(): void {
+        this.dropdownOptions.toggle();   
+    }
+
+    public CloseDropdownOptions(): void {
+        this.dropdownOptions.hide();
+    }
+
+}
+
+window.customElements.define('data-table-row', DataTableRow, { extends: 'tr' });
 

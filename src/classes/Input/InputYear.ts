@@ -4,16 +4,18 @@ import { Functions } from "../Functions/Functions";
 import { Input } from "./Input";
 
 export class InputYear extends Input {
-   
+
     constructor(config: ConfigInput){
         super(config);
-        this.maxLength = 4;
         this.onkeyup = () => {
             this.value.replace(/[^0-9\.]/g,'');
         }
+        this.SetMaxLength();
     }
 
-
+    private SetMaxLength(): void {
+        this.maxLength = 4;
+    }
     public Focus(): void {
         throw new Error("Method not implemented.");
     }
@@ -48,7 +50,7 @@ export class InputYear extends Input {
         throw new Error("Method not implemented.");
     }
     public Disable(disabled: boolean): void {
-        throw new Error("Method not implemented.");
+        this.disabled = disabled;
     }
     public Hide(hidden: boolean): void {
         throw new Error("Method not implemented.");
@@ -65,7 +67,15 @@ export class InputYear extends Input {
     public Empty(): void {
         throw new Error("Method not implemented.");
     }
-    
+    public GetText(): string {
+        throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        throw new Error("Method not implemented.");
+    }
 } 
 
 window.customElements.define('input-year', InputYear, { extends: 'input'});

@@ -2,11 +2,14 @@ import { ConfigCell } from "../Config/ConfigCell";
 import { Functions } from "../Functions/Functions";
 import { Cell } from "./Cell";
 import { DataTableCell } from "./DataTableCell";
+import { ConfigButton } from "../Config/ConfigButton";
+import { IconButton } from "../Buttons/IconButton";
+import { Program } from "../Program/Program";
+import { Button } from "../Buttons/Button";
+import { ColumnOptionsButton } from "../Buttons/ColumnOptionsButton";
 
-export class DataTableCellColumn extends Cell {
+export class DataTableCellColumn extends DataTableCell {
     
-
-    private columnName: string;
     private sTitle: string;
     //private isResizable: boolean;
 
@@ -17,43 +20,49 @@ export class DataTableCellColumn extends Cell {
 
     constructor(config: ConfigCell){
         super(config);
-
-        var name: string = config.GetName();
-        var title: string = config.GetTitle();
-
-
-        this.SetColumnName(name);
-        if(!Functions.IsNullOrEmpty(title)){
-            this.SetTitle(title);
-        }else{
-            this.SetTitle('');
-        }
+        this.SetTitle();
         //this.SetHidden(config.GetHidden());
         this.Draw();
     }
 
     public Draw(): void {
+        this.innerHTML = '';
         var isResizable: boolean = this.GetConfig().GetIsResizable();
-        if(isResizable){
+        if(isResizable) {
             this.SetResizable();
             this.classList.add(this.classes.RESIZABLE);
         }
         this.innerHTML = this.GetTitle();
+        if(this.GetConfig().GetMassiveUpdate()?.IsEnabled()){
+            var btn: Button = new ColumnOptionsButton(this);
+            this.appendChild(btn);
+        }
     }
-
-    public GetTitle(): string{
+    
+    public GetTitle(): string {
         return this.sTitle;
     }
 
-    private SetColumnName(columnName: string):void {
-        this.columnName = columnName;
-    }
-
-    private SetTitle(title:string):void{
+    private SetTitle(): void {
+        var title: string = this.GetConfig().GetTitle();
+        if(Functions.IsNullOrEmpty(title)){
+            title = '';
+        }
         this.sTitle = title;
     }
 
-    public GetValue() {
+    public GetValue(): string {
+        return this.GetColumnName();
+    }
+
+    public SetValue(value: any): void {
+        this.innerHTML = value;
+    }
+
+    public IsFocusable(): boolean {
+        throw false;
+    }
+    public Focus(): void {
         throw new Error("Method not implemented.");
     }
 

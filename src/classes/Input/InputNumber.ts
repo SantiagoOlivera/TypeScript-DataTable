@@ -183,12 +183,6 @@ export class InputNumber extends Input {
     }
 
     public Draw(): void {
-
-        
-        
-        
-
-        
     }
 
     public Supr(): void {
@@ -231,6 +225,15 @@ export class InputNumber extends Input {
     }
     public Empty(): void {
         throw new Error('Method not implemented.');
+    }
+    public GetText(): string {
+        throw new Error("Method not implemented.");
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        this.SetValue(0);
     }
     
 }

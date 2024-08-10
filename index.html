@@ -11,25 +11,26 @@
         </style>
     <h1>Tests</h1>
     
-    <input id="test1" class="form-control w-25 m-2" type="text" value="" />
+    <!-- <input id="test1" class="form-control w-25 m-2" type="text" value="" />
     
     <div id="resizable" class="ui-widget-content">
         <h3 class="ui-widget-header">Resizable</h3>
-    </div>
+    </div> -->
 
-    <div id="dts" class="p-2">
-
-    </div>
+    
+    
+    
+    
 
     <script>
 
-        var test1 = document.getElementById('test1');
+        /* var test1 = document.getElementById('test1'); */
         //^
-        var str = '/^-?\d*(\.\d+)?$/s'
+        /* var str = '/^-?\d*(\.\d+)?$/s'
         str.replace('.', ',');
-        const regex = new RegExp(str);
+        const regex = new RegExp(str); */
 
-        test1.addEventListener('focusout', e => {            
+        /* test1.addEventListener('focusout', e => {            
             var input = e.target;
             var val = input.value;
             var isValid = regex.test(val);
@@ -38,22 +39,24 @@
             }else{
                 input.value = '';
             }
-            /* var input = e.target;
+             var input = e.target;
             var val = input.value;
-            input.value = val.replace(regex, ''); */
-        })
+            input.value = val.replace(regex, '');
+        }) */
     </script>
 
     <title>Document</title>
 </head>
 <body>
+    <div id="dts" class="" style="">
+    </div>
     <!-- script for Safari Browser -->
     <script src="//unpkg.com/@ungap/custom-elements/es.js"></script> 
     <script type="text/javascript" src="./dist/bundle.js"></script>
     <script>
 
         var container = document.querySelector('#dts');
-        var config1 = new window.Framework.ConfigDataTable({
+        /* var config1 = new window.Framework.ConfigDataTable({
             rowNum: true,
             rows:[
                 { id:'t1', text:'Test 1'},
@@ -64,44 +67,49 @@
                 { title: 'Id', data: 'id' },
                 { title: 'Text', data: 'text'},
             ],
-        });
+        }); */
 
-        var dt1 = new window.Framework.DataTable(config1);
+        //var dt1 = new window.Framework.DataTable(config1);
 
-        container.appendChild(dt1);
+        //container.appendChild(dt1);
 
         var config2 = new window.Framework.ConfigDataTable({
             filter: true,
             headerText: 'DataTable Editable',
             rowNum: true,
             rowStatus: true,
+            rowStatusConfig: {
+
+            },
             columnFilter: false,
             pagination: {
-                length: 4,
+                length: 10,
             },
             buttons:[
                 'add',
-                'excel',
             ],
+            change: function(event, data){
+
+            },
             rows:[
-                { id:'t1', text:'Test 1', year: 2013, salary: 2000.56, select: '1', date: null },
-                { id:'t2', text:'Test 2', year: 2014, salary: 3000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date() },
-                { id:'t3', text:'Test 3', year: 2015, salary: 4000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t4', text:'Test 4', year: 2016, salary: 5000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date() },
-                { id:'t5', text:'Test 5', year: 2017, salary: 6000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t6', text:'Test 6', year: 2018, salary: 7000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date() },
-                { id:'t7', text:'Test 7', year: 2019, salary: 8000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t8', text:'Test 8', year: 2020, salary: 9000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date() },
-                { id:'t9', text:'Test 9', year: 2021, salary: 10000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t10', text:'Test 10', year: 2022, salary: 11000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t11', text:'Test 11', year: 2023, salary: 12000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t12', text:'Test 12', year: 2024, salary: 13000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t13', text:'Test 13', year: 2025, salary: 14000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t14', text:'Test 14', year: 2026, salary: 15000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t15', text:'Test 15', year: 2027, salary: 16000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t16', text:'Test 16', year: 2028, salary: 17000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t17', text:'Test 17', year: 2029, salary: 18000.56, select: '3', date: null, form: { text: 'test asd',  } },
-                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, form: { text: 'test asd',  } },
+                {   id:'t1', text:'Test 1', year: 2013, salary: 2000.56, select: '1', date: new Date(), checkbox: false, checkboxswitch: true, liveSearch: { id:'1', text: '1 - Volkswagen' }, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t2', text:'Test 2', year: 2014, salary: 3000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date(1996,10,19), form: { text: 'ASD',  } , checkbox: true , form: { text: 'Test texto', date: new Date(), select: '3',  },},
+                { id:'t3', text:'Test 3', year: 2015, salary: 4000.56, select: '3', date: null, form: { text: 'Texto prueba',  } , checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  },  },
+                { id:'t4', text:'Test 4', year: 2016, salary: 5000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date(), checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t5', text:'Test 5', year: 2017, salary: 6000.56, select: '3', date: null, form: { text: 'test asd',  } , checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t6', text:'Test 6', year: 2018, salary: 7000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date(), checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t7', text:'Test 7', year: 2019, salary: 8000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t8', text:'Test 8', year: 2020, salary: 9000.56, select: '2', liveSearch: { id:'1', text: '1 - Volkswagen' }, date: new Date() , checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  },},
+                { id:'t9', text:'Test 9', year: 2021, salary: 10000.56, select: '3', liveSearch: { id:'10', text: '10 - Lexus' }, date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t10', text:'Test 10', year: 2022, salary: 11000.56, select: '3', date: null, form: { text: 'test asd',  } , checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  },},
+                { id:'t11', text:'Test 11', year: 2023, salary: 12000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t12', text:'Test 12', year: 2024, salary: 13000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t13', text:'Test 13', year: 2025, salary: 14000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t14', text:'Test 14', year: 2026, salary: 15000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t15', text:'Test 15', year: 2027, salary: 16000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t16', text:'Test 16', year: 2028, salary: 17000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t17', text:'Test 17', year: 2029, salary: 18000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, form: { text: 'test asd',  }, checkbox: false, form: { text: 'Test texto', date: new Date(), select: '3',  }, },
             ],
             columns: [
                 { 
@@ -111,7 +119,12 @@
                     data: 'id', 
                     type:'text', 
                     disabled: true, 
-                    hidden: false 
+                    hidden: false, 
+                    editable: false,
+                    fixedColumn: true,
+                    className: 'col-6',
+                    massiveUpdate: true,
+                    width:100,
                 },
                 { 
                     label: 'Text',
@@ -120,16 +133,26 @@
                     data:'text', 
                     type:'text',  
                     disabled: false, 
-                    hidden: false 
+                    hidden: false,
+                    editable: true,
+                    fixedColumn: false,
+                    required: true,
+                    className: 'col-6',
+                    massiveUpdate: true,
+                    width:100,
                 },
                 { 
                     label: 'Year',
                     title: 'Year', 
                     name: 'year',
                     data:'year', 
-                    type:'number',  
+                    type:'number',
                     disabled: false, 
-                    hidden: false  
+                    hidden: false, 
+                    editable: true,
+                    massiveUpdate: true,
+                    fixedColumn: true,
+                    width:100,
                 },
                 { 
                     label: 'Salary',
@@ -139,9 +162,12 @@
                     type:'number', 
                     disabled: false, 
                     hidden: false, 
+                    editable: true,
                     decimals: 3, 
+                    massiveUpdate: true,
                     thousandSeparator: '.', 
-                    decimalsSeparator: ',' 
+                    decimalsSeparator: ',',
+                    width: 200,
                 }, 
                 { 
                     label: 'Select',
@@ -151,8 +177,10 @@
                     type:'select', 
                     disabled: false, 
                     hidden: false,
-                    editable: false,
+                    editable: true,
+                    massiveUpdate: true,
                     className: '',
+                    width: 200,
                     options: [
                         {id:'1', text:'Option 1'},
                         {id:'2', text:'Option 2'},
@@ -167,6 +195,9 @@
                     type:'livesearch', 
                     disabled: false, 
                     hidden: false, 
+                    editable: true,
+                    width: 200,
+                    massiveUpdate: true,
                 },
                 { 
                     label: 'Date',
@@ -176,17 +207,55 @@
                     type:'date', 
                     editable: false, 
                     disabled: false, 
-                    hidden: false, 
+                    hidden: false,
+                    editable: true,
+                    massiveUpdate: true,
+                    width: 200,
+                },
+                {
+                    id: 'checkbox',
+                    label: 'Checkbox',
+                    title: 'Checkbox',
+                    type: 'checkbox',
+                    name: 'checkbox',
+                    data: 'checkbox',
+                    value: false,
+                    required: false,
+                    editable: true,
+                    disabled: false,
+                    hidden: false,
+                    massiveUpdate: true,
+                    className: 'col-6',
+                    width: 200,
+                },
+                {
+                    id: 'checkbox-switch',
+                    label: 'Checkbox switch',
+                    title: 'Checkbox switch',
+                    type: 'checkbox-switch',
+                    name: 'checkboxswitch',
+                    data: 'checkboxswitch',
+                    value: false,
+                    required: false,
+                    editable: true,
+                    disabled: false,
+                    hidden: false,
+                    massiveUpdate: true,
+                    className: 'col-6',
+                    width: 200,
                 },
                 { 
                     label: 'Form',
-                    title: 'Form',
+                    title: 'Extra info',
                     name: 'form', 
                     data: 'form', 
                     type:'form', 
-                    editable: false, 
+                    editable: true, 
                     disabled: false, 
                     hidden: false, 
+                    massiveUpdate: true,
+                    formtype: 'single',
+                    width: 200,
                     fields: [
                         {
                             label: 'Text',
@@ -198,16 +267,46 @@
                             required: false,
                             disabled: false,
                             hidden: false,
-                            className: 'col-6 p-2',
+                            className: 'col-6',
                             maxLength: 10,
-                        }
+                        },
+                        { 
+                            label: 'Select',
+                            title: 'Select', 
+                            name: 'select',
+                            data:'select', 
+                            type:'select', 
+                            disabled: false, 
+                            hidden: false,
+                            editable: true,
+                            className: 'col-6',
+                            allowEmptyValue: false,
+                            defaultValue: '2',
+                            options: [
+                                {id:'1', text:'Option 1'},
+                                {id:'2', text:'Option 2'},
+                                {id:'3', text:'Option 3'},
+                            ],
+                        },
+                        {
+                            label: 'Fecha',
+                            title: 'Fecha',
+                            placeholder: 'Fecha',
+                            type: 'date',
+                            name: 'date',
+                            data: 'date',
+                            required: false,
+                            disabled: false,
+                            hidden: false,
+                            className: 'col-6',
+                            maxLength: 10,
+                        },
                     ],
                 },
             ],
         });
         
         var dt2 = new window.Framework.DataTable(config2);
-
         container.appendChild(dt2);
 
     </script>

@@ -1,7 +1,7 @@
 import { Config } from "../Config/Config";
 import { Form } from "../Form/Form";
 
-export interface IInput{
+export interface IInput {
     GetHTMLElement(): HTMLElement
     SetValue(value: any): void
     GetValue(): any
@@ -12,7 +12,10 @@ export interface IInput{
     Hide(hidden:boolean):void
     IsDisabled():boolean
     IsHidden():boolean
+    IsEditable(): boolean
     GetConfig(): Config
     Empty(): void
     GetForm(): Form
+    GetText(): string
+    SetDefault(): void
 }

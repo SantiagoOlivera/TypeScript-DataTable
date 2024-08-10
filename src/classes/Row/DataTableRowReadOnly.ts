@@ -11,7 +11,7 @@ export class DataTableRowReadOnly extends DataTableRow{
         super(config);
         //cells: Array<DataTableCell>
         var cells: Array<Cell>
-        this.SetCells(cells);
+        //this.SetCells(cells);
         this.Draw();
     }
 

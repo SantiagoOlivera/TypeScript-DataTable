@@ -4,26 +4,29 @@ import { Functions } from "../Functions/Functions";
 import { Config } from "./Config";
 import { ConfigButton } from "./ConfigButton";
 import { RowStatus } from "../Enum/RowStatus";
+import { ConfigCell } from "./ConfigCell";
 
 export class ConfigRow extends Config {
 
     private rowNum: number;
     private rowStatus: RowStatus;
     private isSelectable: boolean;
-    private cells: Array<DataTableCell>;
+    private cells: Array<Object>;
     private colSpan: number;
     private onclick: Function;
     private buttons: Array<any>;
+    private rowtype: string;
 
     constructor(config: any) {
         super(config);
 
         var rowNum: number = config.rowNum;
         var isSelectable: boolean = config.isSelectable;
-        var cells: Array<DataTableCell> = config.cells;
+        var cells: Array<Object> = config.cells;
         var colSpan: number = config.colSpan;
         var buttons: Array<any> = config.buttons;
         var rowStatus: RowStatus = config.rowStatus;
+        var rowtype: string = config.rowtype;
 
         if(!Functions.IsNullOrEmpty(rowNum)){
             this.SetRowNum(rowNum);
@@ -55,8 +58,13 @@ export class ConfigRow extends Config {
         } else {
             this.SetRowStatus(RowStatus.NORMAL);
         }
+        if(!Functions.IsNullOrEmpty(rowtype)){
+            this.SetRowType(rowtype);
+        } else {
+            this.SetRowType(null);
+        }
     }
-
+    
     //Getters
     public GetRowNum(): number{
         return this.rowNum;
@@ -64,7 +72,7 @@ export class ConfigRow extends Config {
     public IsSelectable(): boolean{
         return this.isSelectable;
     }
-    public GetCells(): Array<DataTableCell> {
+    public GetCells(): Array<Object> {
         return this.cells;
     }
     public GetColSpan(): number {
@@ -79,6 +87,13 @@ export class ConfigRow extends Config {
     public GetRowStatus(): RowStatus {
         return this.rowStatus;
     }
+    public GetIsSelectable(): boolean {
+        return this.isSelectable;
+    }
+    public GetRowType(): string {
+        return this.rowtype;
+    }
+
 
     //Setters
     private SetRowNum(rowNum: number): void{
@@ -87,7 +102,7 @@ export class ConfigRow extends Config {
     private SetIsSelectable(isSelectable: boolean): void{
         this.isSelectable = isSelectable;
     }
-    private SetCells(cells: Array<DataTableCell>): void {
+    private SetCells(cells: Array<Object>): void {
         this.cells = cells;
     }
     private SetColSpan(colSpan: number): void{
@@ -101,6 +116,9 @@ export class ConfigRow extends Config {
     }
     private SetOnClick(onclick: Function): void{
         this.onclick = onclick;
+    }
+    private SetRowType(rowtype: string){
+        this.rowtype = rowtype;
     }
     
 }

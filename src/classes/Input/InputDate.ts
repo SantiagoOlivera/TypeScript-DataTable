@@ -1,22 +1,18 @@
+
+import * as $ from "jquery";
 import IMask from 'imask';
 import { Input } from "./Input";
 import { ConfigInput } from '../Config/ConfigInput';
 import { Functions } from '../Functions/Functions';
 import { Form } from '../Form/Form';
+import { Program } from '../Program/Program';
+import { IInput } from '../Interfaces/IInput';
 
 export class InputDate extends Input {
     
-
     private date: Date;
-    //private format: string;
     private mask: any;
     
-    private readonly EMPTY_STRING = '';
-    private readonly props = {
-        MASKED: 'masked',
-        DATE: 'date',
-    };
-
     private readonly sep = '  /  ';
 
     constructor(config: ConfigInput){
@@ -27,9 +23,47 @@ export class InputDate extends Input {
         }else {
             this.SetValue(null);
         }
-        this.SetChangeEvent();
         this.Draw();
+        this.SetChangeEvent();
+        this.InitDatepicker();
     }
+
+    public InitDatepicker(): void {
+        $(this).datepicker({
+            dateFormat: 'dd  /  mm  /  yy',
+            showButtonPanel: true,
+            gotoCurrent: true,
+            showOn: 'button',
+            onSelect: function(datetext: string, config: any) {
+                var day = config.selectedDay;
+                var month = config.selectedMonth;
+                var year = config.selectedYear;
+                var date = new Date(year, month, day)
+                this.SetValue(date);
+                this.dispatchEvent(new Event(Program.events.CHANGE, { bubbles: true }));
+            },
+        });
+        this.addEventListener(Program.events.KEYDOWN, function(event: KeyboardEvent){
+            var keyCode = event.keyCode;
+            if(keyCode === Program.keycodes.SPACE) { 
+                $(this).datepicker('show');
+                event.preventDefault();
+            }
+        });
+        this.addEventListener(Program.events.CLICK, function(event: Event) {
+            $(this).datepicker('show');
+        });
+        this.addEventListener(Program.events.FOCUSOUT, function(event: FocusEvent){
+            try{
+                if(!Functions.IsNullOrEmpty(event.relatedTarget)){
+                    (<IInput><unknown>event.relatedTarget);
+                    $(this).datepicker('hide');
+                }
+            } catch {
+            }
+        }); 
+    }
+    
 
     private SetFormat(format: string): void{
         //this.format = format;
@@ -54,51 +88,57 @@ export class InputDate extends Input {
 
     public SetValue(value: Date): void {
         this.date = value;
+        this.UpdateValue();
     }
 
     public GetValue(): Date {
         return this.date;
     }
 
-    public GetSep(): string{
+    public GetSep(): string {
         return this.sep;
     }
 
     public Draw(): void {
+        this.initDateMask();
+    }
 
-        const s = this.GetSep();
+    private GetEmptyFormatDate(): string {
+        var sep = this.GetSep();
+        return `__${sep}__${sep}____`;
+    }
 
-        const format = function(date: Date): string{
-            
-            var str: string = null;
-            var day: any = date.getDate();
-            var month: any = date.getMonth() + 1;
-            var year: any = date.getFullYear();
+    private initDateMask(): void {
 
-            if (day < 10) day = "0" + day;
-            if (month < 10) month = "0" + month;
-            str = [day, month, year].join(s);
-            
-
-            return str;
+        const sep = this.GetSep();
+        const format = function(date: Date): string {
+            //console.log(date);
+            var ret: string = `__${sep}__${sep}____`;
+            if(!Functions.IsNullOrEmpty(date)){
+                var day: any = date.getDate();
+                var month: any = date.getMonth() + 1;
+                var year: any = date.getFullYear();
+                if (day < 10) day = '0' + day;
+                if (month < 10) month = '0' + month;
+                ret = [day, month, year].join(sep);
+            }
+            return ret;
         }
-
-        const parse = function(str: string): Date{
-            var val: Date = new Date();
-            var yearMonthDay: Array<string> = str.split(s);
-
-            var y: number = Number.parseInt(yearMonthDay[2]);
-            var m: number = Number.parseInt(yearMonthDay[1]) - 1;
-            var d: number = Number.parseInt(yearMonthDay[0]);
-            var val: Date = new Date(y, m, d);
-
-            return val;
+        const parse = function(str: string): Date {
+            //console.log(str);
+            var ret: Date = null;
+            if(!Functions.IsNullOrEmpty(str)){
+                var yearMonthDay: Array<string> = str.split(sep);
+                var y: number = Number.parseInt(yearMonthDay[2]);
+                var m: number = Number.parseInt(yearMonthDay[1]) - 1;
+                var d: number = Number.parseInt(yearMonthDay[0]);
+                ret = new Date(y, m, d);
+            }
+            return ret;
         }
-        
         const options = {
-            mask: Date,
-            //pattern: 'd{'+ s +'}`m{'+ s +'}`Y', 
-            pattern: `d${s}m${s}Y`,
+            mask: Date, 
+            pattern: `d${sep}m${sep}Y`,
             blocks: {
                 d: {
                     mask: IMask.MaskedRange,
@@ -125,16 +165,21 @@ export class InputDate extends Input {
 
         this.mask = IMask(this, options);
 
-        var val: Date = this.GetValue();
-        if(val){
-            this.value = format(val);
-        }
-
+        this.UpdateValue();
         
+    }
+    
+
+    private UpdateValue(): void {
+        var val: Date = this.GetValue();
+        if(!Functions.IsNullOrEmpty(this.mask)) {
+            this.value = this.mask.masked.format(val);
+            this.mask.updateValue();
+        }
     }
 
     public Supr(): void {
-        this.value = this.EMPTY_STRING;
+        this.value = this.GetEmptyFormatDate();
         this.SetValue(null);
     }
 
@@ -143,15 +188,16 @@ export class InputDate extends Input {
     }
     
     private SetChangeEvent():void{
-        this.addEventListener('change', function(e){
+        this.addEventListener('change', function(e) {
             var input = <InputDate>this;
             var mask: any = input.GetMask();
-            var value: Date = mask[input.props.MASKED][input.props.DATE];
-            input.SetValue(value);
-            if(!value){
+            var value: Date = mask.masked.date;
+            if(Functions.IsNullOrEmpty(value)) {
                 input.Supr();
+            } else {
+                input.SetValue(value);
             }
-            console.log(this,this.value, value);
+            //console.log(this,this.value, value);
         });
     }
     
@@ -168,13 +214,22 @@ export class InputDate extends Input {
         return this.hidden;
     }
     public Empty(): void {
-        throw new Error("Method not implemented.");
+        this.SetValue(null);
     }
 
     public GetForm(): Form {
         throw new Error('Method not implemented.');
     }
-
+    public GetText(): string {
+        var ret: string = Functions.ToStringDate(this.GetValue(), 'dd/MM/yyyy');
+        return ret;
+    }
+    public IsEditable(): boolean {
+        return this.GetConfig().GetEditable();
+    }
+    public SetDefault(): void {
+        this.SetValue(null);
+    }
 }
 
 window.customElements.define('input-date', InputDate, { extends: 'input'});
