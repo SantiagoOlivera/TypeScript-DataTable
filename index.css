@@ -111,6 +111,7 @@ table td.sticky-column {
     position: sticky;
     z-index: 10;
     overflow: hidden;
+    background-color: white;
     /* outline:2px solid grey; */
 }
 

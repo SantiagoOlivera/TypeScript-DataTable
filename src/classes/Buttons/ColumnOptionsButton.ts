@@ -57,7 +57,7 @@ export class ColumnOptionsButton extends IconButton {
                     width: 100,
                     icon: Program.icons.CHECK,
                     onclick: function(){
-
+                        modalMassiveUpdate.Close();
                     }
                 }
             ],
