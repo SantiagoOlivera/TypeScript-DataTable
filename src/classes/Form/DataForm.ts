@@ -75,7 +75,7 @@ export class DataForm extends Form implements IForm {
         throw new Error("Method not implemented.");
     }
     public Focus(): void {
-        throw new Error("Method not implemented.");
+        this.FocusFirstInput();
     }
     public Disable(disabled: boolean): void {
         for(var i of this.inputs){

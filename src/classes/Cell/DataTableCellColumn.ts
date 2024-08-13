@@ -34,7 +34,7 @@ export class DataTableCellColumn extends DataTableCell {
         }
         this.innerHTML = this.GetTitle();
         if(this.GetConfig().GetMassiveUpdate()?.IsEnabled()){
-            var btn: Button = new ColumnOptionsButton(this);
+            var btn: ColumnOptionsButton = new ColumnOptionsButton(this);
             this.appendChild(btn);
         }
     }

@@ -84,6 +84,7 @@ export abstract class Modal extends HTMLDivElement {
         this.modal.show();
     }
 
+
     public Close(): void {
         this.modal.hide();
     }

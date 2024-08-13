@@ -1,5 +1,6 @@
 import { ConfigModal } from "../Config/ConfigModal";
 import { Form } from "../Form/Form";
+import { Program } from "../Program/Program";
 import { Modal } from "./Modal";
 
 export class FormModal extends Modal {
@@ -23,6 +24,9 @@ export class FormModal extends Modal {
 
     private Draw(): void {
         this.AddElementInModalBody(this.form);
+        this.addEventListener(Program.events.AFTER_SHOW_MODAL, function() {
+            this.GetForm().Focus();
+        });
     }
 
 }

@@ -77,6 +77,8 @@ export class Program {
         DOUBLE_CLICK: 'dblclick',
         KEYDOWN: 'keydown',
         INPUT: 'input',
+        BEFORE_SHOW_MODAL: 'show.bs.modal',
+        AFTER_SHOW_MODAL: 'shown.bs.modal',
         BEFORE_CLOSE_MODAL: 'hide.bs.modal',
         AFTER_CLOSE_MODAL: 'hidden.bs.modal',
         RIGHT_CLICK: 'contextmenu',

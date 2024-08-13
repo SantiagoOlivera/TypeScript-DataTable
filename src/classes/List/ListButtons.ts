@@ -29,7 +29,7 @@ export class ListButtons extends List {
         }
     }
 
-    public GetButtons(): Array<Button>{
+    public GetButtons(): Array<Button> {
         return this.buttons;
     }
 
