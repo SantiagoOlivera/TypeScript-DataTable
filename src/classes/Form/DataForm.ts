@@ -75,7 +75,7 @@ export class DataForm extends Form implements IForm {
         throw new Error("Method not implemented.");
     }
     public Focus(): void {
-        this.FocusFirstInput();
+        this.FocusFirstInputIncomplete();
     }
     public Disable(disabled: boolean): void {
         for(var i of this.inputs){
@@ -535,7 +535,7 @@ export class DataForm extends Form implements IForm {
             var exit: boolean = false;
             while(i < this.inputs.length && !exit){
                 var inp: IInput = this.inputs[i];
-                if(Functions.IsNullOrEmpty(inp.GetValue())){
+                if(Functions.IsNullOrEmpty(inp.GetValue()) && !inp.IsDisabled()){
                     inp.Focus();
                     exit=true;
                 }
