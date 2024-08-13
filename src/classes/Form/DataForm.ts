@@ -535,7 +535,11 @@ export class DataForm extends Form implements IForm {
             var exit: boolean = false;
             while(i < this.inputs.length && !exit){
                 var inp: IInput = this.inputs[i];
-                if(Functions.IsNullOrEmpty(inp.GetValue()) && !inp.IsDisabled()){
+                var value: any = inp.GetValue();
+                if(Functions.IsBoolean(value) && !inp.IsDisabled() && !inp.IsHidden()) {
+                    inp.Focus();
+                    exit=true;
+                } else if(Functions.IsNullOrEmpty(value) && !inp.IsDisabled() && !inp.IsHidden()){
                     inp.Focus();
                     exit=true;
                 }

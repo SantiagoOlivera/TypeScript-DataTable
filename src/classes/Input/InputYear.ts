@@ -56,10 +56,10 @@ export class InputYear extends Input {
         throw new Error("Method not implemented.");
     }
     public IsDisabled(): boolean {
-        throw new Error("Method not implemented.");
+        return this.disabled;
     }
     public IsHidden(): boolean {
-        throw new Error("Method not implemented.");
+        return this.hidden;
     }
     public GetForm(): Form {
         throw new Error("Method not implemented.");
