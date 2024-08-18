@@ -163,6 +163,13 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
         this.SetNumberOfElements(length);
     }
 
+    public RemovePage(): void {
+        var length: number = this.GetNumberOfElements();
+        if(length > 0){
+            this.SetNumberOfElements(length-1);
+        }
+    }
+
     public GetForm(): Form {
         throw new Error("Method not implemented.");
     }

@@ -1,6 +1,7 @@
 import 'bootstrap/dist/js/bootstrap';
 import "jquery-ui/themes/base/all.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
+/* import 'bootstrap/dist/css/bootstrap.css'; */
+import './styles/custom-bootstrap/custom-bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import '../index.css';
 import { ConfigForm } from "./classes/Config/ConfigForm";

@@ -251,6 +251,11 @@ export class DataForm extends Form implements IForm {
         data.push(d);
     }
 
+    public RemoveData(idx: number){
+        var data: Array<any> = this.Data();
+        data.splice(idx, 1);
+    }
+
     private DrawHeader() {
 
         var form: DataForm = this;
@@ -326,6 +331,11 @@ export class DataForm extends Form implements IForm {
                     form.SetIndex(idx);
                     form.SetValue(d);
                     form.GetRowStatusForm().SetRowStatus(status);
+                    if(status === RowStatus.DELETE){
+                        form.Disable(true);
+                    } else {
+                        form.Disable(false);
+                    }
                 }
             });
 
@@ -341,14 +351,14 @@ export class DataForm extends Form implements IForm {
                     icon: Program.icons.ADD,
                     width: 45,
                     height: 45,
-                    className: Program.bootstrap.BUTTON_SUCCESS_SMALL,
+                    className: Program.bootstrap.BUTTON_SUCCESS_SMALL  + ' m-1',
                     default: true,
                     onclick: function() {
                         var data: any = form.Data();
                         var newdata: any = {};
+                        var status: RowStatus = RowStatus.NEW;
+                        newdata[Program.props.ROW_STATUS] = status;
                         if(form.GetConfig().GetRowStatus()) { 
-                            var status: RowStatus = RowStatus.NEW;
-                            newdata[Program.props.ROW_STATUS] = status;
                             form.GetRowStatusForm().SetRowStatus(status);
                         }
                         form.AddData(newdata);
@@ -360,6 +370,37 @@ export class DataForm extends Form implements IForm {
                     }
                 }));
                 btns.appendChild(btnAdd);
+                var btnDelete: IconButton = new IconButton(new ConfigButton({
+                    id: 'btnDelete',
+                    title: '',
+                    name: 'delete',
+                    data: 'delete',
+                    icon: Program.icons.DELETE,
+                    width: 45,
+                    height: 45,
+                    className: Program.bootstrap.BUTTON_DANGER_SMALL + ' m-1',
+                    default: true,
+                    onclick: function() {
+                        var data: any = form.Data();
+                        var idx: number = form.GetIndex();
+                        var d: any = data[idx];
+                        var length: number = data.length;
+                        var rowStatus: RowStatus = d[Program.props.ROW_STATUS];
+                        if(rowStatus === RowStatus.NEW) {
+                            form.RemoveData(idx);
+                            ipc.ChangePage(length-1, true);
+                            ipc.RemovePage();
+                        } else {
+                            var status: RowStatus = RowStatus.DELETE;
+                            d[Program.props.ROW_STATUS] = status;
+                            if(form.GetConfig().GetRowStatus()) { 
+                                form.GetRowStatusForm().SetRowStatus(status);
+                            }
+                            form.Disable(true);
+                        }
+                    }
+                }));
+                btns.appendChild(btnDelete);
                 cpc.appendChild(btns);    
             }
 

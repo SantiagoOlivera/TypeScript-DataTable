@@ -98,6 +98,10 @@ export class Program {
         TEXT_CENTER: 'text-center',
         LIST_GROUP: 'list-group',
         LIST_GROUP_ITEM: 'list-group-item list-group-item-action',
+        FONT_WEIGHT_BOLD: 'fw-bold',
+        TEXT_UPDATE: 'text-update',
+        TEXT_SUCCESS: 'text-success',
+        TEXT_DANGER: 'text-danger',
     }
 
     public static classes = {
