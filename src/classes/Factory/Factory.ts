@@ -178,6 +178,13 @@ export abstract class Factory {
         return ret;
     }
 
+    public static GetIcon(icon?: string): HTMLElement {
+        var ret: HTMLElement = document.createElement('i');
+        if(!Functions.IsNullOrEmpty(icon)){
+            ret.className = icon;
+        }
+        return ret;
+    }
 
     public static TransformConfigDataTableToConfigForm(c1: ConfigDataTable, c2: ConfigForm ): void {
         

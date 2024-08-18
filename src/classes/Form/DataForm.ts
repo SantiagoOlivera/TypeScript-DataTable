@@ -3,6 +3,7 @@ import { IconButton } from "../Buttons/IconButton";
 import { ConfigButton } from "../Config/ConfigButton";
 import { ConfigForm } from "../Config/ConfigForm";
 import { ConfigInput } from "../Config/ConfigInput";
+import { RowStatus } from "../Enum/RowStatus";
 import { Factory } from "../Factory/Factory";
 import { Functions } from "../Functions/Functions";
 import { Input } from "../Input/Input";
@@ -14,6 +15,7 @@ import { InputText } from "../Input/InputText";
 import { IForm } from "../Interfaces/IForm";
 import { IInput } from "../Interfaces/IInput";
 import { Program } from "../Program/Program";
+import { RowStatusForm } from "../RowStatus/RowStatusForm";
 import { Form } from "./Form";
 
 export class DataForm extends Form implements IForm {
@@ -206,22 +208,27 @@ export class DataForm extends Form implements IForm {
         }
         this.inputs = ret;
     }
+
     public GetInputs(): Array<IInput> {
         return this.inputs;
     }
+
+    
+
     public SetFormData(idx: number): void {
         //var cf: ConfigForm = <ConfigForm>this.GetConfig();
         //var data: any = cf.GetData();
+        var rowStatus: boolean = this.GetConfig().GetRowStatus();
         var data: any = this.Data();
-        if(!Functions.IsNullOrEmpty(data)){
+        if(!Functions.IsNullOrEmpty(data)) {
             var inputs: Array<IInput> = this.GetInputs();
             if(Functions.IsObject(data)) {
-                for(var i of inputs){
+                for(var i of inputs) {
                     var name: string = i.GetConfig().GetName();
                     var val: any = data[name];
                     i.SetValue(val);
                 }
-            }else if(Array.isArray(data)){
+            } else if (Array.isArray(data)) {
                 if(data.length > 0){
                     if(!Functions.IsNumber(idx)){
                         idx = 0;
@@ -233,6 +240,8 @@ export class DataForm extends Form implements IForm {
                         i.SetValue(val);
                     }
                 }                
+            }
+            if(rowStatus) {
             }
         }
     }
@@ -263,6 +272,15 @@ export class DataForm extends Form implements IForm {
                     var value: any = i.GetValue();
                     var name: string = i.GetConfig().GetName();
                     d[name] = value;
+                }
+            }
+            
+            if(form.GetConfig().GetRowStatus()) {
+                var status: RowStatus = d[Program.props.ROW_STATUS];
+                if(Functions.IsNullOrEmpty(status) || status === RowStatus.NORMAL) {
+                    var status: RowStatus = RowStatus.UPDATED;
+                    d[Program.props.ROW_STATUS] = status;
+                    form.GetRowStatusForm().SetRowStatus(status);
                 }
             }
         });
@@ -298,15 +316,16 @@ export class DataForm extends Form implements IForm {
             }));
 
             ipc.addEventListener(Program.events.CHANGE_PAGE, function(event: Event) {
-                debugger;
                 var input: InputNumber = <InputNumber>event.target;
                 var value: number = input.GetValue();
                 if(!Functions.IsNullOrEmpty(value)) {
                     var idx: number = value - 1;
                     var data: any = form.Data();
                     var d: any = data[idx];
+                    var status: RowStatus = d[Program.props.ROW_STATUS];
                     form.SetIndex(idx);
                     form.SetValue(d);
+                    form.GetRowStatusForm().SetRowStatus(status);
                 }
             });
 
@@ -326,7 +345,13 @@ export class DataForm extends Form implements IForm {
                     default: true,
                     onclick: function() {
                         var data: any = form.Data();
-                        form.AddData({});
+                        var newdata: any = {};
+                        if(form.GetConfig().GetRowStatus()) { 
+                            var status: RowStatus = RowStatus.NEW;
+                            newdata[Program.props.ROW_STATUS] = status;
+                            form.GetRowStatusForm().SetRowStatus(status);
+                        }
+                        form.AddData(newdata);
                         ipc.AddNewPage();
                         var length: number = data.length;
                         ipc.ChangePage(length, true);
@@ -377,8 +402,22 @@ export class DataForm extends Form implements IForm {
         }
         
         this.AppendChild(this.header);
+        this.DrawRowStatus();
     }
 
+    private DrawRowStatus(): void {
+        var rs: boolean = this.GetConfig().GetRowStatus();
+        if (rs) {
+            this.rowStatusForm = new RowStatusForm();
+            var status: RowStatus = RowStatus.NORMAL;
+            this.rowStatusForm.SetRowStatus(status);
+            this.header.appendChild(this.rowStatusForm);
+        }
+    }
+
+    public GetRowStatusForm(): RowStatusForm {
+        return this.rowStatusForm;
+    }
 
 
     private DrawBody(){

@@ -3,5 +3,5 @@ export enum RowStatus {
     NEW = 1,
     UPDATED = 2,
     DELETE = 3,
-    ERROR = 4,
+    ERROR = 4
 }

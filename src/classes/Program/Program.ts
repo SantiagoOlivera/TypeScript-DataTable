@@ -107,6 +107,7 @@ export class Program {
         FORM_CONTROL_SMALL: 'form-control form-control-sm',
         STICKY_COLUMN: 'sticky-column',
         MASSIVE_UPDATE_HEADER: 'btn-massive-update-column-header',
+        ROW_STATUS: 'row-status',
     }
 
     public static readonly inputTypes = {
@@ -150,6 +151,7 @@ export class Program {
         ORDERED_LIST: 'bi bi-list-ol',
         CALCULATOR: 'bi bi-calculator',
         COPY: 'bi bi-copy',
+        NORMAL: 'i bi-dash',
     }
 
     public static readonly rowtypes = {
@@ -173,6 +175,7 @@ export class Program {
 
     public static readonly props = {
         ROW_INDEX: '___rowIndex___',
+        ROW_STATUS: '___rowStatus___',
     }
 
     public static GetIcon(icon: string): string {

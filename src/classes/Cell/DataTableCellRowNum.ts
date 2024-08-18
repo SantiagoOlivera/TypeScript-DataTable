@@ -21,7 +21,7 @@ export class DataTableCellRowNum extends DataTableCell {
     constructor(config: ConfigCell) {
         super(config);
     }
-    
+
     public GetValue() {
 
     }
@@ -40,12 +40,12 @@ export class DataTableCellRowNum extends DataTableCell {
     public Draw(): void {
         this.innerHTML = '';
         var num: number = this.GetRow().GetIndexNode()+1;
+        var cell: DataTableCell = this;
         if(!Functions.IsNullOrEmpty(num)){
              this.button = new RowNumButton(new ConfigButton({
                 index: num,
              }));
              this.button.Draw();
-
              var list: ListButtons = new ListButtons(new ConfigList({
                 buttons: [
                     { 
@@ -59,10 +59,19 @@ export class DataTableCellRowNum extends DataTableCell {
                         icon: Program.icons.DELETE,
                         type: 'icon',
                         className: Program.bootstrap.LIST_GROUP_ITEM,
+                        onclick: function() {
+                            
+                        },
                     },
                     { 
                         title: `Ver cambios`,
                         icon: Program.icons.EYE,
+                        type: 'icon',
+                        className: Program.bootstrap.LIST_GROUP_ITEM,
+                    },
+                    { 
+                        title: `Clonar`,
+                        icon: Program.icons.COPY,
                         type: 'icon',
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                     },

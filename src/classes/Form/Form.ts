@@ -1,6 +1,7 @@
 import { ConfigForm } from "../Config/ConfigForm";
 import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
+import { RowStatusForm } from "../RowStatus/RowStatusForm";
 
 
 export abstract class Form extends HTMLFormElement implements IDraw, IInput {
@@ -10,6 +11,7 @@ export abstract class Form extends HTMLFormElement implements IDraw, IInput {
     public header: HTMLDivElement;
     public body: HTMLDivElement;
     public footer: HTMLDivElement;
+    public rowStatusForm: RowStatusForm;
 
     constructor(config: ConfigForm) {
         super();
