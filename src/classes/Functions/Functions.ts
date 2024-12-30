@@ -1,5 +1,6 @@
 import { Form } from "../Form/Form";
 import { LiveSearchOption } from "../Input/LiveSearchInput";
+import { IComparable } from "../Interfaces/IComparable";
 
 export class Functions {
 
@@ -8,6 +9,7 @@ export class Functions {
         NUMBER: 'number',
         OBJECT: 'object',
         BOOLEAN: 'boolean',
+        FUNCTION: 'function',
     }
 
     public static readonly keycodes = {
@@ -45,10 +47,30 @@ export class Functions {
         return ret;
     }
 
+    public static IsDate(val: any) {
+        var ret: boolean = false;
+        if(this.IsObject(val)){
+            if(val instanceof Date){
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    
+
 
     public static IsString(val: any): boolean {
         var ret: boolean = false;
         if(typeof val === this.types.STRING){
+            ret = true;
+        }
+        return ret;
+    }
+
+    public static IsFunction(val: any): boolean {
+        var ret: boolean = false;
+        if(typeof val === this.types.FUNCTION){
             ret = true;
         }
         return ret;
@@ -274,5 +296,74 @@ export class Functions {
         return ret;
     }
 
+
+    public static IsEmptyObject(data: any) {
+        var ret: boolean = false;
+        if(!this.IsNullOrEmpty(data)){
+            if(this.IsObject(data)) {
+                var keys = Object.keys(data);
+                if(keys.length === 0){
+                    ret = true;
+                } else {
+                    var filter = keys.filter(e => { 
+                        var ret: boolean = false;
+                        var val: any = data[e];
+                        if(this.IsObject(val)) {
+                            if(!this.IsEmptyObject(val)){
+                                ret = true;
+                            }
+                        } else if(!this.IsNullOrEmpty(val)){
+                            ret = true;
+                        }
+                        return ret;
+                    });
+                    if(filter.length > 0){
+                        ret = false;
+                    } else {
+                        ret = true;
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+
+    public static IsEquals(val1: any, val2: any): boolean {
+        var ret: boolean = false;
+        if(!this.IsObject(val1) && !this.IsObject(val2)){
+            ret = (val1 === val2);
+        } else if(this.IsDate(val1) && this.IsDate(val2)){
+            ret = (val1.getTime() === val2.getTime());
+        } else {
+            ret = this.CompareObjects(val1, val2);
+        }
+        return ret;
+    }
+
+    public static CompareObjects(val1: any, val2: any): boolean {
+        var ret: boolean = false;
+        if(this.IsObject(val1) && this.IsObject(val2)){
+            var keys1: Array<string> = Object.keys(val1);
+            var keys2: Array<string> = Object.keys(val2);
+            if(keys1.length === keys2.length) {
+                var i = 0;
+                var equals: boolean = true;
+                while(i < keys1.length && equals) {
+                    var k = keys1[i];
+                    if(val1.hasOwnProperty(k) && val2.hasOwnProperty(k)){
+                        if(!this.IsEquals(val1[k], val2[k])) {
+                            equals = false;
+                        }
+                    } else {
+                        equals = false;
+                    }
+                    i++;
+                }
+                ret = equals;
+            }
+        }
+        return ret;
+    }
 
 }

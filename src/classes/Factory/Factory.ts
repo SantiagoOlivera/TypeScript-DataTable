@@ -35,6 +35,7 @@ import { ConfigButton } from "../Config/ConfigButton";
 import { DataTableCellRowNum } from "../Cell/DataTableCellRowNum";
 import { InputButton } from "../Input/InputButton";
 import { Button } from "../Buttons/Button";
+import { InputSelectBoolean } from "../Input/InputSelectBoolean";
 
 export abstract class Factory {
     static GetOperationBarButton(b: any): Button {
@@ -72,6 +73,8 @@ export abstract class Factory {
                 ret = new InputCheckbox(c);
             } else if(type ===  Program.inputTypes.CHECKBOX_SWITCH){
                 ret = new InputCheckboxSwitch(c);
+            }  else if(type === Program.inputTypes.SELECT_BOOLEAN) {
+                ret = new InputSelectBoolean(c);
             } else if(type === Program.inputTypes.BUTTON){
                 
             } else if(type === Program.inputTypes.FORM) {

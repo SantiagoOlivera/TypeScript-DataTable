@@ -30,8 +30,6 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
 
         var maxValue: number = (<ConfigInput>this.GetConfig()).GetValue();
         this.SetNumberOfElements(maxValue);
-
-
         this.SetTxtPageNumber();
         this.SetTxtNumberOfElements();
         this.SetButtonPrevious();
@@ -63,7 +61,7 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
         }
     }
 
-    private SetNumberOfElements(length: number): void {
+    public SetNumberOfElements(length: number): void {
         this.numberOfElements = length;
         if(!Functions.IsNullOrEmpty(this.txtNumberOfElements)){
             this.txtNumberOfElements.SetValue(this.numberOfElements.toString());   
@@ -131,15 +129,21 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
             maxWidth: 60,
             minWidth: 60,
             align: 'right',
-            value: 1,
-            minValue: 1,
-            defaultValue: 1,
+            value: 0,
+            minValue: 0,
+            defaultValue: 0,
         }));
         var ipn: InputNumber = this.txtPageNumber;
-        this.txtPageNumber.addEventListener('change', function(event: Event) {
-            ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
+        this.txtPageNumber.addEventListener(Program.events.CHANGE, function(event: Event) {
+            var value = ipn.GetValue();
+            if(value > ipc.GetNumberOfElements()){
+                ipn.SetValue(ipc.GetNumberOfElements());
+            } else {
+                ipn.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
+            }
+            event.stopPropagation();
         });
-        this.txtPageNumber.addEventListener('keyup', function(event: KeyboardEvent) {
+        this.txtPageNumber.addEventListener(Program.events.KEY_DOWN, function(event: KeyboardEvent) {
             var input: InputNumber = <InputNumber>event.target;
             var value: number = input.GetValue();
             var keycode: number = event.keyCode;
@@ -148,11 +152,13 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
                     input.SetValue(value-1);
                     input.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
                 }
+                event.preventDefault();
             } else if (keycode === Program.keycodes.KEY_UP) {
                 if(value < ipc.GetNumberOfElements()){
                     input.SetValue(value+1);
                     input.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event));
                 }
+                event.preventDefault();
             }
         });
     }

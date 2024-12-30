@@ -1,8 +1,10 @@
+import { Button } from "../Buttons/Button";
 import { FormButton } from "../Buttons/FormButton";
 import { IconButton } from "../Buttons/IconButton";
 import { ConfigButton } from "../Config/ConfigButton";
 import { ConfigForm } from "../Config/ConfigForm";
 import { ConfigInput } from "../Config/ConfigInput";
+import { ConfigModal } from "../Config/ConfigModal";
 import { RowStatus } from "../Enum/RowStatus";
 import { Factory } from "../Factory/Factory";
 import { Functions } from "../Functions/Functions";
@@ -12,13 +14,15 @@ import { InputFilter } from "../Input/InputFilter";
 import { InputNumber } from "../Input/InputNumber";
 import { InputPageChager } from "../Input/InputPageChanger";
 import { InputText } from "../Input/InputText";
+import { Filter, IFilterable } from "../Interfaces/IFilterable";
 import { IForm } from "../Interfaces/IForm";
 import { IInput } from "../Interfaces/IInput";
+import { FormModal } from "../Modals/FormModal";
 import { Program } from "../Program/Program";
 import { RowStatusForm } from "../RowStatus/RowStatusForm";
 import { Form } from "./Form";
 
-export class DataForm extends Form implements IForm {
+export class DataForm extends Form implements IForm, IFilterable {
 
     private readonly props = {
         DISABLED: 'disabled',
@@ -28,18 +32,62 @@ export class DataForm extends Form implements IForm {
     
     private inputs: Array<IInput>;
     private data: any;
+    private bkp: any;
+    private filteredData: any;
     private index: number;
+    private buttons: Array<Button>;
+    private inputPageChager: InputPageChager;
     
     constructor(config: ConfigForm){
         super(config);
         this.Init();
         this.CreateInputs();
         this.SetIndex(0);
+        this.SetEvents();
         this.Draw();
     }
+
+    public Filter(filters: Array<Filter>): any {
+        var data: any = this.Data();
+        var ret: any = data;
+        if(!Functions.IsNullOrEmpty(filters)){
+            if(filters.length > 0) {
+                ret = Filter.FilterData(data, filters);
+                var ipc: InputPageChager = this.GetPager();
+                ipc.SetNumberOfElements(ret.length);
+            }
+        }
+        return ret;
+    }
+
+    public GetFilters(): Array<Filter> {
+        throw new Error("Method not implemented.");
+    }
+
+    public IsFiltered(): boolean {
+        var ret: boolean = false;
+        if(!Functions.IsNullOrEmpty(this.filteredData)){
+            ret = true;
+        }
+        return ret;
+    }
+
+    public AddButton(button: Button): void {
+        this.buttons.push(button);
+    }
+
+    public DisableButton(id: string, disabled: boolean){
+        var btn: Button = this.buttons.find( e=> { return e.GetConfig().GetId() === id; });
+        if(!Functions.IsNullOrEmpty(btn)){
+            btn.Disable(disabled);
+        }
+    }
+
     private Init(): void {
         this.inputs = new Array<IInput>();
+        this.buttons = new Array<Button>();
         this.SetData(this.GetConfig().GetData());
+        this.SetBkp(this.GetConfig().GetData());
         this.SetClassName(this.GetConfig().GetClassName());
     }
     public GetForm(): Form {
@@ -48,9 +96,27 @@ export class DataForm extends Form implements IForm {
     private SetData(data: any): void {
         this.data = data;
     }
+    private SetBkp(data: any): void {
+        this.bkp = Functions.CloneObject(data);
+    }
+
     public Data(): any {
         return this.data;
     }
+
+    public GetBkp(idx?: number): any {
+        var ret: any = null;
+        if(Array.isArray(this.bkp)){
+            if(Functions.IsNullOrEmpty(idx)){
+               idx = 0; 
+            }
+            ret = Functions.CloneObject(this.bkp[idx]);    
+        } else {
+            ret = Functions.CloneObject(this.bkp);
+        }
+        return ret; 
+    }
+
     public GetHTMLElement(): HTMLElement {
         return this;
     }
@@ -216,12 +282,10 @@ export class DataForm extends Form implements IForm {
     
 
     public SetFormData(idx: number): void {
-        //var cf: ConfigForm = <ConfigForm>this.GetConfig();
-        //var data: any = cf.GetData();
         var rowStatus: boolean = this.GetConfig().GetRowStatus();
         var data: any = this.Data();
+        var inputs: Array<IInput> = this.GetInputs();
         if(!Functions.IsNullOrEmpty(data)) {
-            var inputs: Array<IInput> = this.GetInputs();
             if(Functions.IsObject(data)) {
                 for(var i of inputs) {
                     var name: string = i.GetConfig().GetName();
@@ -241,14 +305,39 @@ export class DataForm extends Form implements IForm {
                     }
                 }                
             }
-            if(rowStatus) {
+        } else {
+            for(var i of inputs){
+                i.SetValue(null);
+                i.Disable(true);
+            }
+        }
+    }
+
+    public ReplaceData(newdata: any, idx?: number): void {
+        if(!Functions.IsNullOrEmpty(this.data)) {
+            if(Functions.IsObject(this.data)) {
+
+            } else if(Array.isArray(this.data)){
+                if(this.data.length > 0) {
+                    if(!Functions.IsNumber(idx)){
+                        idx = 0;
+                    }
+                    this.data[idx] = newdata;
+                }
             }
         }
     }
 
     public AddData(d: any): void {
         var data: Array<any> = this.Data();
-        data.push(d);
+        if(!Functions.IsNullOrEmpty(data)){
+            data.push(d);
+        } else if(Array.isArray(data)){
+            data.push(d);
+        } else {
+            data = new Array<any>();
+            data.push(d);
+        }
     }
 
     public RemoveData(idx: number){
@@ -256,10 +345,13 @@ export class DataForm extends Form implements IForm {
         data.splice(idx, 1);
     }
 
-    private DrawHeader() {
 
+    private SetEvents(): void {
+        this.SetEventChange();
+    }
+
+    private SetEventChange(): void {
         var form: DataForm = this;
-
         this.addEventListener(Program.events.CHANGE, function(event: Event) {
             var e: Element = <Element>event.target;
             var input: IInput = <IInput><unknown>e;
@@ -286,40 +378,47 @@ export class DataForm extends Form implements IForm {
                     var status: RowStatus = RowStatus.UPDATED;
                     d[Program.props.ROW_STATUS] = status;
                     form.GetRowStatusForm().SetRowStatus(status);
+                    form.DisableButton('btnUndo', false);
+                    form.DisableButton('btnDelete', true);
                 }
             }
         });
+    }
 
-        var cf: ConfigForm = <ConfigForm>this.GetConfig();
-        var data: any = this.Data();
-
+    private SetHeader(): void {
         //Header
         this.header = document.createElement('div');
         this.header.className = 'row';
+    }
 
+    private SetTitle(): void {
         //Container title
         var container: HTMLDivElement = document.createElement('div');
         container.className = 'col-12';
-
         var title: HTMLElement = this.GetTitle();
         container.appendChild(title);
-
-
         this.header.appendChild(container);
+    }
+
+    private SetInputPageChager(): void {
+
+        var form: Form = this;
+        var data: any = form.Data();
+
+        var cpc: HTMLDivElement = document.createElement('div');
+        cpc.className = 'col-12';
 
         var isArray: boolean = Functions.IsArray(data);
+
         if(isArray) {
-
-            var cpc: HTMLDivElement = document.createElement('div');
-            cpc.className = 'col-12';
-
+            
             var ipc: InputPageChager = new InputPageChager(new ConfigInput({
                 type: 'form',
                 value: data.length,
                 width: 190,
                 align: 'right',
             }));
-
+    
             ipc.addEventListener(Program.events.CHANGE_PAGE, function(event: Event) {
                 var input: InputNumber = <InputNumber>event.target;
                 var value: number = input.GetValue();
@@ -331,84 +430,250 @@ export class DataForm extends Form implements IForm {
                     form.SetIndex(idx);
                     form.SetValue(d);
                     form.GetRowStatusForm().SetRowStatus(status);
-                    if(status === RowStatus.DELETE){
+                    if(status === RowStatus.DELETE) {
                         form.Disable(true);
+                        form.DisableButton('btnUndo', false);
+                        form.DisableButton('btnDelete', true);
+                    } else if(status === RowStatus.UPDATED) {
+                        form.Disable(false);
+                        form.DisableButton('btnUndo', false);
+                        form.DisableButton('btnDelete', true);
                     } else {
                         form.Disable(false);
+                        form.DisableButton('btnUndo', true);
+                        form.DisableButton('btnDelete', false);
                     }
                 }
             });
 
-            var allowAddElements: boolean = cf.GetAddElements();
-            if(allowAddElements){
-                var btns: HTMLDivElement = document.createElement('div');
-                btns.className = 'col-12';
-                var btnAdd: IconButton = new IconButton(new ConfigButton({
-                    id: 'btnAdd',
-                    title: '',
-                    name: 'add',
-                    data: 'add',
-                    icon: Program.icons.ADD,
-                    width: 45,
-                    height: 45,
-                    className: Program.bootstrap.BUTTON_SUCCESS_SMALL  + ' m-1',
-                    default: true,
-                    onclick: function() {
-                        var data: any = form.Data();
-                        var newdata: any = {};
-                        var status: RowStatus = RowStatus.NEW;
-                        newdata[Program.props.ROW_STATUS] = status;
+            this.inputPageChager = ipc;
+            cpc.appendChild(ipc);
+        }
+
+        this.header.appendChild(cpc);
+
+    }
+
+    private SetButtons(): void {
+
+        var form: DataForm = this;
+        var data: any = form.Data();
+        var cf: ConfigForm = <ConfigForm>this.GetConfig();
+        var allowAddElements: boolean = cf.GetAddElements();
+
+        var btns: HTMLDivElement = document.createElement('div');
+        btns.className = 'col-12';
+
+        if(allowAddElements) {
+
+            var btnAdd: IconButton = new IconButton(new ConfigButton({
+                id: 'btnAdd',
+                title: '',
+                name: 'add',
+                data: 'add',
+                icon: Program.icons.ADD,
+                width: 45,
+                height: 45,
+                className: Program.bootstrap.BUTTON_SUCCESS_SMALL  + ' m-1',
+                default: true,
+                onclick: function() {
+                    var data: any = form.Data();
+                    var length: number = 1;
+                    if(data.length > 0){
+                        length = data.length+1;
+                    }
+                    var ipc: InputPageChager = form.GetPager();
+                    var newdata: any = {};
+                    var status: RowStatus = RowStatus.NEW;
+                    newdata[Program.props.ROW_STATUS] = status;
+                    if(form.GetConfig().GetRowStatus()) { 
+                        form.GetRowStatusForm().SetRowStatus(status);
+                    }
+                    form.AddData(newdata);
+                    ipc.AddNewPage();
+                    ipc.ChangePage(length, true);
+                    form.SetDefault();
+                    form.FocusFirstInputIncomplete();
+                    form.Disable(false);
+                }
+            }));
+
+            form.AddButton(btnAdd);
+            btns.appendChild(btnAdd);
+
+            var btnDelete: IconButton = new IconButton(new ConfigButton({
+                id: 'btnDelete',
+                title: '',
+                name: 'delete',
+                data: 'delete',
+                icon: Program.icons.DELETE,
+                width: 45,
+                height: 45,
+                className: Program.bootstrap.BUTTON_DANGER_SMALL + ' m-1',
+                default: true,
+                onclick: function() {
+                    var data: any = form.Data();
+                    var idx: number = form.GetIndex();
+                    var ipc: InputPageChager = form.GetPager();
+                    var d: any = data[idx];
+                    var length: number = data.length;
+                    var rowStatus: RowStatus = d[Program.props.ROW_STATUS];
+                    if(rowStatus === RowStatus.NEW) {
+                        form.RemoveData(idx);
+                        ipc.ChangePage(length-1, true);
+                        ipc.RemovePage();
+                        if(ipc.GetNumberOfElements() === 0){
+                            form.Empty();
+                            form.Disable(true);
+                        }
+                    } else {
+                        var status: RowStatus = RowStatus.DELETE;
+                        d[Program.props.ROW_STATUS] = status;
                         if(form.GetConfig().GetRowStatus()) { 
                             form.GetRowStatusForm().SetRowStatus(status);
                         }
-                        form.AddData(newdata);
-                        ipc.AddNewPage();
-                        var length: number = data.length;
-                        ipc.ChangePage(length, true);
-                        form.SetDefault();
-                        form.FocusFirstInputIncomplete();
+                        form.Disable(true);
+                        form.DisableButton('btnDelete', true);
+                        form.DisableButton('btnUndo', false);
                     }
-                }));
-                btns.appendChild(btnAdd);
-                var btnDelete: IconButton = new IconButton(new ConfigButton({
-                    id: 'btnDelete',
-                    title: '',
-                    name: 'delete',
-                    data: 'delete',
-                    icon: Program.icons.DELETE,
-                    width: 45,
-                    height: 45,
-                    className: Program.bootstrap.BUTTON_DANGER_SMALL + ' m-1',
-                    default: true,
-                    onclick: function() {
-                        var data: any = form.Data();
-                        var idx: number = form.GetIndex();
-                        var d: any = data[idx];
-                        var length: number = data.length;
-                        var rowStatus: RowStatus = d[Program.props.ROW_STATUS];
-                        if(rowStatus === RowStatus.NEW) {
-                            form.RemoveData(idx);
-                            ipc.ChangePage(length-1, true);
-                            ipc.RemovePage();
-                        } else {
-                            var status: RowStatus = RowStatus.DELETE;
-                            d[Program.props.ROW_STATUS] = status;
-                            if(form.GetConfig().GetRowStatus()) { 
-                                form.GetRowStatusForm().SetRowStatus(status);
-                            }
-                            form.Disable(true);
-                        }
-                    }
-                }));
-                btns.appendChild(btnDelete);
-                cpc.appendChild(btns);    
-            }
+                }
+            }));
 
-            cpc.appendChild(ipc);
-            this.header.appendChild(cpc);
+            form.AddButton(btnDelete);
+            btns.appendChild(btnDelete);
+
+            var btnUndo: IconButton = new IconButton(new ConfigButton({
+                id: 'btnUndo',
+                title: '',
+                name: 'undo',
+                data: 'undo',
+                icon: Program.icons.UNDO,
+                width: 45,
+                height: 45,
+                className: Program.bootstrap.BUTTON_DARK_SMALL + ' m-1',
+                default: true,
+                onclick: function() {
+                    var data: any = form.Data();
+                    var idx: number = form.GetIndex();
+                    var d: any = data[idx];
+                    var rowStatus: RowStatus = d[Program.props.ROW_STATUS];
+                    var status: RowStatus = RowStatus.NORMAL;
+                    if(rowStatus === RowStatus.DELETE){
+                        d[Program.props.ROW_STATUS] = RowStatus.NORMAL;
+                        form.Disable(false);
+                    } else if(rowStatus === RowStatus.UPDATED){
+                        var bkp: any = form.GetBkp(idx);
+                        form.ReplaceData(bkp, idx);
+                        form.SetFormData(idx);
+                    }
+                    if(form.GetConfig().GetRowStatus()) { 
+                        form.GetRowStatusForm().SetRowStatus(status);
+                    }
+                    form.DisableButton('btnDelete', false);
+                    form.DisableButton('btnUndo', true);
+                }
+            }));
+
+            form.AddButton(btnUndo);
+            btns.appendChild(btnUndo);
+            form.DisableButton('btnUndo', true);
+
+            var filterForm: DataForm = new DataForm(new ConfigForm({
+                title: '',
+                id: 'formFilterModal',
+                className: '',
+                filter: false,
+                floatingForm: false,
+                transformTable: true,
+                fields: function() {
+                    var fields: any = Functions.CloneObject(form.GetConfig().GetFields());
+                    for(var f of fields){
+                        if(f.type === Program.inputTypes.CHECKBOX || 
+                            f.type === Program.inputTypes.CHECKBOX_SWITCH
+                        ){
+                            f.type = Program.inputTypes.SELECT_BOOLEAN;
+                        } else if(f.type === Program.inputTypes.SELECT) {
+                            f.allowEmpty = true;
+                        } else if(f.type === Program.inputTypes.FORM) {
+                            f.floatingForm = false;
+                        }
+                        f.defaultValue = null;
+                        f.placeholder = '';
+                        f.value = null;
+                    }
+                    return fields;
+                }(),
+            }));
+            filterForm.Disable(false);
+            var btnFilter: IconButton = new IconButton(new ConfigButton({
+                id: 'btnFilter',
+                title: '',
+                name: 'filter',
+                data: 'filter',
+                icon: Program.icons.FILTER,
+                width: 45,
+                height: 45,
+                className: Program.bootstrap.BUTTON_LIGHT_SMALL + ' m-1',
+                default: true,
+                onclick: function() {
+                    var modal: FormModal = new FormModal(new ConfigModal({
+                        id: 'modalFilter',
+                        title: 'Filtro',
+                        form: filterForm,
+                        buttons: [
+                            {
+                                id: 'btnFilter',
+                                title: 'Filtrar',
+                                width: 90,
+                                type: 'icon',
+                                icon: Program.icons.FILTER,
+                                className: 'btn btn-dark',
+                                onclick: function() {
+                                    var data: any = filterForm.GetData();
+                                    var filters: Array<Filter> = Filter.ObjectToFiltersArray(data);
+                                    form.Filter(filters);
+                                    modal.Close();
+                                },
+                            }
+                        ],
+                    }));
+                    modal.Open();
+                }
+            }));
+
+            form.AddButton(btnFilter);
+            btns.appendChild(btnFilter);
+
+            
+            
         }
+
+        this.header.appendChild(btns);
+
+    }
+
+    public GetPager(): InputPageChager {
+        return this.inputPageChager;
+    }
+
+    private DrawRowStatus(): void {
+        var rs: boolean = this.GetConfig().GetRowStatus();
+        if (rs) {
+            this.rowStatusForm = new RowStatusForm();
+            var status: RowStatus = RowStatus.NORMAL;
+            this.rowStatusForm.SetRowStatus(status);
+            this.header.appendChild(this.rowStatusForm);
+        }
+    }
+
+    private DrawHeader() {
+
+        this.SetHeader();   
+        this.SetTitle();
+        this.SetInputPageChager();
+        this.SetButtons();
         
-        var filter: boolean = cf.GetFilter();
+        /* var filter: boolean = cf.GetFilter();
         
         //this.SetTransformFormToDataTable();
     
@@ -419,9 +684,9 @@ export class DataForm extends Form implements IForm {
             hidden: false,
             className: 'col-12 col-lg-6',
             placeholder: 'Filtro',
-        });
+        }); */
 
-        var inpF: InputFilter = new InputFilter(fi);
+        /* var inpF: InputFilter = new InputFilter(fi);
     
         if(filter){
             var input: Input = inpF.GetInput();
@@ -440,21 +705,13 @@ export class DataForm extends Form implements IForm {
             });
 
             this.header.appendChild(inpF);
-        }
+        } */
         
         this.AppendChild(this.header);
         this.DrawRowStatus();
     }
 
-    private DrawRowStatus(): void {
-        var rs: boolean = this.GetConfig().GetRowStatus();
-        if (rs) {
-            this.rowStatusForm = new RowStatusForm();
-            var status: RowStatus = RowStatus.NORMAL;
-            this.rowStatusForm.SetRowStatus(status);
-            this.header.appendChild(this.rowStatusForm);
-        }
-    }
+    
 
     public GetRowStatusForm(): RowStatusForm {
         return this.rowStatusForm;

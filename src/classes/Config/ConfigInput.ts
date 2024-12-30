@@ -33,6 +33,7 @@ export class ConfigInput extends Config {
     private minValue: number;
     private onclick: Function;
     private allowEmpty: boolean;
+    private dataType: string;
     
     
     
@@ -55,6 +56,7 @@ export class ConfigInput extends Config {
         var minValue: number = config.minValue;
         var onclick: Function = config.onclick;
         var allowEmpty: boolean = config.allowEmpty;
+        var dataType: string = config.dataType;
 
         if(!Functions.IsNullOrEmpty(data)){
             this.SetData(data);
@@ -130,6 +132,11 @@ export class ConfigInput extends Config {
         }else{
             this.SetAllowEmpty(true);
         }
+        if(!Functions.IsNullOrEmpty(dataType)){
+            this.SetDataType(dataType);
+        } else {
+            this.SetDataType(null);
+        }
     }
 
     public ToConfigForm(): ConfigForm {
@@ -186,6 +193,9 @@ export class ConfigInput extends Config {
     public GetAllowEmpty(): boolean {
         return this.allowEmpty;
     }
+    public GetDataType(): string {
+        return this.dataType;
+    }
 
     //Setters
     private SetData(data: string):void {
@@ -235,6 +245,9 @@ export class ConfigInput extends Config {
     }
     private SetAllowEmpty(allowEmpty: boolean): void {
         this.allowEmpty = allowEmpty;
+    }
+    private SetDataType(dataType: string): void{
+        this.dataType = dataType;
     }
     
 }

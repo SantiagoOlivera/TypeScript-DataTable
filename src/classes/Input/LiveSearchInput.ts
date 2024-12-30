@@ -1,10 +1,12 @@
 import { ConfigInput } from "../Config/ConfigInput";
 import { Form } from "../Form/Form";
 import { Functions } from "../Functions/Functions";
+import { IComparable } from "../Interfaces/IComparable";
 import { Program } from "../Program/Program";
 import { Input } from "./Input";
+import axios from 'axios';
 
-export class LiveSearchOption {
+export class LiveSearchOption implements IComparable {
 
     private id:string;
     private text: string;
@@ -15,6 +17,15 @@ export class LiveSearchOption {
         this.SetId(id);
         this.SetText(text);
     }
+
+    public Compare(val: any): boolean {
+        var ret: boolean = false;
+        if(val instanceof LiveSearchOption){
+            ret = this.GetId() === (<LiveSearchOption>val).GetId();
+        }
+        return ret;
+    }
+
     public GetId(): string{
         return this.id;
     }
@@ -27,6 +38,7 @@ export class LiveSearchOption {
     private SetText(text:string){
         this.text = text;
     }
+
     public static IsLiveSearchOption(val: any): boolean {
         var ret: boolean = false;
         if(val instanceof LiveSearchOption){
@@ -34,6 +46,7 @@ export class LiveSearchOption {
         }
         return ret;
     }
+
     private static IsValidObject(val: any): boolean {
         var ret: boolean = false;
         if(!Functions.IsNullOrEmpty(val)){
@@ -48,6 +61,7 @@ export class LiveSearchOption {
         }
         return ret;
     }
+
     public static ConvertObjectToLiveSearchOption(val: any): LiveSearchOption {
         var ret: LiveSearchOption = null;
         if(LiveSearchOption.IsValidObject(val)){
@@ -55,6 +69,7 @@ export class LiveSearchOption {
         }
         return ret;
     }
+    
     public static ConvertArrayObjectToArrayLiveSearchOption(options: any): Array<LiveSearchOption> {
         var ret: Array<LiveSearchOption> = [];
         if(Functions.IsArray(options)){
@@ -67,6 +82,7 @@ export class LiveSearchOption {
         }
         return ret;
     }
+
 }
 
 export class LiveSearchOptionInputItem extends HTMLButtonElement {
@@ -246,9 +262,115 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement {
 
 window.customElements.define('live-search-option-input-item', LiveSearchOptionInputItem, { extends: 'button'});
 
+
+class LiveSearchOptionsUrl {
+
+    private id: string;
+    private url: string;
+    private options: Array<LiveSearchOption>;
+
+    constructor(id:string, url: string) {
+        this.id = id;
+        this.url = url;
+        this.options = new Array<LiveSearchOption>();
+        this.Load();
+    }
+
+    public GetId(): string {
+        return this.id;
+    }
+
+    public GetUrl(): string {
+        return this.url;
+    }
+
+    public GetOptions(): Array<LiveSearchOption> {
+        return this.options;
+    }
+
+    public Load(): void {
+        var lsou: LiveSearchOptionsUrl = this;
+        axios.get(this.GetUrl()).then(function (response) {
+          // handle success
+          console.log(response);
+          lsou.SetOptions(response.data);
+        }).catch(function (error) {
+          // handle error
+          console.log(error);
+        }).finally(function () {
+          // always executed
+        });
+    }
+
+    public SetOptions(data: any): void {
+        if(Array.isArray(data)){
+            for(var d of data) { 
+                var exists = this.options.some(e => { return e.GetId() === d.id });
+                if(!exists){
+                    var opt: LiveSearchOption = new LiveSearchOption(d.id, d.text);
+                    this.options.push(opt);
+                }
+                this.options.sort(function(a,b) {
+                    var ret: number = 0;
+                    if(
+                        !isNaN(parseInt(a.GetId())) && 
+                        !isNaN(parseInt(b.GetId()))
+                    ) {
+                        ret = parseInt(a.GetId()) - parseInt(b.GetId());
+                    }
+                    return  ret;
+                });
+            }
+        }
+    }
+
+    public AddOption(d: any): void {
+        if(!Functions.IsNullOrEmpty(d)){
+            var exists = this.options.some(e => { return e.GetId() === d.id });
+            if(LiveSearchOption.IsLiveSearchOption(d)) {
+                if(!exists){
+                    var opt: LiveSearchOption = new LiveSearchOption(d.id, d.text);
+                    this.options.push(opt);
+                }
+            }
+        }
+    }
+
+
+}
+
+class LiveSearchOptionsGetter {
+    
+    private options: any = null;
+
+    constructor() {
+        this.options = {};
+    }
+
+    public SetOption(id: string, url: string): void {
+        var opt: any = this.options[id];
+        if(Functions.IsNullOrEmpty(opt)){
+            this.options[id] = new LiveSearchOptionsUrl(id, url);
+        }
+    }
+
+    public GetOption(id: string): LiveSearchOptionsUrl {
+        return this.options[id];
+    }
+
+    public AddOption(id: string, o: LiveSearchOption): void {
+        var opts: Array<LiveSearchOption> = this.options[id];
+        if(opts && !Functions.IsNullOrEmpty(o)) {
+            this.options[id].AddOption(o);
+        }
+    }
+
+}
+
+
 export class LiveSearchInput extends Input {
-    
-    
+
+    public static getter: LiveSearchOptionsGetter = new LiveSearchOptionsGetter();
     
     
     private container: HTMLDivElement;
@@ -302,6 +424,8 @@ export class LiveSearchInput extends Input {
     constructor(config: ConfigInput) {
         super(config);
 
+        LiveSearchInput.getter.SetOption('marcas_autos', 'https://my.api.mockaroo.com/marcas_autos?key=407a6990');
+
         var value: any = config.GetValue();
         var val: LiveSearchOption = null;
         if(!Functions.IsNullOrEmpty(value)) {
@@ -310,9 +434,8 @@ export class LiveSearchInput extends Input {
             val = null;
         }
         var url: string = config.GetApiUrl();
-        var options: Array<any> = config.GetOptions();
-
-        this.SetOptions(LiveSearchOption.ConvertArrayObjectToArrayLiveSearchOption(LiveSearchInput.test));
+        //var options: Array<any> = config.GetOptions();
+        //this.SetOptions(LiveSearchOption.ConvertArrayObjectToArrayLiveSearchOption(LiveSearchInput.test));
         this.SetClassName();
         this.SetInputValue(val, false);
         this.SetPreviousValue(val);
@@ -320,12 +443,13 @@ export class LiveSearchInput extends Input {
     }
 
     public GetOptions(): Array<LiveSearchOption> {
-        return this.options;
+        //return this.options;
+        return LiveSearchInput.getter.GetOption(this.GetConfig().GetDataType()).GetOptions();
     }
 
-    private SetOptions(options: Array<LiveSearchOption>): void {
+    /* private SetOptions(options: Array<LiveSearchOption>): void {
         this.options = options;
-    }
+    } */
 
     private SetPreviousValue(value: LiveSearchOption): void {
         this.previusValue = null;
@@ -580,18 +704,19 @@ export class LiveSearchInput extends Input {
     }
 
     private AddOption(opt: LiveSearchOption): void {
-        if(!this.ExistOption(opt.GetId())){
+        /* if(!this.ExistOption(opt.GetId())){
             this.options.push(opt);
-        }
+        } */
+       LiveSearchInput.getter.AddOption(this.GetConfig().GetDataType(), opt);
     }
 
-    private ExistOption(id: string): boolean {
+    /* private ExistOption(id: string): boolean {
         var ret: boolean = false;
         if(!Functions.IsNullOrEmpty(this.options)){
             ret = this.options.some( e => { return e.GetId() === id; });
         }
         return ret;
-    }
+    } */
 
     public Empty(): void {
         this.EmptyInputText();

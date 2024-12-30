@@ -43,7 +43,7 @@ export class InputText extends Input {
         if(!Functions.IsNullOrEmpty(s)){
             v = v + s;
         }
-
+        
         this.value = v;
     }
     public GetValue() {

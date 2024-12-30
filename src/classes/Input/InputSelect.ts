@@ -11,7 +11,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw {
 
     private readonly HTML_OPTION: string = 'option';
 
-    private optionsList: Array<OptionSelect>;
+    public optionsList: Array<OptionSelect>;
     private opt: string;
     private config: ConfigInput;
     
@@ -39,7 +39,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw {
         this.config = config;
     }
 
-    private SetClassName(): void {
+    public SetClassName(): void {
         this.className = `${Program.classes.FORM_CONTROL_SMALL}`;
     }
     
@@ -80,7 +80,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw {
         this.value = val;
     }
 
-    public GetValue(): string {
+    public GetValue(): any {
         var ret: string = null;
         if(!Functions.IsNullOrEmpty(this.value)) {
             ret = this.value;
@@ -100,7 +100,7 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw {
         return this.opt;
     }
 
-    private SetOptions():void {
+    public SetOptions():void {
         this.optionsList = new Array<OptionSelect>();
         var options: Array<any> = this.GetConfig().GetOptions();
         if(!Functions.IsNullOrEmpty(options)){
@@ -174,3 +174,6 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw {
 }
 
 window.customElements.define('input-select', InputSelect, { extends: 'select'});
+
+
+

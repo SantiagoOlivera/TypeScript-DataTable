@@ -1,7 +1,11 @@
 import { Config } from "../Config/Config"
+import { EnumLanguage } from "../Enum/EnumLanguage"
 import { IInput } from "../Interfaces/IInput"
+import { Language } from "../Language/Language"
 
 export class Program {
+
+    public livesearchoptions: Array<any>;
 
     public static readonly types = {
         STRING: 'string',
@@ -9,6 +13,8 @@ export class Program {
         OBJECT: 'object',
         BOOLEAN: 'boolean',
     }
+
+    public static readonly language = new Language(EnumLanguage.SPANISH);
 
     public static readonly defaults: any = {
         EMPTY_STRING: '',
@@ -72,6 +78,7 @@ export class Program {
         CHANGE: 'change',
         CHANGE_PAGE: 'change.page',
         KEY_UP: 'keyup',
+        KEY_DOWN: 'keydown',
         FOCUS: 'focus',
         FOCUSOUT: 'focusout',
         DOUBLE_CLICK: 'dblclick',
@@ -90,6 +97,8 @@ export class Program {
         FLOAT_RIGHT: 'float-end',
         BUTTON_SUCCESS_SMALL: 'btn btn-success btn-sm',
         BUTTON_DANGER_SMALL: 'btn btn-danger btn-sm',
+        BUTTON_DARK_SMALL: 'btn btn-dark btn-sm',
+        BUTTON_SECONDARY_SMALL: 'btn btn-secondary btn-sm',
         BUTTON_INFO_SMALL: 'btn btn-info btn-sm',
         BUTTON_LIGHT_SMALL: 'btn btn-light btn-sm',
         WIDTH_100: 'w-100',
@@ -112,6 +121,7 @@ export class Program {
         STICKY_COLUMN: 'sticky-column',
         MASSIVE_UPDATE_HEADER: 'btn-massive-update-column-header',
         ROW_STATUS: 'row-status',
+        INPUT_SELECT_BOOLEAN: 'input-select-boolean',
     }
 
     public static readonly inputTypes = {
@@ -127,6 +137,7 @@ export class Program {
         ICON: 'icon',
         ROW_NUM: 'rowNum',
         BUTTON: 'button',
+        SELECT_BOOLEAN: 'select-boolean',
     }
 
     public static readonly buttontypes = {
@@ -156,6 +167,8 @@ export class Program {
         CALCULATOR: 'bi bi-calculator',
         COPY: 'bi bi-copy',
         NORMAL: 'i bi-dash',
+        FILTER: 'bi bi-filter',
+        UNDO: 'bi bi-arrow-counterclockwise',
     }
 
     public static readonly rowtypes = {

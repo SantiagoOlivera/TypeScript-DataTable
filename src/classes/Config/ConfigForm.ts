@@ -71,7 +71,9 @@ export class ConfigForm extends Config {
 
         if(!Functions.IsNullOrEmpty(data)){
             this.SetData(data);
-        }else{
+        }else if(Array.isArray(data)){
+            this.SetData([]);
+        } else {
             this.SetData(null);
         }
 

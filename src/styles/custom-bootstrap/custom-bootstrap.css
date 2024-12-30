@@ -45,8 +45,7 @@
   --bs-danger-rgb: 220, 53, 69;
   --bs-light-rgb: 248, 249, 250;
   --bs-dark-rgb: 33, 37, 41;
-  --bs-update-rgb: 247, 130, 20;
-  --bs-primary-text-emphasis: #f78214;
+  --bs-primary-text-emphasis: #052c65;
   --bs-secondary-text-emphasis: #2b2f32;
   --bs-success-text-emphasis: #0a3622;
   --bs-info-text-emphasis: #055160;
@@ -8445,11 +8444,6 @@ textarea.form-control-lg {
 .text-success {
   --bs-text-opacity: 1;
   color: rgba(var(--bs-success-rgb), var(--bs-text-opacity)) !important;
-}
-
-.text-update {
-  --bs-text-opacity: 1;
-  color: rgba(var(--bs-update-rgb), var(--bs-text-opacity)) !important;
 }
 
 .text-info {

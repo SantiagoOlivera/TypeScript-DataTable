@@ -81,6 +81,7 @@ export class InputFormButton extends HTMLButtonElement implements IDraw, IInput 
                 },
             });
             var modal: FormModal = new FormModal(cm);
+            modal.GetForm().Disable(false);
             modal.Open();
         }
     }

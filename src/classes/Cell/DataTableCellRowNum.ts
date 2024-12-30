@@ -20,6 +20,7 @@ export class DataTableCellRowNum extends DataTableCell {
     
     constructor(config: ConfigCell) {
         super(config);
+        this.className += ' row-num';
     }
 
     public GetValue() {

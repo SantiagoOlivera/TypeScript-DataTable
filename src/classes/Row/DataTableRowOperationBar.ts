@@ -112,6 +112,7 @@ export class DataTableRowOperationBar extends DataTableRow implements IDraw {
             onclick: function(event: Event) {
                 modal.Open();
                 modal.GetForm().Empty();
+                modal.GetForm().Disable(false);
             },
         };
         var cb: ConfigButton = new ConfigButton(c);
