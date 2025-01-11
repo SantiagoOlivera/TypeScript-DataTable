@@ -51,6 +51,8 @@ export class DataTableRowOperationBar extends DataTableRow implements IDraw {
             if(Functions.IsString(b)) {
                 if(b === Program.buttons.ADD){
                     this.InitButtonAdd();
+                } else if(b === Program.buttons.FORM){
+                    this.InitButtonForm();
                 }
             }
         }
@@ -117,6 +119,31 @@ export class DataTableRowOperationBar extends DataTableRow implements IDraw {
         };
         var cb: ConfigButton = new ConfigButton(c);
         var btn: IconButton = new IconButton(cb);
+        this.AddButton(btn);
+    }
+
+
+    private InitButtonForm(): void {
+        var dt: DataTable = <DataTable>this.GetTable();
+        
+        var c: any = {
+            id: 'btnDatatableToForm',
+            title: '',
+            name: 'btnDatatableForm',
+            data: 'btnDatatableForm',
+            icon: 'bi bi-card-list',
+            width: 45,
+            height: 45,
+            className: 'btn btn-success btn-sm m-1',
+            default: true,
+            onclick: function(event: Event) {
+                
+            },
+        };
+
+        var cb: ConfigButton = new ConfigButton(c);
+        var btn: IconButton = new IconButton(cb);
+
         this.AddButton(btn);
     }
 

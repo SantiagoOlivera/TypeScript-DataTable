@@ -50,6 +50,7 @@ export class Program {
 
     public static buttons = {
         ADD: 'add',
+        FORM: 'form',
     }
 
 

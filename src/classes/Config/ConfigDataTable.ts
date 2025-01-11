@@ -67,7 +67,7 @@ export class ConfigDataTable extends ConfigTable {
     public GetRowStatus():boolean{
         return this.rowStatus;
     }
-    public GetButtons(): any{
+    public GetButtons(): any {
         return this.buttons;
     }
     public GetPagination(): ConfigPagination {
