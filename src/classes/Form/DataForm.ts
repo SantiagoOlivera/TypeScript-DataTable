@@ -448,6 +448,11 @@ export class DataForm extends Form implements IForm, IFilterable {
 
             this.inputPageChager = ipc;
             cpc.appendChild(ipc);
+
+            if(data.length > 0) {
+                ipc.SetPage(0, false);
+            }
+
         }
 
         this.header.appendChild(cpc);
@@ -741,12 +746,10 @@ export class DataForm extends Form implements IForm, IFilterable {
         this.footer = document.createElement('div');
         this.footer.className = 'w-100';
         var btns: Array<FormButton> = this.GetButtons();
-        for(var b of btns){
-            console.log(b);
+        /* for(var b of btns){
             this.footer.appendChild(b);
         }
-
-        this.AppendChild(this.footer);
+        this.AppendChild(this.footer); */
     }
 
     

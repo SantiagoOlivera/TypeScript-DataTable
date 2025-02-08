@@ -23,7 +23,7 @@ import { Table } from "./Table";
 
 
 export class DataTable extends Table implements IDraw {
-
+    
     public static readonly ROW_NUM_COLUMN: any = {
         data: 'rowNum',
         name: 'rowNum',
@@ -603,7 +603,7 @@ export class DataTable extends Table implements IDraw {
             }
         }
     }
-    
+
 }
 
 window.customElements.define('data-table', DataTable, { extends: 'table' });

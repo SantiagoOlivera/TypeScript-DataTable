@@ -16,6 +16,7 @@ import { ConfigForm } from "../Config/ConfigForm";
 import { DataForm } from "../Form/DataForm";
 import { Factory } from "../Factory/Factory";
 import { Program } from "../Program/Program";
+import { ConfigDataTable } from "../Config/ConfigDataTable";
 
 export class DataTableRowOperationBar extends DataTableRow implements IDraw {
 
@@ -125,7 +126,6 @@ export class DataTableRowOperationBar extends DataTableRow implements IDraw {
 
     private InitButtonForm(): void {
         var dt: DataTable = <DataTable>this.GetTable();
-        
         var c: any = {
             id: 'btnDatatableToForm',
             title: '',
@@ -137,13 +137,14 @@ export class DataTableRowOperationBar extends DataTableRow implements IDraw {
             className: 'btn btn-success btn-sm m-1',
             default: true,
             onclick: function(event: Event) {
-                
+                dt.Empty();
+                var c: ConfigForm = ConfigDataTable.ToConfigForm( <ConfigDataTable>dt.GetConfig() );
+                var form: DataForm = new DataForm(c);
+                dt.parentElement.appendChild(form);
             },
         };
-
         var cb: ConfigButton = new ConfigButton(c);
         var btn: IconButton = new IconButton(cb);
-
         this.AddButton(btn);
     }
 

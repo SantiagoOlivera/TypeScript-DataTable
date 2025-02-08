@@ -106,10 +106,22 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement {
     constructor(opt: LiveSearchOption, input: LiveSearchInput, markStr?:string){
         super();
         this.type = 'button';
+        this.SetInput(input);
         this.SetOpt(opt);
         this.SetProps();
         this.SetClassName();
         this.MarkStr(markStr);
+
+        this.addEventListener(Program.events.KEY_UP, (event: KeyboardEvent) => {
+            var key: string = event.key;
+            if(key.length === 1) {
+                input.SetValue(null);
+                input.Focus();
+                var text: string = input.GetText();
+                input.value = text + key;
+                input.filter(input.value, true);
+            }
+        });
 
         this.addEventListener(Program.events.CLICK, (event) => {
             input.SetInputValue(this.GetOpt(), true);
@@ -161,9 +173,11 @@ export class LiveSearchOptionInputItem extends HTMLButtonElement {
             }
             event.stopPropagation();
         });
-
     }
 
+    private SetInput(input: LiveSearchInput): void {
+        this.input = input;
+    }
     
     private MarkStr(str: string):void{
         var opt: LiveSearchOption = this.GetOpt();
@@ -273,7 +287,7 @@ class LiveSearchOptionsUrl {
         this.id = id;
         this.url = url;
         this.options = new Array<LiveSearchOption>();
-        this.Load();
+        //this.Load();
     }
 
     public GetId(): string {
@@ -519,8 +533,8 @@ export class LiveSearchInput extends Input {
         div1.appendChild(div2);
         this.after(div1);
         this.SetOptionsContainer(div3);
-        //this.SetOptionsInContainer(LiveSearchInput.test);
-        this.SetOptionsInContainer(this.GetOptions());
+        this.SetOptionsInContainer(LiveSearchInput.test);
+        //this.SetOptionsInContainer(this.GetOptions());
         this.SetContainer(div1);
     }
 
@@ -807,7 +821,11 @@ export class LiveSearchInput extends Input {
         return this.hidden;
     }
     public GetText(): string {
-        throw new Error("Method not implemented.");
+        var ret: string = '';
+        if(Functions.IsNullOrEmpty(this.val)){
+            ret = this.val.GetText();
+        }
+        return ret;
     }
     public IsEditable(): boolean {
         return this.GetConfig().GetEditable();

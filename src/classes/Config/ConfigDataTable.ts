@@ -10,7 +10,7 @@ export class ConfigDataTable extends ConfigTable {
     public static ToConfigForm(config: ConfigDataTable): ConfigForm {
         var c: any = config.GetConfig();
         c.fields = c.columns;
-
+        c.data = c.rows;
         var ret = new ConfigForm(c);
         return ret;
     }

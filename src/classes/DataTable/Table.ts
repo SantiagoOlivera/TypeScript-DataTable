@@ -152,7 +152,11 @@ export abstract class Table extends HTMLTableElement implements IDraw {
         return ret;
     }
 
-    
+    public Empty(): void {
+        this.thead.innerHTML = "";
+        this.tbody.innerHTML = "";
+        this.tfoot.innerHTML = "";
+    }
 
 
     
@@ -161,6 +165,7 @@ export abstract class Table extends HTMLTableElement implements IDraw {
     public abstract CreateRowsBody(): Array<Row>;
     public abstract CreateRowsFoot(): Array<Row>;
     public abstract Refresh(): void;
+    
 
 
 }

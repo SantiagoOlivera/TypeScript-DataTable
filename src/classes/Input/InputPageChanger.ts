@@ -196,6 +196,10 @@ export class InputPageChager extends HTMLDivElement implements IDraw, IInput {
         this.appendChild(this.btnNext);
     }
 
+    public SetPage(idx: number, event: boolean): void {
+        this.txtPageNumber.SetValue(idx+1);
+    }
+
     public GetHTMLElement(): HTMLElement {
         throw new Error("Method not implemented.");
     }
