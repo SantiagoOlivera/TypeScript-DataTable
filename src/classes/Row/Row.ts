@@ -14,6 +14,7 @@ export abstract class Row extends HTMLTableRowElement implements IDraw {
     private indexNode: number;
     private rowNum: number;
     private config: ConfigRow;
+    private editable: boolean;
 
     constructor(config: ConfigRow) {
         super();
@@ -198,5 +199,30 @@ export abstract class Row extends HTMLTableRowElement implements IDraw {
             this.appendChild(c);
         }
     } */
+
+    
+    public IsEditable(): boolean {
+        return this.editable;
+    }
+
+    public Disable(disabled: boolean): void {
+        for(var c of this.cellsList){
+            try{
+                c.Disable(disabled);
+                c.Draw();
+            } catch{
+            }
+        }
+    };
+    public Editable(editable: boolean): void {
+        for(var c of this.cellsList){
+            try{
+                this.editable = editable;
+                c.Editable(editable);
+                c.Draw();
+            } catch{
+            }
+        }
+    };
 
 }

@@ -92,7 +92,11 @@ export class InputCheckbox extends HTMLDivElement implements IInput, IDraw {
         throw new Error("Method not implemented.");
     }
     public GetText(): string {
-        throw new Error("Method not implemented.");
+        var ret: string = 'No';
+        if(this.GetValue()){
+            ret = 'Si';
+        }
+        return ret;
     }
     public SetDefault(): void {
         this.checkbox.SetDefault();

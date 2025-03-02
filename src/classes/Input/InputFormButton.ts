@@ -105,7 +105,7 @@ export class InputFormButton extends HTMLButtonElement implements IDraw, IInput 
         this.focus();
     }
     public Disable(disabled: boolean): void {
-        //throw new Error("Method not implemented.");
+        this.disabled = disabled;
     }
     public Hide(hidden: boolean): void {
         //throw new Error("Method not implemented.");

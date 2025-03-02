@@ -822,7 +822,7 @@ export class LiveSearchInput extends Input {
     }
     public GetText(): string {
         var ret: string = '';
-        if(Functions.IsNullOrEmpty(this.val)){
+        if(!Functions.IsNullOrEmpty(this.val)){
             ret = this.val.GetText();
         }
         return ret;

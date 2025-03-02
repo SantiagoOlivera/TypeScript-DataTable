@@ -43,7 +43,7 @@ export class DataTable extends Table implements IDraw {
         type: 'icon',
         className: 'text-center',
         editable: true,
-        width: 50,
+        width: 55,
         fixedColumn: true,
     };
 
@@ -342,19 +342,14 @@ export class DataTable extends Table implements IDraw {
                     dtcell.Focus();
                 } else {
                     //console.log("Jump cell:", cell, rowIdx, cellIdx, cell);
-                    switch(dir){
-                        case CellMoveDirection.UP:
-                            rowIdx++; 
-                            break;
-                        case CellMoveDirection.DOWN:
-                            rowIdx--;
-                            break;
-                        case CellMoveDirection.LEFT:
-                            cellIdx--;
-                            break;
-                        case CellMoveDirection.RIGHT:
-                            cellIdx++;
-                            break;
+                    if(dir === CellMoveDirection.UP){
+                        rowIdx--; 
+                    } else if(dir === CellMoveDirection.DOWN){
+                        rowIdx++;
+                    } else if(dir === CellMoveDirection.LEFT){
+                        cellIdx--;
+                    } else if(dir === CellMoveDirection.RIGHT){
+                        cellIdx++;
                     }
                     this.moveCell(rowIdx, cellIdx, dir);
                 }

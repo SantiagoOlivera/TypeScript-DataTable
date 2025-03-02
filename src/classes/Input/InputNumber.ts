@@ -227,7 +227,7 @@ export class InputNumber extends Input {
         throw new Error('Method not implemented.');
     }
     public GetText(): string {
-        throw new Error("Method not implemented.");
+        return this.value;
     }
     public IsEditable(): boolean {
         return this.GetConfig().GetEditable();

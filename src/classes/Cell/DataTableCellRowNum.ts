@@ -10,10 +10,12 @@ import { IInput } from "../Interfaces/IInput";
 import { ListButtons } from "../List/ListButtons";
 import { OptionsListPopOver } from "../PopOver/OptionsListPopOver";
 import { Program } from "../Program/Program";
+import { Row } from "../Row/Row";
 import { DataTableCell } from "./DataTableCell";
 import { DataTableCellInput } from "./DataTableCellInput";
 
 export class DataTableCellRowNum extends DataTableCell {
+    
 
     private button: RowNumButton;
     private options: OptionsListPopOver;
@@ -61,7 +63,8 @@ export class DataTableCellRowNum extends DataTableCell {
                         type: 'icon',
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                         onclick: function() {
-                            
+                            var row: Row = cell.GetRow();
+                            row.Editable(false);
                         },
                     },
                     { 
@@ -80,8 +83,13 @@ export class DataTableCellRowNum extends DataTableCell {
              }));
              this.options = new OptionsListPopOver(this.button, list);
              this.appendChild(this.button);
-        }
-        
+        }   
+    }
+    public Disable(disabled: boolean): void {
+        throw new Error("Method not implemented.");
+    }
+    public Editable(editable: boolean): void {
+        throw new Error("Method not implemented.");
     }
 }
 

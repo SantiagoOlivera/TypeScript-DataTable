@@ -178,3 +178,11 @@ table tr td.row-num {
 table thead tr {
     border-bottom-width: var(--bs-border-width);
 }
+input[type="checkbox"].form-check-input:hover{
+    cursor: pointer;
+}
+
+tr.delete{
+    color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
+    text-decoration: line-through;
+}

@@ -88,6 +88,12 @@ export class DataTableCellRowStatus extends DataTableCell {
         this.modalChanges = new FormModal(new ConfigModal({
         }));
     }
+    public Disable(disabled: boolean): void {
+        //throw new Error("Method not implemented.");
+    }
+    public Editable(editable: boolean): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 window.customElements.define('data-table-cell-row-status', DataTableCellRowStatus, { extends: 'td' });

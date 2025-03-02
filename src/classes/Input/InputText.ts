@@ -89,7 +89,7 @@ export class InputText extends Input {
         this.value = '';
     }
     public GetText(): string {
-        throw new Error("Method not implemented.");
+        return this.GetValue();
     }
     public IsEditable(): boolean {
         return this.GetConfig().GetEditable();
@@ -102,6 +102,7 @@ export class InputText extends Input {
         }
         this.SetValue(val);
     }
+    
 }
 
 window.customElements.define('input-text', InputText, { extends: 'input'});

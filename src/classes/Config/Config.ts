@@ -246,13 +246,13 @@ export class Config {
     public SetType(type: string): void {
         this.type = type;
     }
-    private SetDisabled(disabled: boolean): void {
+    public SetDisabled(disabled: boolean): void {
         this.disabled = disabled;
     }
     private SetHidden(hidden: boolean): void {
         this.hidden = hidden;
     }
-    private SetEditable(editable: boolean): void {
+    public SetEditable(editable: boolean): void {
         this.editable = editable;
     }
     private SetClassName(className: string): void {

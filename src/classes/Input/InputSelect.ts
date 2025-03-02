@@ -148,7 +148,8 @@ export class InputSelect extends HTMLSelectElement implements IInput, IDraw {
     }
     public GetText(): string {
         var ret: string = '';
-        var option = this.optionsList.find( o => { return o.GetValue() === this.opt; })
+        debugger;
+        var option = this.optionsList.find( o => { return o.GetValue() === this.GetValue(); })
         if(!Functions.IsNullOrEmpty(option)){
             ret = option.GetDescription();
         }

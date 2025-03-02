@@ -65,7 +65,12 @@ export class DataTableCellColumn extends DataTableCell {
     public Focus(): void {
         throw new Error("Method not implemented.");
     }
-
+    public Disable(disabled: boolean): void {
+        throw new Error("Method not implemented.");
+    }
+    public Editable(editable: boolean): void {
+        throw new Error("Method not implemented.");
+    }
 }
 
 window.customElements.define('data-table-cell-column', DataTableCellColumn, { extends: 'th' });

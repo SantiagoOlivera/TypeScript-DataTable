@@ -138,7 +138,10 @@ export class DataTableRowOperationBar extends DataTableRow implements IDraw {
             default: true,
             onclick: function(event: Event) {
                 dt.Empty();
-                var c: ConfigForm = ConfigDataTable.ToConfigForm( <ConfigDataTable>dt.GetConfig() );
+                var config: ConfigDataTable = <ConfigDataTable>dt.GetConfig();
+                var data: Array<any> = dt.GetData();
+                debugger;
+                var c: ConfigForm = ConfigDataTable.ToConfigForm(config, data);
                 var form: DataForm = new DataForm(c);
                 dt.parentElement.appendChild(form);
             },

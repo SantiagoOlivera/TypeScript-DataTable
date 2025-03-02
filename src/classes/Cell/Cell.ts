@@ -22,7 +22,7 @@ export abstract class Cell extends HTMLTableCellElement implements IDraw {
         this.SetConfig(config);
         this.SetCellName();
         this.SetColumnName();
-        this.SetClassName();
+        //this.SetClassName();
         this.SetCellWidth();
         this.SetIndex();
         this.SetFixedColumn();
@@ -101,9 +101,12 @@ export abstract class Cell extends HTMLTableCellElement implements IDraw {
             maxHeight: maxHeight,
         });
     }
+
     
-    public abstract GetValue(): any
-    public abstract SetValue(value: any): void 
-    public abstract Draw(): void 
+    public abstract GetValue(): any;
+    public abstract SetValue(value: any): void;
+    public abstract Draw(): void;
+    public abstract Disable(disabled: boolean):void;
+    public abstract Editable(editable: boolean): void;
 
 }

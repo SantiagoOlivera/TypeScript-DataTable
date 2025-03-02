@@ -11,14 +11,21 @@ import { IFocusable } from "../Interfaces/IFocusable";
 export class DataTableCellInput extends DataTableCell {
 
     private input: IInput;
+    private editable: boolean;
     
     constructor(config: ConfigCell){
         super(config);
-        this.SetInput();
+        this.Init();
     }
 
-    
-    
+    private Init(): void {
+        var config: ConfigCell = this.GetConfig();
+        var input: IInput = Factory.GetInput(config.GetConfig(), true);
+        this.SetInput(input);
+        this.SetEditable(config.GetEditable());
+    }
+
+
     //Getters
     public GetTable(): Table {
         return this.GetRow().GetTable();
@@ -34,8 +41,8 @@ export class DataTableCellInput extends DataTableCell {
     }
 
     //Setters
-    public SetInput(): void {
-        this.input = Factory.GetInput(this.GetConfig().GetConfig(), true);
+    public SetInput(input: IInput): void {
+        this.input = input;
     }
 
     public GetValue() {
@@ -59,27 +66,59 @@ export class DataTableCellInput extends DataTableCell {
     }
 
     public IsFocusable(): boolean {
-        return (this.input.IsFocusable() && !this.input.IsDisabled() && this.input.IsEditable())
+        var ret: boolean = false;
+        if(!Functions.IsNullOrEmpty(this.input)){
+            if(this.input.IsFocusable() && !this.input.IsDisabled() && this.IsEditable()){
+                ret = true;
+            }
+        }
+        return ret;
     }
 
     public SetValue(value: any): void { 
         var isEditable: boolean = this.GetConfig().GetEditable();
-        if(!Functions.IsNullOrEmpty(this.input)){
+        if(!Functions.IsNullOrEmpty(this.input)) {
             if(isEditable){
                 this.input.SetValue(value);
             } else {
-                this.innerHTML = value;
+                this.input.SetValue(value);
+                this.innerHTML = this.input.GetText();
             }
         }
     }
 
     public Draw(): void {
-        if(!Functions.IsNullOrEmpty(this.input)){
-            this.appendChild(this.input.GetHTMLElement());
+        this.innerHTML = '';
+        if(this.IsEditable()){
+            if(!Functions.IsNullOrEmpty(this.input)){
+                this.appendChild(this.input.GetHTMLElement());
+            }
         } else {
-            this.appendChild(null);
+            if(!Functions.IsNullOrEmpty(this.input)){
+                this.innerHTML = this.input.GetText();
+            }
         }
     }
+
+    public IsEditable(): boolean {
+        return this.editable;
+    }
+
+    public Disable(disabled: boolean): void {
+        var c: ConfigCell = this.GetConfig();
+        c.SetDisabled(disabled);
+        this.input.Disable(c.GetDisabled());
+    }
+
+    public SetEditable(editable: boolean): void {
+        this.editable = editable;
+    }
+
+    public Editable(editable: boolean): void {
+        this.SetEditable(editable);
+        this.Draw();
+    }
+
 }
 
 window.customElements.define('data-table-cell-input', DataTableCellInput, { extends: 'td' });

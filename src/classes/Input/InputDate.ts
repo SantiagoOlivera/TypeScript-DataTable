@@ -221,7 +221,8 @@ export class InputDate extends Input {
         throw new Error('Method not implemented.');
     }
     public GetText(): string {
-        var ret: string = Functions.ToStringDate(this.GetValue(), 'dd/MM/yyyy');
+        //var ret: string = Functions.ToStringDate(this.GetValue(), 'dd/MM/yyyy');
+        var ret: string = this.value;
         return ret;
     }
     public IsEditable(): boolean {

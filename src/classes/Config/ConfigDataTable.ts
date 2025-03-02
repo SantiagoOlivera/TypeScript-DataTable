@@ -7,10 +7,10 @@ import { ConfigTable } from "./ConfigTable";
 
 export class ConfigDataTable extends ConfigTable {
 
-    public static ToConfigForm(config: ConfigDataTable): ConfigForm {
+    public static ToConfigForm(config: ConfigDataTable, data: Array<any>): ConfigForm {
         var c: any = config.GetConfig();
         c.fields = c.columns;
-        c.data = c.rows;
+        c.data = data;
         var ret = new ConfigForm(c);
         return ret;
     }

@@ -12,7 +12,7 @@ import bootstrap, { Popover } from "bootstrap";
 
 
 export class DataTableRow extends Row implements IDraw, ISelectable {
-
+    
     public selected: boolean;
     public toggleSelect: boolean;
     private dropdownOptions: Popover;
@@ -122,7 +122,6 @@ export class DataTableRow extends Row implements IDraw, ISelectable {
     public CloseDropdownOptions(): void {
         this.dropdownOptions.hide();
     }
-
 }
 
 window.customElements.define('data-table-row', DataTableRow, { extends: 'tr' });

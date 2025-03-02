@@ -17,13 +17,13 @@ export class InputYear extends Input {
         this.maxLength = 4;
     }
     public Focus(): void {
-        throw new Error("Method not implemented.");
+        this.focus();
     }
     public IsFocusable(): boolean {
-        throw new Error("Method not implemented.");
+        return true;
     }
     public GetHTMLElement(): HTMLElement {
-        throw new Error("Method not implemented.");
+        return this;
     }
     public SetValue(value: any): void {
         if(
@@ -68,7 +68,7 @@ export class InputYear extends Input {
         throw new Error("Method not implemented.");
     }
     public GetText(): string {
-        throw new Error("Method not implemented.");
+        return this.GetValue().toString();
     }
     public IsEditable(): boolean {
         return this.GetConfig().GetEditable();
