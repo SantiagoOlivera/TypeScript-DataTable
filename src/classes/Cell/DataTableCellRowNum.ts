@@ -49,34 +49,59 @@ export class DataTableCellRowNum extends DataTableCell {
                 index: num,
              }));
              this.button.Draw();
+             debugger;
              var list: ListButtons = new ListButtons(new ConfigList({
                 buttons: [
                     { 
                         title: `Seleccionar`,
+                        id: 'btnSelect',
                         icon: Program.icons.CHECK_SQUARE,
                         type: 'icon',
+                        hidden: false,
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                     },
                     { 
                         title: `Eleminar`,
+                        id: 'btnDelete',
                         icon: Program.icons.DELETE,
                         type: 'icon',
                         className: Program.bootstrap.LIST_GROUP_ITEM,
+                        hidden: false,
                         onclick: function() {
                             var row: Row = cell.GetRow();
                             row.Editable(false);
+                            list.HideButton('btnDelete', true);
+                            list.HideButton('btnUndo', false);
+                        },
+                    },
+                    { 
+                        title: `Deshacer`,
+                        id: 'btnUndo',
+                        icon: Program.icons.DELETE,
+                        type: 'icon',
+                        className: Program.bootstrap.LIST_GROUP_ITEM,
+                        hidden: true,
+                        onclick: function() {
+                            var row: Row = cell.GetRow();
+                            row.Editable(true);
+                            list.HideButton('btnUndo', true);
+                            list.HideButton('btnDelete', false);
                         },
                     },
                     { 
                         title: `Ver cambios`,
+                        id: 'btnSeeChanges',
                         icon: Program.icons.EYE,
                         type: 'icon',
+                        hidden: false,
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                     },
                     { 
                         title: `Clonar`,
+                        id: 'btnClone',
                         icon: Program.icons.COPY,
                         type: 'icon',
+                        hidden: false,
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                     },
                 ],   

@@ -1,4 +1,5 @@
 import { ConfigList } from "../Config/ConfigList";
+import { Functions } from "../Functions/Functions";
 import { IDraw } from "../Interfaces/IDraw";
 import { Program } from "../Program/Program";
 import { ListItem } from "./ListItem";
@@ -15,7 +16,12 @@ export abstract class List extends HTMLUListElement implements IDraw {
     }
 
     private SetClassName(): void {
-        this.className = Program.bootstrap.LIST_GROUP + ' ' + this.GetConfig().GetClassName();
+        var className: string = this.GetConfig().GetClassName();
+        if(!Functions.IsNullOrEmpty(className)){
+            this.className = Program.bootstrap.LIST_GROUP + ' ' + this.GetConfig().GetClassName();
+        } else {
+            this.className = Program.bootstrap.LIST_GROUP;
+        }
     }
     
     private SetConfig(config: ConfigList): void {

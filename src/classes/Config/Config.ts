@@ -176,7 +176,7 @@ export class Config {
         return this.disabled;
     }
     public GetHidden(): boolean {
-        return this.disabled;
+        return this.hidden;
     }
     public GetClassName(): string {
         return this.className;

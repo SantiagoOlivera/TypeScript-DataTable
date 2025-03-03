@@ -48,8 +48,12 @@ export abstract class Button extends HTMLButtonElement implements IDraw {
         return ret;
     }
 
-    public Disable(disabled: boolean){
+    public Disable(disabled: boolean): void {
         this.disabled = disabled;
+    }
+
+    public Hide(hidden: boolean): void {
+        this.hidden = hidden;
     }
 
 }

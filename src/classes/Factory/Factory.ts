@@ -177,6 +177,7 @@ export abstract class Factory {
             if(type === Program.buttontypes.ICON){
                 ret = new IconButton(config);
             }
+            ret.Hide(config.GetHidden());
         }
         return ret;
     }

@@ -222,7 +222,10 @@ export class InputDate extends Input {
     }
     public GetText(): string {
         //var ret: string = Functions.ToStringDate(this.GetValue(), 'dd/MM/yyyy');
-        var ret: string = this.value;
+        var ret: string = '';
+        if(!Functions.IsNullOrEmpty(this.date)){
+            ret = this.value;
+        }
         return ret;
     }
     public IsEditable(): boolean {

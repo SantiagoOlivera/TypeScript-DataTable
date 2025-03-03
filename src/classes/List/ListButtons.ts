@@ -33,6 +33,16 @@ export class ListButtons extends List {
         return this.buttons;
     }
 
+    public HideButton(id: string, hide: boolean): void {
+        var btn: Button = this.buttons.find(e => { return e.id === id; });
+        btn.Hide(hide);
+    }
+
+    public DisableButton(id: string, disabled: boolean): void {
+        var btn: Button = this.buttons.find(e => { return e.id === id; });
+        btn.Hide(disabled);
+    }
+
 }
 
 window.customElements.define('list-buttons', ListButtons, { extends: 'ul' });
