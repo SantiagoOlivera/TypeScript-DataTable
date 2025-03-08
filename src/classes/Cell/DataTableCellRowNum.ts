@@ -3,6 +3,7 @@ import { RowNumButton } from "../Buttons/RowNumButton";
 import { ConfigButton } from "../Config/ConfigButton";
 import { ConfigCell } from "../Config/ConfigCell";
 import { ConfigList } from "../Config/ConfigList";
+import { RowStatus } from "../Enum/RowStatus";
 import { Functions } from "../Functions/Functions";
 import { InputRowNum } from "../Input/InputRowNum";
 import { IFocusable } from "../Interfaces/IFocusable";
@@ -10,9 +11,12 @@ import { IInput } from "../Interfaces/IInput";
 import { ListButtons } from "../List/ListButtons";
 import { OptionsListPopOver } from "../PopOver/OptionsListPopOver";
 import { Program } from "../Program/Program";
+import { DataTableRow } from "../Row/DataTableRow";
 import { Row } from "../Row/Row";
+import { Cell } from "./Cell";
 import { DataTableCell } from "./DataTableCell";
 import { DataTableCellInput } from "./DataTableCellInput";
+import { DataTableCellRowStatus } from "./DataTableCellRowStatus";
 
 export class DataTableCellRowNum extends DataTableCell {
     
@@ -49,7 +53,6 @@ export class DataTableCellRowNum extends DataTableCell {
                 index: num,
              }));
              this.button.Draw();
-             debugger;
              var list: ListButtons = new ListButtons(new ConfigList({
                 buttons: [
                     { 
@@ -68,7 +71,8 @@ export class DataTableCellRowNum extends DataTableCell {
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                         hidden: false,
                         onclick: function() {
-                            var row: Row = cell.GetRow();
+                            var row: DataTableRow = <DataTableRow>cell.GetRow();
+                            row.Delete();
                             row.Editable(false);
                             list.HideButton('btnDelete', true);
                             list.HideButton('btnUndo', false);
@@ -82,7 +86,8 @@ export class DataTableCellRowNum extends DataTableCell {
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                         hidden: true,
                         onclick: function() {
-                            var row: Row = cell.GetRow();
+                            var row: DataTableRow = <DataTableRow>cell.GetRow();
+                            row.Undo();
                             row.Editable(true);
                             list.HideButton('btnUndo', true);
                             list.HideButton('btnDelete', false);
@@ -93,7 +98,7 @@ export class DataTableCellRowNum extends DataTableCell {
                         id: 'btnSeeChanges',
                         icon: Program.icons.EYE,
                         type: 'icon',
-                        hidden: false,
+                        hidden: true,
                         className: Program.bootstrap.LIST_GROUP_ITEM,
                     },
                     { 

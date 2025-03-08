@@ -225,4 +225,10 @@ export abstract class Row extends HTMLTableRowElement implements IDraw {
         }
     };
 
+    public ToggleClassToCells(className: string, force: boolean): void {
+        for(var c of this.cellsList){
+            c.classList.toggle(className, force);
+        }
+    }
+
 }

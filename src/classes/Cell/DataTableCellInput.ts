@@ -82,7 +82,7 @@ export class DataTableCellInput extends DataTableCell {
                 this.input.SetValue(value);
             } else {
                 this.input.SetValue(value);
-                this.innerHTML = this.input.GetText();
+                this.innerHTML = `<div style="padding-left:6px;">${this.input.GetText()}</div>`;
             }
         }
     }
@@ -94,9 +94,7 @@ export class DataTableCellInput extends DataTableCell {
                 this.appendChild(this.input.GetHTMLElement());
             }
         } else {
-            if(!Functions.IsNullOrEmpty(this.input)){
-                this.innerHTML = this.input.GetText();
-            }
+            this.innerHTML = `<div style="padding-left:6px;">${this.input.GetText()}</div>`;
         }
     }
 

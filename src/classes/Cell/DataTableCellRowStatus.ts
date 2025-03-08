@@ -36,6 +36,9 @@ export class DataTableCellRowStatus extends DataTableCell {
         } else if(this.status === RowStatus.ERROR) {
             val = Program.icons.ERROR;
             className = Program.bootstrap.BUTTON_DANGER_SMALL;
+        } else if(this.status === RowStatus.DELETE){
+            val = Program.icons.DELETE;
+            className = Program.bootstrap.BUTTON_DANGER_SMALL;
         }
         this.innerHTML = '';
         if(!Functions.IsNullOrEmpty(this.status)){

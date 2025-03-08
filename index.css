@@ -186,3 +186,6 @@ tr.delete{
     color: rgba(var(--bs-danger-rgb), var(--bs-text-opacity)) !important;
     text-decoration: line-through;
 }
+table td {
+    font-size: 0.875rem;;
+}

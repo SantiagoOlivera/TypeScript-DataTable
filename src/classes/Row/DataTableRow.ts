@@ -9,6 +9,7 @@ import { ConfigCell } from "../Config/ConfigCell";
 import { Factory } from "../Factory/Factory";
 import { DataTable } from "../DataTable/DataTable";
 import bootstrap, { Popover } from "bootstrap";
+import { RowStatus } from "../Enum/RowStatus";
 
 
 export class DataTableRow extends Row implements IDraw, ISelectable {
@@ -122,6 +123,26 @@ export class DataTableRow extends Row implements IDraw, ISelectable {
     public CloseDropdownOptions(): void {
         this.dropdownOptions.hide();
     }
+
+
+    public Delete(): void {
+        var statusCell: Cell = this.GetRowStatusCell();
+        statusCell.SetValue(RowStatus.DELETE);
+        this.ToggleClassToCells('text-danger', true);
+        this.ToggleClassToCells('text-decoration-line-through', true);
+        statusCell.Draw();
+    }
+
+    public Undo(): void {
+        var statusCell: Cell = this.GetRowStatusCell();
+        if(statusCell.GetValue() === RowStatus.DELETE){
+            statusCell.SetValue(RowStatus.NORMAL);
+            this.ToggleClassToCells('text-danger', false);
+            this.ToggleClassToCells('text-decoration-line-through', false);
+        }
+        statusCell.Draw();
+    }
+
 }
 
 window.customElements.define('data-table-row', DataTableRow, { extends: 'tr' });

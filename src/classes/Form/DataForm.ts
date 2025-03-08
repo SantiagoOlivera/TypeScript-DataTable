@@ -885,7 +885,9 @@ export class DataForm extends Form implements IForm, IFilterable {
                 }
                 i++;
             }
-
+            if(!exit){
+                this.FocusFirstInput();
+            }
         }
     }
     
