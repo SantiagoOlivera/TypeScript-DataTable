@@ -30,7 +30,7 @@ export class DataTableCellRowNum extends DataTableCell {
     }
 
     public GetValue() {
-
+        return this.GetRow().GetIndexNode()+1;
     }
 
     public SetValue(value: any): void {

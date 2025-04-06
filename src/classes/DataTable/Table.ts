@@ -131,6 +131,7 @@ export abstract class Table extends HTMLTableElement implements IDraw {
     }
     public Draw(): void {
         this.Load();
+        this.Refresh();
     }
     public GetRow( idx: number ): any {
         var ret: Row = null;
@@ -165,6 +166,7 @@ export abstract class Table extends HTMLTableElement implements IDraw {
     public abstract CreateRowsBody(): Array<Row>;
     public abstract CreateRowsFoot(): Array<Row>;
     public abstract Refresh(): void;
+    public abstract Data(): Array<any>;
     
 
 

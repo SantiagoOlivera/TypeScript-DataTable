@@ -3,6 +3,7 @@ import { PaginationButton } from "../Buttons/PaginationButton";
 import { ConfigButton } from "../Config/ConfigButton";
 import { ConfigRow } from "../Config/ConfigRow";
 import { Functions } from "../Functions/Functions";
+import { InputNumber } from "../Input/InputNumber";
 import { Program } from "../Program/Program";
 import { DataTableRow } from "./DataTableRow";
 import { Row } from "./Row";
@@ -10,6 +11,7 @@ import { Row } from "./Row";
 export class DataTableRowPagination extends DataTableRow {
 
     private buttons: Array<Button>;
+    private inputNumber: InputNumber;
     private current: number = 0;
 
     constructor(config: ConfigRow){
@@ -20,8 +22,9 @@ export class DataTableRowPagination extends DataTableRow {
 
     private SetButtons(): void { 
 
-        this.buttons = new Array<Button>();
+        this.buttons = new Array<any>();
         var className: string = 'page-link';
+
         const ID_PAGINATION_FIRST_BUTTON: string = 'pagination-first';
         const ID_PAGINATION_LAST_BUTTON: string = 'pagination-last';
         const ID_PAGINATION_PREVIOUS_BUTTON: string = 'pagination-previous';
@@ -43,7 +46,9 @@ export class DataTableRowPagination extends DataTableRow {
         this.buttons.push(btnPrev);
         
         var length: number = this.GetConfig().GetLength();
+        //var maxShowingPages = this.GetConfig().GetMaxShowingPages();
 
+        
         for(var i=0; i<length; i++) {
 
             var n: number = i+1;
@@ -87,7 +92,7 @@ export class DataTableRowPagination extends DataTableRow {
         var row: DataTableRowPagination = this;
         for(var b of this.buttons){
             var btns = this.buttons;
-            b.addEventListener('click', function(event: Event) {
+            b.addEventListener(Program.events.CLICK, function(event: Event) {
                 
                 var button = <Button>event.target;
                 var index = button.GetConfig().GetIndex();
@@ -95,7 +100,6 @@ export class DataTableRowPagination extends DataTableRow {
                 if(!Functions.IsNullOrEmpty(index)) {
                     row.SetCurrent(index);
                 } 
-
 
                 if(button.id === ID_PAGINATION_FIRST_BUTTON) {
                     row.First();
@@ -109,9 +113,7 @@ export class DataTableRowPagination extends DataTableRow {
                     button.classList.add('active');    
                 }
 
-
                 var index = row.GetCurrent();
-
                 for(var b of btns) {
                     if(b.GetConfig().GetIndex() !== index){
                         b.classList.remove('active');    
@@ -121,7 +123,6 @@ export class DataTableRowPagination extends DataTableRow {
                 }
 
                 this.dispatchEvent(new Event(Program.events.CHANGE_PAGE, event) );
-
             });
         }
 

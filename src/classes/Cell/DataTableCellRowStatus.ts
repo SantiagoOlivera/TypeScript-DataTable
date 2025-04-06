@@ -11,15 +11,22 @@ import { Button } from "../Buttons/Button";
 import { DataTableCellInput } from "./DataTableCellInput";
 import { Factory } from "../Factory/Factory";
 import { Functions } from "../Functions/Functions";
+import { ChangedValue } from "../Program/ChangedValue";
 
 export class DataTableCellRowStatus extends DataTableCell {
     
     private status: RowStatus;
     private modalChanges: FormModal;
     private button: Button;
+    private changes: Array<ChangedValue>;
     
     constructor(config: ConfigCell) {
         super(config);
+        this.Init();
+    }
+
+    private Init(): void {
+        this.changes = new Array<ChangedValue>();
     }
     
 
@@ -97,6 +104,24 @@ export class DataTableCellRowStatus extends DataTableCell {
     public Editable(editable: boolean): void {
         throw new Error("Method not implemented.");
     }
+
+
+
+    public GetChanges(): Array<ChangedValue> {
+        return this.changes;
+    }
+
+    public AddChange(change: ChangedValue){
+        if(!Functions.IsNullOrEmpty(change)){
+            var c: ChangedValue  = this.changes.find(e => { return e.GetName() === change.GetName(); });
+            if( Functions.IsNullOrEmpty(c) ) {
+                this.changes.push(change);
+            } else {
+                c.SetNewValue(change.GetNewValue());
+            }
+        }
+    }
+
 }
 
 window.customElements.define('data-table-cell-row-status', DataTableCellRowStatus, { extends: 'td' });

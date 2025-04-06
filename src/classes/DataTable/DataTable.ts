@@ -1,3 +1,4 @@
+import { event } from "jquery";
 import { Button } from "../Buttons/Button";
 import { Cell } from "../Cell/Cell";
 import { DataTableCell } from "../Cell/DataTableCell";
@@ -12,7 +13,6 @@ import { IDraw } from "../Interfaces/IDraw";
 import { IInput } from "../Interfaces/IInput";
 import { FormModal } from "../Modals/FormModal";
 import { PopOver } from "../PopOver/PopOver";
-import { ChangedValues } from "../Program/ChangedValues";
 import { Program } from "../Program/Program";
 import { DataTableRow } from "../Row/DataTableRow";
 import { DataTableRowHeader } from "../Row/DataTableRowHeader";
@@ -20,9 +20,24 @@ import { DataTableRowOperationBar } from "../Row/DataTableRowOperationBar";
 import { DataTableRowPagination } from "../Row/DataTableRowPagination";
 import { Row } from "../Row/Row";
 import { Table } from "./Table";
+import { ChangedValue } from "../Program/ChangedValue";
 
 
 export class DataTable extends Table implements IDraw {
+
+
+    readonly props = {
+        DATA: 'data',
+        TITLE: 'title',
+        ROW_NUM: 'rowNum',
+        COLUMNS: 'columns',
+        ROWS: 'rows',
+        type: 'type',
+        ROW_STATUS: '___rowStatus___',
+        HIDDEN: 'hidden',
+        ROW_INDEX: '___rowIndex___',
+    }
+
     
     public static readonly ROW_NUM_COLUMN: any = {
         data: 'rowNum',
@@ -49,17 +64,7 @@ export class DataTable extends Table implements IDraw {
 
     public static readonly EMPTY_ARRAY: Array<any> = [];
 
-    readonly props = {
-        DATA: 'data',
-        TITLE: 'title',
-        ROW_NUM: 'rowNum',
-        COLUMNS: 'columns',
-        ROWS: 'rows',
-        type: 'type',
-        ROW_STATUS: '___rowStatus___',
-        HIDDEN: 'hidden',
-        ROW_INDEX: '___rowIndex___',
-    }
+    
 
     //private rowsdata: Array<any>;
     private bkp: Array<any>;
@@ -150,6 +155,19 @@ export class DataTable extends Table implements IDraw {
             for(var i=0;i<data.length;i++) {
                 var d = data[i];
                 r = this.CreateRow(d, i, cells, RowStatus.NORMAL);
+                ret.push(r);
+            }
+            var length: number = (<ConfigDataTable>this.GetConfig()).GetPagination().GetLength();
+            var pagination: number = length - ( data.length % length );
+            for(var i=data.length;i<(data.length+pagination); i++) {
+                r = Factory.GetRow({
+                    index: 0,
+                    rowNum: i+1,
+                    colSpan: cells.length,
+                    isSelectable: false,
+                    rowtype: Program.rowtypes.EMPTY,
+                }, this);
+                r.style = 'height:40px';
                 ret.push(r);
             }
         }
@@ -385,7 +403,17 @@ export class DataTable extends Table implements IDraw {
         if(!Functions.IsNullOrEmpty(pagination)) {
             var paginationLength: number = pagination.GetLength();
             if(!Functions.IsNullOrEmpty(paginationLength)) {
-                quantityPages = Number((rowsLength / paginationLength).toFixed(0));
+                quantityPages = 0;
+                var d: number = rowsLength / paginationLength;
+                var q1: number = rowsLength % paginationLength;
+                var q2: number = d % 1;
+                if( q1 === 0 ){
+                    quantityPages = d;
+                } else if( q2 < 0.5) {
+                    quantityPages = Number((d+1).toFixed(0));
+                } else {
+                    quantityPages = Number((d).toFixed(0));
+                }
                 elementsPerPage = paginationLength;
             }
         }
@@ -409,9 +437,21 @@ export class DataTable extends Table implements IDraw {
         data[idx][name] = value;
     }
 
-    public AddChangesObjectToData(idx: number, change: ChangedValues): void {
-        var data: Array<any> = this.GetData();
-        data[idx]['__changes__'] = change;
+    public AddChangesObjectToData(idx: number, change: ChangedValue): void {
+        /* var data: Array<any> = this.GetData();
+        var changes: Array<ChangedValue> = data[idx]['__changes__'];
+        if(!Functions.IsNullOrEmpty(changes)) {
+            var c: ChangedValue  = changes.find(e => { return e.GetName() === change.GetName(); });
+            if( Functions.IsNullOrEmpty(c) ) {
+                changes.push(change);
+            } else {
+                c.SetNewValue(change.GetNewValue());
+            }
+        } else {
+            changes = new Array<ChangedValue>();
+            changes.push(change);
+        }
+        data[idx]['__changes__'] = changes; */
     }
 
     public GetRowDataByIndex(idx: number): any {
@@ -472,11 +512,16 @@ export class DataTable extends Table implements IDraw {
                     if(!isModifided){
                         rs = RowStatus.NORMAL;
                     } else {
-                        var change: ChangedValues = new ChangedValues(name, oldVal, newVal);
-                        this.AddChangesObjectToData(rowIdx, change);
+                        rs = RowStatus.UPDATED;
+                        var change: ChangedValue = new ChangedValue(name, oldVal[name], newVal[name]);
+                        rowStatusIconCell.AddChange(change);
                     }
                 }
                 this.SetRowStatus(row, rs);
+            }
+            var changeFunction: Function = config.GetOnChange();
+            if(!Functions.IsNullOrEmpty(changeFunction)){
+                changeFunction(event, dt);
             }
         });
     }
@@ -597,6 +642,18 @@ export class DataTable extends Table implements IDraw {
                 }
             }
         }
+    }
+
+    
+    public Data(): Array<any> {
+        var ret: Array<any> = new Array<any>();
+        for(var r of this.GetBodyRows()){
+            var dr: DataTableRow = (<DataTableRow>r);
+            var d = dr.GetData();
+            d['__changes__'] =  (<DataTableCellRowStatus>dr.GetRowStatusCell()).GetChanges();
+            ret.push(d);
+        }
+        return ret;
     }
 
 }

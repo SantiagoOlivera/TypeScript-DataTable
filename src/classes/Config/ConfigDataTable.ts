@@ -21,6 +21,7 @@ export class ConfigDataTable extends ConfigTable {
     private buttons: any;
     private rowStatus: boolean;
     private pagination: ConfigPagination;
+    private onChange: Function;
     
     readonly props = {
         ROWS: 'rows',
@@ -54,6 +55,7 @@ export class ConfigDataTable extends ConfigTable {
         }
         this.SetButtons(config[this.props.BUTTONS])
         this.SetRowStatus(config[this.props.ROW_STATUS]);
+        this.SetOnChange(config.onChange);
 
     }
 
@@ -72,6 +74,9 @@ export class ConfigDataTable extends ConfigTable {
     }
     public GetPagination(): ConfigPagination {
         return this.pagination;
+    }
+    public GetOnChange(): Function{
+        return this.onChange;
     }
 
 
@@ -97,54 +102,7 @@ export class ConfigDataTable extends ConfigTable {
     private SetPagination(pagination: ConfigPagination):void {
         this.pagination = pagination;
     }
-
+    private SetOnChange(onChange: Function):void {
+        this.onChange = onChange;
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* export class ConfigDataTableReadOnly extends ConfigDataTable {
-    constructor(config: any){
-        super(config);
-    }
-} */
-
-/* export class ConfigDataTableEditable extends ConfigDataTable {
-
-    private buttons: any;
-    private rowStatus: boolean;
-
-    constructor(config: any){
-        super(config);
-        this.SetButtons(config[this.props.BUTTONS])
-        this.SetRowStatus(config[this.props.ROW_STATUS]);
-    }
-
-    private SetRowStatus(rowStatus:boolean):void{
-        this.rowStatus = rowStatus;
-    }
-
-    public GetRowStatus():boolean{
-        return this.rowStatus;
-    }
-
-    public GetButtons(): any{
-        return this.buttons;
-    }
-
-    private SetButtons(buttons: any):void{
-        this.buttons = buttons;
-    }
-} */

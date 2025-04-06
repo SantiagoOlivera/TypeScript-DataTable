@@ -1,4 +1,5 @@
 import { Cell } from "../Cell/Cell";
+import { DataTableCellRowStatus } from "../Cell/DataTableCellRowStatus";
 import { ConfigRow } from "../Config/ConfigRow";
 import { DataTable } from "../DataTable/DataTable";
 import { Table } from "../DataTable/Table";
@@ -74,8 +75,8 @@ export abstract class Row extends HTMLTableRowElement implements IDraw {
         var ret: any = {};
         var cells: Array<Cell> = this.GetCells();
         for(var c of cells){
-            var field: string = c.GetCellName();
-            //ret[field] = c.GetInput().GetValue();
+            var field: string = c.GetColumnName();
+            ret[field] = c.GetValue();
         }
         return ret;
     }

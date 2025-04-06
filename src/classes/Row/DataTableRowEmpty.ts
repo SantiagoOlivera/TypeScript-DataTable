@@ -15,7 +15,7 @@ export class DataTableRowEmpty extends DataTableRow{
         var td: HTMLElement = document.createElement('td');
         td.setAttribute('colspan', this.GetConfig().GetColSpan().toString());
         
-        td.innerHTML = DataTableRowEmpty.EMPTY_ROW_TEXT;
+        td.innerHTML = ''; //DataTableRowEmpty.EMPTY_ROW_TEXT;
         td.className = 'text-center';
 
         this.appendChild(td);

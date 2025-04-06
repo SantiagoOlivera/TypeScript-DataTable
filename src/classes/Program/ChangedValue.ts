@@ -1,4 +1,4 @@
-export class ChangedValues {
+export class ChangedValue {
 
     private name: string;
     private oldValue: any;
@@ -16,8 +16,15 @@ export class ChangedValues {
     private SetOldValue(oldValue: any): void {
         this.oldValue = oldValue;
     }
-    private SetNewValue(newValue: any): void {
+    public SetNewValue(newValue: any): void {
         this.newValue = newValue;
+    }
+
+    public GetName(): string {
+        return this.name;
+    }
+    public GetNewValue(): any {
+        return this.newValue;
     }
 
 }

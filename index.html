@@ -87,13 +87,14 @@
             columnFilter: false,
             pagination: {
                 length: 10,
+                maxShowingPages: 3,
             },
             buttons:[
                 'add',
                 'form',
             ],
-            change: function(event, data){
-
+            onChange: function(event, dt){
+                debugger;
             },
             rows:[
                 { id:'t1', text:'Test 1', year: 2013, salary: 2000.56, select: '1', date: new Date(), checkbox: false, checkboxswitch: true, liveSearch: { id:'1', text: '1 - Volkswagen' }, form: { text: 'Test A1', date: new Date(), select: '3',  }, },
@@ -113,6 +114,27 @@
                 { id:'t15', text:'Test 15', year: 2027, salary: 16000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 6', date: new Date(), select: '1',  }, },
                 { id:'t16', text:'Test 16', year: 2028, salary: 17000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 7', date: new Date(), select: '3',  }, },
                 { id:'t17', text:'Test 17', year: 2029, salary: 18000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 8', date: new Date(), select: '1',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t10', text:'Test 10', year: 2022, salary: 11000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 1', date: new Date(), select: '3',  },},
+                { id:'t11', text:'Test 11', year: 2023, salary: 12000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 2', date: new Date(), select: '2',  }, },
+                { id:'t12', text:'Test 12', year: 2024, salary: 13000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 3', date: new Date(), select: '1',  }, },
+                { id:'t13', text:'Test 13', year: 2025, salary: 14000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 4', date: new Date(), select: '3',  }, },
+                { id:'t14', text:'Test 14', year: 2026, salary: 15000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 5', date: new Date(), select: '2',  }, },
+                { id:'t15', text:'Test 15', year: 2027, salary: 16000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 6', date: new Date(), select: '1',  }, },
+                { id:'t16', text:'Test 16', year: 2028, salary: 17000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 7', date: new Date(), select: '3',  }, },
+                { id:'t17', text:'Test 17', year: 2029, salary: 18000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 8', date: new Date(), select: '1',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
+                { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
                 { id:'t18', text:'Test 28', year: 2030, salary: 19000.56, select: '3', date: null, checkbox: false, form: { text: 'Test 9', date: new Date(), select: '2',  }, },
             ],
             columns: [
@@ -268,7 +290,7 @@
                     formtype: 'single',
                     width: 200,
                     className: 'col-12 p-2',
-                    floatingForm: true,
+                    floatingForm: false,
                     fields: [
                         {
                             label: 'Text',
